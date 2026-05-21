@@ -123,20 +123,176 @@ chatForm.addEventListener('submit', (event) => {
   chatForm.reset();
 });
 
-receiptButton.addEventListener('click', () => {
-  const receipt = {
-    title: 'Comprovante de pagamento (simulado)',
-    date: new Date().toLocaleDateString('pt-BR'),
-    amount: 'R$ 1.680,00',
-    status: 'Confirmado',
-  };
+// Replace receipt button with modal to upload payment proof
+function getPaymentProofs() {
+  return JSON.parse(localStorage.getItem('paymentProofs') || '[]');
+}
 
-  alert(
-    `${receipt.title}\n\nData: ${receipt.date}\nValor: ${receipt.amount}\nStatus: ${receipt.status}`,
-  );
+function savePaymentProofs(list) {
+  localStorage.setItem('paymentProofs', JSON.stringify(list));
+}
+
+function createTenantProofModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+
+  modal.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="proof-modal-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Comprovante</p>
+          <h2 id="proof-modal-title">Enviar comprovante de pagamento</h2>
+        </div>
+        <button type="button" class="modal-close" id="proof-modal-close" aria-label="Fechar">×</button>
+      </header>
+
+      <form id="proof-form" class="payment-method-form">
+        <label for="proof-ref">Referência (ex: Apartamento 201)</label>
+        <input id="proof-ref" type="text" placeholder="Informe referência do pagamento" required />
+
+        <label for="proof-amount">Valor pago</label>
+        <input id="proof-amount" type="text" placeholder="R$ 0,00" />
+
+        <label for="proof-file">Anexar comprovante (imagem ou PDF)</label>
+        <input id="proof-file" type="file" accept="image/*,application/pdf" />
+
+        <div class="qr-preview" id="proof-preview" hidden>
+          <p class="label">Prévia</p>
+          <img id="proof-image-preview" alt="Prévia do comprovante" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="button-secondary" id="proof-cancel">Cancelar</button>
+          <button type="submit" class="confirm-button">Enviar comprovante</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  const form = modal.querySelector('#proof-form');
+  const closeBtn = modal.querySelector('#proof-modal-close');
+  const cancelBtn = modal.querySelector('#proof-cancel');
+  const fileInput = modal.querySelector('#proof-file');
+  const preview = modal.querySelector('#proof-preview');
+  const imgPreview = modal.querySelector('#proof-image-preview');
+  const refInput = modal.querySelector('#proof-ref');
+  const amountInput = modal.querySelector('#proof-amount');
+
+  function open() {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    refInput.focus();
+  }
+
+  function close() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    form.reset();
+    preview.hidden = true;
+    imgPreview.src = '';
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        imgPreview.src = reader.result;
+        preview.hidden = false;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // PDFs can't be previewed as image; hide preview
+      preview.hidden = true;
+      imgPreview.src = '';
+    }
+  });
+
+  modal.addEventListener('click', (ev) => {
+    if (ev.target === modal) close();
+  });
+
+  closeBtn.addEventListener('click', close);
+  cancelBtn.addEventListener('click', close);
+
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const proofs = getPaymentProofs();
+    const file = fileInput.files[0];
+    const proof = {
+      reference: refInput.value.trim(),
+      amount: amountInput.value.trim(),
+      createdAt: new Date().toISOString(),
+      dataUrl: '',
+      fileName: file ? file.name : '',
+      fileType: file ? file.type : '',
+    };
+
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        proof.dataUrl = reader.result;
+        proofs.unshift(proof);
+        savePaymentProofs(proofs);
+        close();
+        alert('Comprovante enviado. O proprietário poderá visualizá-lo.');
+      };
+      reader.readAsDataURL(file);
+    } else if (file && file.type === 'application/pdf') {
+      // For PDFs store as not previewable but keep metadata
+      const reader = new FileReader();
+      reader.onload = () => {
+        proof.dataUrl = reader.result;
+        proofs.unshift(proof);
+        savePaymentProofs(proofs);
+        close();
+        alert('Comprovante (PDF) enviado. O proprietário poderá baixá-lo.');
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // no file, still save reference/amount
+      proofs.unshift(proof);
+      savePaymentProofs(proofs);
+      close();
+      alert('Comprovante salvo sem arquivo.');
+    }
+  });
+
+  return { modal, open };
+}
+
+const tenantProofModal = createTenantProofModal();
+document.body.appendChild(tenantProofModal.modal);
+
+receiptButton.addEventListener('click', () => {
+  tenantProofModal.open();
 });
 
 renderIssues();
 renderMessages();
 renderSchedule();
 renderPaymentStatus();
+
+// React to maintenance completed by owner (storage events fire in other tabs)
+window.addEventListener('storage', (event) => {
+  if (event.key === 'lastMaintenanceCompleted' && event.newValue) {
+    try {
+      const payload = JSON.parse(event.newValue);
+      const removed = payload.removed;
+      if (removed) {
+        alert(
+          `Solicitação concluída pelo proprietário:\n\nTipo: ${removed.type}\nDescrição: ${removed.details}`,
+        );
+      }
+    } catch (err) {
+      // ignore parse errors
+    }
+    // re-render issues to reflect removal
+    renderIssues();
+  }
+});

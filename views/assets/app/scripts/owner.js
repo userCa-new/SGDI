@@ -210,7 +210,10 @@ function renderPaymentList() {
                         <strong>${payment.tenant}</strong>
                         <p>${payment.status}</p>
                     </div>
-                    <button class="confirm-button" data-index="${index}">${payment.status.toLowerCase().includes('confirmado') ? 'Confirmado' : 'Confirmar'}</button>
+                    <div style="display:flex;gap:8px;align-items:center">
+                      <button class="button-secondary show-proof" data-tenant="${payment.tenant}">Comprovante</button>
+                      <button class="confirm-button" data-index="${index}">${payment.status.toLowerCase().includes('confirmado') ? 'Confirmado' : 'Confirmar'}</button>
+                    </div>
                 </header>
                 <p>Valor: ${payment.amount}</p>
                 <p>Vencimento: ${payment.due}</p>
@@ -219,6 +222,162 @@ function renderPaymentList() {
     })
     .join('');
 }
+
+function getPaymentProofs() {
+  return JSON.parse(localStorage.getItem('paymentProofs') || '[]');
+}
+
+function createOwnerProofModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+
+  modal.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="owner-proof-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Comprovante</p>
+          <h2 id="owner-proof-title">Comprovante do inquilino</h2>
+        </div>
+        <button type="button" class="modal-close" id="owner-proof-close" aria-label="Fechar">×</button>
+      </header>
+      <div class="modal-body" id="owner-proof-body">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="button-secondary" id="owner-proof-download">Fechar</button>
+      </div>
+    </div>
+  `;
+
+  const body = modal.querySelector('#owner-proof-body');
+  const closeBtn = modal.querySelector('#owner-proof-close');
+  const closeAction = modal.querySelector('#owner-proof-download');
+
+  function openFor(tenant) {
+    body.innerHTML = '';
+    const proofs = getPaymentProofs().filter(
+      (p) =>
+        p.reference && p.reference.toLowerCase().includes(tenant.toLowerCase()),
+    );
+    if (!proofs.length) {
+      body.innerHTML =
+        '<p class="hint">Nenhum comprovante encontrado para este pagamento.</p>';
+    } else {
+      body.innerHTML = proofs
+        .map((p) => {
+          return `
+            <article class="payment-card">
+              <p class="method-type">Referência: ${p.reference}</p>
+              <p class="method-value">Valor: ${p.amount || '—'}</p>
+              ${p.fileType && p.fileType.startsWith('image/') ? `<img src="${p.dataUrl}" alt="comprovante"/>` : p.fileType === 'application/pdf' ? `<p><a href="${p.dataUrl}" download="${p.fileName}">Baixar PDF</a></p>` : `<p class="hint">Comprovante recebido (sem arquivo)</p>`}
+              <p class="muted">Enviado em ${new Date(p.createdAt).toLocaleString('pt-BR')}</p>
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  modal.addEventListener('click', (ev) => {
+    if (ev.target === modal) close();
+  });
+
+  closeBtn.addEventListener('click', close);
+  closeAction.addEventListener('click', close);
+
+  return { modal, openFor };
+}
+
+const ownerProofModal = createOwnerProofModal();
+document.body.appendChild(ownerProofModal.modal);
+
+// show proof when clicking the button added in renderPaymentList
+paymentList.addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.show-proof');
+  if (!btn) return;
+  const tenant = btn.dataset.tenant;
+  ownerProofModal.openFor(tenant);
+});
+
+// Maintenance requests from tenants (read/modify tenantIssues in localStorage)
+function getTenantIssues() {
+  return JSON.parse(localStorage.getItem('tenantIssues') || '[]');
+}
+
+function saveTenantIssues(issues) {
+  localStorage.setItem('tenantIssues', JSON.stringify(issues));
+}
+
+function renderOwnerIssues() {
+  const container = document.querySelector('.issues-panel .issue-list');
+  if (!container) return;
+
+  const issues = getTenantIssues();
+  if (!issues.length) {
+    container.innerHTML =
+      '<li>Nenhuma solicitação de manutenção pendente.</li>';
+    return;
+  }
+
+  container.innerHTML = issues
+    .map((issue) => {
+      return `
+            <li data-created="${issue.createdAt}">
+                <strong>${issue.type}</strong>
+                <p>${issue.details}</p>
+                <time>Enviado em ${new Date(issue.createdAt).toLocaleString('pt-BR')}</time>
+                <div style="margin-top:8px">
+                  <button class="confirm-button issue-complete" data-created="${issue.createdAt}">Marcar como concluído</button>
+                </div>
+            </li>
+        `;
+    })
+    .join('');
+}
+
+// Handle complete click in owner issues list
+document.addEventListener('click', (event) => {
+  const btn = event.target.closest('.issue-complete');
+  if (!btn) return;
+  const createdAt = btn.dataset.created;
+  if (!createdAt) return;
+
+  const issues = getTenantIssues();
+  const remaining = issues.filter((i) => i.createdAt !== createdAt);
+  saveTenantIssues(remaining);
+  renderOwnerIssues();
+
+  // Notify owner (and tenant on next load) and show undo option
+  // store last completed so tenant page can react via storage event
+  const removed = issues.find((i) => i.createdAt === createdAt);
+  if (removed) {
+    localStorage.setItem(
+      'lastMaintenanceCompleted',
+      JSON.stringify({ removed, completedAt: new Date().toISOString() }),
+    );
+  }
+
+  showToast('Solicitação marcada como concluída.', () => {
+    // undo: restore the removed issue
+    if (!removed) return;
+    remaining.unshift(removed);
+    saveTenantIssues(remaining);
+    // clear notification for tenant
+    localStorage.removeItem('lastMaintenanceCompleted');
+    renderOwnerIssues();
+  });
+});
 
 function savePayments() {
   localStorage.setItem('ownerPayments', JSON.stringify(savedPayments));
@@ -422,3 +581,4 @@ if (ownerChatForm) {
 renderPaymentList();
 renderAppointment();
 renderChat();
+renderOwnerIssues();
