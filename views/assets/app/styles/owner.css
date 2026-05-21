@@ -98,7 +98,9 @@ body {
 .hero-panel,
 .stats-grid,
 .payments-panel,
+.schedule-panel,
 .pix-panel,
+.chat-panel,
 .issues-panel {
     background: rgba(16, 8, 9, 0.92);
     border: 1px solid var(--border);
@@ -255,6 +257,61 @@ body {
     margin: 0;
     color: var(--muted);
     line-height: 1.6;
+}
+
+.chat-window {
+    min-height: 240px;
+    display: grid;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.chat-message {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 16px;
+    line-height: 1.7;
+}
+
+.chat-message.customer {
+    border-color: rgba(169, 57, 1, 0.4);
+}
+
+.chat-message.owner {
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.chat-message time {
+    display: block;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.chat-form {
+    display: grid;
+    gap: 16px;
+}
+
+.chat-form label {
+    display: grid;
+    gap: 10px;
+}
+
+.chat-form input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
 }
 
 button,
