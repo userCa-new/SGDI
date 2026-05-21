@@ -207,7 +207,6 @@ function createTenantProofModal() {
       };
       reader.readAsDataURL(file);
     } else {
-      // PDFs can't be previewed as image; hide preview
       preview.hidden = true;
       imgPreview.src = '';
     }
@@ -244,7 +243,6 @@ function createTenantProofModal() {
       };
       reader.readAsDataURL(file);
     } else if (file && file.type === 'application/pdf') {
-      // For PDFs store as not previewable but keep metadata
       const reader = new FileReader();
       reader.onload = () => {
         proof.dataUrl = reader.result;
@@ -255,7 +253,6 @@ function createTenantProofModal() {
       };
       reader.readAsDataURL(file);
     } else {
-      // no file, still save reference/amount
       proofs.unshift(proof);
       savePaymentProofs(proofs);
       close();
@@ -278,7 +275,6 @@ renderMessages();
 renderSchedule();
 renderPaymentStatus();
 
-// React to maintenance completed by owner (storage events fire in other tabs)
 window.addEventListener('storage', (event) => {
   if (event.key === 'lastMaintenanceCompleted' && event.newValue) {
     try {
@@ -290,9 +286,8 @@ window.addEventListener('storage', (event) => {
         );
       }
     } catch (err) {
-      // ignore parse errors
+
     }
-    // re-render issues to reflect removal
     renderIssues();
   }
 });

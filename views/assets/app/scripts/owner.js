@@ -302,7 +302,7 @@ function createOwnerProofModal() {
 const ownerProofModal = createOwnerProofModal();
 document.body.appendChild(ownerProofModal.modal);
 
-// show proof when clicking the button added in renderPaymentList
+
 paymentList.addEventListener('click', (ev) => {
   const btn = ev.target.closest('.show-proof');
   if (!btn) return;
@@ -310,7 +310,7 @@ paymentList.addEventListener('click', (ev) => {
   ownerProofModal.openFor(tenant);
 });
 
-// Maintenance requests from tenants (read/modify tenantIssues in localStorage)
+
 function getTenantIssues() {
   return JSON.parse(localStorage.getItem('tenantIssues') || '[]');
 }
@@ -346,7 +346,7 @@ function renderOwnerIssues() {
     .join('');
 }
 
-// Handle complete click in owner issues list
+
 document.addEventListener('click', (event) => {
   const btn = event.target.closest('.issue-complete');
   if (!btn) return;
@@ -358,8 +358,7 @@ document.addEventListener('click', (event) => {
   saveTenantIssues(remaining);
   renderOwnerIssues();
 
-  // Notify owner (and tenant on next load) and show undo option
-  // store last completed so tenant page can react via storage event
+  
   const removed = issues.find((i) => i.createdAt === createdAt);
   if (removed) {
     localStorage.setItem(
@@ -369,11 +368,11 @@ document.addEventListener('click', (event) => {
   }
 
   showToast('Solicitação marcada como concluída.', () => {
-    // undo: restore the removed issue
+    
     if (!removed) return;
     remaining.unshift(removed);
     saveTenantIssues(remaining);
-    // clear notification for tenant
+    
     localStorage.removeItem('lastMaintenanceCompleted');
     renderOwnerIssues();
   });
