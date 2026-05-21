@@ -358,58 +358,58 @@ body {
 }
 
 .chat-window {
-    min-height: 240px;
-    display: grid;
-    gap: 14px;
-    background: var(--surface);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
-    padding: 22px;
-    min-width: 0;
+  min-height: 240px;
+  display: grid;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 22px;
+  min-width: 0;
 }
 
 .chat-message {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
-    padding: 16px;
-    line-height: 1.7;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 16px;
+  line-height: 1.7;
 }
 
 .chat-message.customer {
-    border-color: rgba(169, 57, 1, 0.4);
+  border-color: rgba(169, 57, 1, 0.4);
 }
 
 .chat-message.owner {
-    border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .chat-message time {
-    display: block;
-    margin-top: 10px;
-    color: var(--muted);
-    font-size: 0.85rem;
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .chat-form {
-    display: grid;
-    gap: 16px;
+  display: grid;
+  gap: 16px;
 }
 
 .chat-form label {
-    display: grid;
-    gap: 10px;
+  display: grid;
+  gap: 10px;
 }
 
 .chat-form input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 16px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-size: 1rem;
-    font-family: inherit;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 button,
@@ -454,6 +454,154 @@ button:hover,
   background: linear-gradient(120deg, var(--color1), var(--color2));
   color: #fff;
   padding: 12px 18px;
+}
+
+.payment-methods {
+  display: grid;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.payment-method-card,
+.payment-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 18px 20px;
+}
+
+.payment-method-card .method-type,
+.payment-card .method-type {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.payment-method-card .method-value,
+.payment-card .method-value {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.payment-card img {
+  width: auto;
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 18px;
+  object-fit: contain;
+  margin-top: 16px;
+}
+
+.qr-preview img {
+  width: auto;
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 18px;
+  object-fit: contain;
+}
+
+.button-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  padding: 14px 18px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 40;
+}
+
+.modal-backdrop[hidden] {
+  display: none !important;
+}
+
+.modal {
+  width: min(540px, 100%);
+  max-height: min(700px, calc(100vh - 48px));
+  overflow: auto;
+  background: rgba(16, 8, 9, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.3);
+  padding: 28px;
+  display: grid;
+  gap: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 18px;
+}
+
+.modal-header .eyebrow {
+  margin: 0 0 6px;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.payment-method-form {
+  display: grid;
+  gap: 16px;
+}
+
+.payment-method-form label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.payment-method-form input,
+.payment-method-form select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 14px 16px;
+}
+
+.qr-preview {
+  display: grid;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.payment-methods .hint,
+.payment-methods p.hint {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
 }
 
 .return-dashboard-fab {

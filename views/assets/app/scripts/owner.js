@@ -10,6 +10,190 @@ const chatMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
 let lastConfirmedPayment = null;
 let toastTimeout = null;
 
+const paymentPanel = document.querySelector('.pix-panel');
+const paymentMethodsContainer = document.createElement('div');
+paymentMethodsContainer.className = 'payment-methods';
+if (paymentPanel) {
+  const pixList = paymentPanel.querySelector('.pix-list');
+  if (pixList) {
+    paymentPanel.insertBefore(paymentMethodsContainer, pixList);
+  }
+}
+
+function getPaymentMethods() {
+  return JSON.parse(localStorage.getItem('ownerPaymentMethods') || '[]');
+}
+
+function savePaymentMethods(methods) {
+  localStorage.setItem('ownerPaymentMethods', JSON.stringify(methods));
+}
+
+function renderPaymentMethods() {
+  const methods = getPaymentMethods();
+
+  if (!paymentMethodsContainer) return;
+
+  if (!methods.length) {
+    paymentMethodsContainer.innerHTML =
+      '<p class="hint">Nenhum método fixado. Clique em "Fixar método de pagamento" para adicionar Pix, QR Code ou dados bancários.</p>';
+    return;
+  }
+
+  paymentMethodsContainer.innerHTML = methods
+    .map((method) => {
+      return `
+            <article class="payment-card">
+                <p class="method-type">${method.type}</p>
+                <p class="method-value">${method.value}</p>
+                ${method.qrDataUrl ? `<img src="${method.qrDataUrl}" alt="QR Code de ${method.type}" />` : ''}
+            </article>
+        `;
+    })
+    .join('');
+}
+
+function createPaymentModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+
+  modal.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Cobranças</p>
+          <h2 id="payment-modal-title">Configurar método de cobrança</h2>
+        </div>
+        <button type="button" class="modal-close" id="payment-modal-close" aria-label="Fechar modal">×</button>
+      </header>
+
+      <form id="payment-method-form" class="payment-method-form">
+        <label for="payment-type">Tipo de cobrança</label>
+        <select id="payment-type" required>
+          <option value="Pix">Pix</option>
+          <option value="QR Code">QR Code</option>
+          <option value="Banco">Banco</option>
+        </select>
+
+        <label for="payment-value">Chave ou dados</label>
+        <input id="payment-value" type="text" placeholder="Digite a chave Pix, QR ou dados bancários" required />
+
+        <div class="qr-input-group" hidden>
+          <label for="qr-file">Anexar QR Code</label>
+          <input id="qr-file" type="file" accept="image/*" />
+        </div>
+
+        <div class="qr-preview" id="qr-preview" hidden>
+          <p class="label">Prévia do QR Code</p>
+          <img id="qr-image-preview" alt="Prévia do QR Code" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="button-secondary" id="payment-modal-cancel">Cancelar</button>
+          <button type="submit" class="confirm-button">Salvar cobrança</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  const form = modal.querySelector('#payment-method-form');
+  const closeButton = modal.querySelector('#payment-modal-close');
+  const cancelButton = modal.querySelector('#payment-modal-cancel');
+  const fileGroup = modal.querySelector('.qr-input-group');
+  const fileInput = modal.querySelector('#qr-file');
+  const qrPreview = modal.querySelector('#qr-preview');
+  const qrImagePreview = modal.querySelector('#qr-image-preview');
+  const paymentType = modal.querySelector('#payment-type');
+  const paymentValue = modal.querySelector('#payment-value');
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    form.reset();
+    fileGroup.hidden = true;
+    qrPreview.hidden = true;
+    qrImagePreview.src = '';
+  }
+
+  function openModal() {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    paymentValue.focus();
+  }
+
+  function toggleQrInput() {
+    const isQr = paymentType.value === 'QR Code';
+    fileGroup.hidden = !isQr;
+    if (!isQr) {
+      fileInput.value = '';
+      qrPreview.hidden = true;
+      qrImagePreview.src = '';
+    }
+  }
+
+  paymentType.addEventListener('change', toggleQrInput);
+  toggleQrInput();
+
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file || !file.type.startsWith('image/')) {
+      qrPreview.hidden = true;
+      qrImagePreview.src = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      qrImagePreview.src = reader.result;
+      qrPreview.hidden = false;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+
+  closeButton.addEventListener('click', closeModal);
+  cancelButton.addEventListener('click', closeModal);
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const methods = getPaymentMethods();
+    const newMethod = {
+      type: paymentType.value,
+      value: paymentValue.value.trim(),
+      qrDataUrl:
+        paymentType.value === 'QR Code' ? qrImagePreview.src || '' : '',
+      createdAt: new Date().toISOString(),
+    };
+
+    methods.unshift(newMethod);
+    savePaymentMethods(methods);
+    renderPaymentMethods();
+    closeModal();
+  });
+
+  return { modal, openModal };
+}
+
+const paymentModal = createPaymentModal();
+document.body.appendChild(paymentModal.modal);
+renderPaymentMethods();
+
+const paymentMethodButton = document.getElementById('manage-payment-method');
+if (paymentMethodButton) {
+  paymentMethodButton.addEventListener('click', () => {
+    paymentModal.openModal();
+  });
+}
+
 function renderPaymentList() {
   if (!savedPayments.length) {
     paymentList.innerHTML =
@@ -179,23 +363,6 @@ if (!savedPayments.length) {
   ];
   savedPayments.push(...samplePayments);
   savePayments();
-}
-
-const paymentMethodButton = document.getElementById('manage-payment-method');
-if (paymentMethodButton) {
-  paymentMethodButton.addEventListener('click', () => {
-    const method = prompt(
-      'Digite o meio de pagamento fixo (ex: Pix, QR ou chave):',
-      'Pix',
-    );
-    if (!method) {
-      return;
-    }
-
-    alert(
-      `Método de pagamento fixado: ${method}. Atualize os dados de cobrança conforme necessário.`,
-    );
-  });
 }
 
 if (scheduleForm) {
