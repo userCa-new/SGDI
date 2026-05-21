@@ -1,205 +1,257 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SGDI Inquilino</title>
-    <link rel="stylesheet" href="styles/tenant.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles/tenant.css" />
+  </head>
+  <body>
     <header class="app-header">
-        <nav class="breadcrumbs" aria-label="Navegação principal">
-            <a href="index.html">Área do usuário</a>
-            <a href="tenant.html">Inquilino</a>
-        </nav>
-        <a href="../../views/assets/public/index.html" class="button-logout">Voltar ao site público</a>
+      <nav class="breadcrumbs" aria-label="Navegação principal">
+        <a href="index.html">Área do usuário</a>
+        <a href="tenant.html">Inquilino</a>
+      </nav>
+      <a href="../../views/assets/public/index.html" class="button-logout"
+        >Voltar ao site público</a
+      >
     </header>
 
     <main class="tenant-main">
-        <section class="hero-panel" aria-labelledby="tenant-welcome">
-            <article>
-                <p class="eyebrow">Painel do Inquilino</p>
-                <h1 id="tenant-welcome">Bem-vindo ao seu controle de aluguel</h1>
-                <p>Gerencie pagamento, acompanhe o status do aluguel, reporte problemas e veja a localização do seu imóvel.</p>
-            </article>
-            <aside class="hero-note">
-                <p>Os pagamentos são assistidos. O sistema registra chaves Pix e QR Code para referência.</p>
-            </aside>
-        </section>
+      <section class="hero-panel" aria-labelledby="tenant-welcome">
+        <article>
+          <p class="eyebrow">Painel do Inquilino</p>
+          <h1 id="tenant-welcome">Bem-vindo ao seu controle de aluguel</h1>
+          <p>
+            Gerencie pagamento, acompanhe o status do aluguel, reporte problemas
+            e veja a localização do seu imóvel.
+          </p>
+        </article>
+        <aside class="hero-note">
+          <p>
+            Os pagamentos são assistidos. O sistema registra chaves Pix e QR
+            Code para referência.
+          </p>
+        </aside>
+      </section>
 
-        <section class="quick-access-panel" aria-labelledby="quick-access-title">
-            <header>
-                <p class="eyebrow">Acesso rápido</p>
-                <h2 id="quick-access-title">Vá direto para as principais áreas</h2>
-            </header>
-            <div class="quick-access-grid">
-                <a href="#payments-title" class="quick-card">
-                    <strong>Pagamento</strong>
-                    <p>Consulte suas chaves Pix e QR Code.</p>
-                </a>
-                <a href="#property-title" class="quick-card">
-                    <strong>Imóvel</strong>
-                    <p>Veja a localização e os dados do seu apartamento.</p>
-                </a>
-                <a href="#maintenance-title" class="quick-card">
-                    <strong>Manutenção</strong>
-                    <p>Registre problemas e acompanhe pedidos.</p>
-                </a>
-                <a href="#chat-title" class="quick-card">
-                    <strong>Chat</strong>
-                    <p>Fale rapidamente com o proprietário.</p>
-                </a>
-            </div>
-        </section>
+      <section class="quick-access-panel" aria-labelledby="quick-access-title">
+        <header>
+          <p class="eyebrow">Acesso rápido</p>
+          <h2 id="quick-access-title">Vá direto para as principais áreas</h2>
+        </header>
+        <div class="quick-access-grid">
+          <a href="#payments-title" class="quick-card">
+            <strong>Pagamento</strong>
+            <p>Consulte suas chaves Pix e QR Code.</p>
+          </a>
+          <a href="#property-title" class="quick-card">
+            <strong>Imóvel</strong>
+            <p>Veja a localização e os dados do seu apartamento.</p>
+          </a>
+          <a href="#maintenance-title" class="quick-card">
+            <strong>Manutenção</strong>
+            <p>Registre problemas e acompanhe pedidos.</p>
+          </a>
+          <a href="#chat-title" class="quick-card">
+            <strong>Chat</strong>
+            <p>Fale rapidamente com o proprietário.</p>
+          </a>
+        </div>
+      </section>
 
-        <section class="status-grid" aria-label="Resumo financeiro e de agendamentos">
-            <article class="status-card">
-                <p class="label">Aluguel atual</p>
-                <p class="value">R$ 1.680,00</p>
-                <p class="detail">Vencimento em 07/06</p>
-            </article>
-            <article class="status-card">
-                <p class="label">Status</p>
-                <p class="value status-on-time">Em dia</p>
-                <p class="detail">Sem pendências ativas</p>
-            </article>
-            <article class="status-card">
-                <p class="label">Taxa de atraso</p>
-                <p class="value">R$ 0,00</p>
-                <p class="detail">Último pagamento confirmado</p>
-            </article>
-            <article class="status-card">
-                <p class="label">Próximo atendimento</p>
-                <p class="value">Ter 11/06</p>
-                <p class="detail">10:00 - Visita de manutenção</p>
-            </article>
-        </section>
+      <section
+        class="status-grid"
+        aria-label="Resumo financeiro e de agendamentos"
+      >
+        <article class="status-card">
+          <p class="label">Aluguel atual</p>
+          <p class="value">R$ 1.680,00</p>
+          <p class="detail">Vencimento em 07/06</p>
+        </article>
+        <article class="status-card">
+          <p class="label">Status</p>
+          <p class="value status-on-time">Em dia</p>
+          <p class="detail">Sem pendências ativas</p>
+        </article>
+        <article class="status-card">
+          <p class="label">Taxa de atraso</p>
+          <p class="value">R$ 0,00</p>
+          <p class="detail">Último pagamento confirmado</p>
+        </article>
+        <article class="status-card">
+          <p class="label">Próximo atendimento</p>
+          <p class="value">Ter 11/06</p>
+          <p class="detail">10:00 - Visita de manutenção</p>
+        </article>
+      </section>
 
-        <section class="payments-panel" aria-labelledby="payments-title">
-            <header>
-                <p class="eyebrow">Pagamento assistido</p>
-                <h2 id="payments-title">Métodos de cobrança</h2>
-                <p>Consulte as chaves Pix e QR Code que o proprietário disponibilizou.</p>
-            </header>
+      <section class="payments-panel" aria-labelledby="payments-title">
+        <header>
+          <p class="eyebrow">Pagamento assistido</p>
+          <h2 id="payments-title">Métodos de cobrança</h2>
+          <p>
+            Consulte as chaves Pix e QR Code que o proprietário disponibilizou.
+          </p>
+        </header>
 
-            <article class="payment-methods">
-                <article class="method-card">
-                    <p class="method-type">Chave Pix</p>
-                    <p class="method-value">aluguel@inquilino.com</p>
-                </article>
-                <article class="method-card">
-                    <p class="method-type">QR Code</p>
-                    <p class="method-value">00020126360014BR.GOV.BCB.PIX0127aluguel@inquilino.com52040000530398654051680.005802BR5922Proprietario Imoveis6008Sao Paulo61080540900062070503***6304B14F</p>
-                </article>
-                <article class="method-card">
-                    <p class="method-type">Banco</p>
-                    <p class="method-value">0001 • Agência 1234 • Conta 56789-0</p>
-                </article>
-            </article>
-        </section>
+        <article class="payment-methods">
+          <article class="method-card">
+            <p class="method-type">Chave Pix</p>
+            <p class="method-value">aluguel@inquilino.com</p>
+          </article>
+          <article class="method-card">
+            <p class="method-type">QR Code</p>
+            <p class="method-value">
+              00020126360014BR.GOV.BCB.PIX0127aluguel@inquilino.com52040000530398654051680.005802BR5922Proprietario
+              Imoveis6008Sao Paulo61080540900062070503***6304B14F
+            </p>
+          </article>
+          <article class="method-card">
+            <p class="method-type">Banco</p>
+            <p class="method-value">0001 • Agência 1234 • Conta 56789-0</p>
+          </article>
+        </article>
+      </section>
 
-        <section class="property-panel" aria-labelledby="property-title">
-            <header>
-                <p class="eyebrow">Localização</p>
-                <h2 id="property-title">Seu imóvel</h2>
-                <p>Veja onde está localizado o imóvel que você aluga e as informações do contrato.</p>
-            </header>
+      <section class="property-panel" aria-labelledby="property-title">
+        <header>
+          <p class="eyebrow">Localização</p>
+          <h2 id="property-title">Seu imóvel</h2>
+          <p>
+            Veja onde está localizado o imóvel que você aluga e as informações
+            do contrato.
+          </p>
+        </header>
 
-            <article class="property-info">
-                <article class="property-card">
-                    <p class="label">Endereço</p>
-                    <p class="value">Rua das Palmeiras, 342 • Ap. 201 • Bela Vista, São Paulo</p>
-                </article>
-                <article class="property-card">
-                    <p class="label">Área</p>
-                    <p class="value">72m² • 2 quartos • 1 suíte</p>
-                </article>
-            </article>
-        </section>
+        <article class="property-info">
+          <article class="property-card">
+            <p class="label">Endereço</p>
+            <p class="value">
+              Rua das Palmeiras, 342 • Ap. 201 • Bela Vista, São Paulo
+            </p>
+          </article>
+          <article class="property-card">
+            <p class="label">Área</p>
+            <p class="value">72m² • 2 quartos • 1 suíte</p>
+          </article>
+        </article>
+      </section>
 
-        <section class="actions-grid">
-            <article class="action-card" aria-labelledby="schedule-title">
-                <header>
-                    <p class="eyebrow">Atendimento</p>
-                    <h2 id="schedule-title">Agendamento</h2>
-                </header>
-                <p id="schedule-description">Acompanhe o agendamento definido pelo proprietário.</p>
-                <ul id="schedule-items">
-                    <li>11/06 • 10:00 - Inspeção de luminárias</li>
-                    <li>23/06 • 14:00 - Verificação de vazamentos</li>
-                </ul>
-            </article>
+      <section class="actions-grid">
+        <article class="action-card" aria-labelledby="schedule-title">
+          <header>
+            <p class="eyebrow">Atendimento</p>
+            <h2 id="schedule-title">Agendamento</h2>
+          </header>
+          <p id="schedule-description">
+            Acompanhe o agendamento definido pelo proprietário.
+          </p>
+          <ul id="schedule-items">
+            <li>11/06 • 10:00 - Inspeção de luminárias</li>
+            <li>23/06 • 14:00 - Verificação de vazamentos</li>
+          </ul>
+        </article>
 
-            <article class="action-card" aria-labelledby="receipt-title">
-                <header>
-                    <p class="eyebrow">Comprovante</p>
-                    <h2 id="receipt-title">Emitir comprovante</h2>
-                </header>
-                <p>Emissão de comprovante para referência interna. Utilize após confirmar o envio pelo banco.</p>
-                <button id="receipt-button" type="button">Gerar comprovante</button>
-                <p class="hint">Este comprovante é uma simulação visual.</p>
-            </article>
+        <article class="action-card" aria-labelledby="receipt-title">
+          <header>
+            <p class="eyebrow">Comprovante</p>
+            <h2 id="receipt-title">Emitir comprovante</h2>
+          </header>
+          <p>
+            Emissão de comprovante para referência interna. Utilize após
+            confirmar o envio pelo banco.
+          </p>
+          <button id="receipt-button" type="button">Gerar comprovante</button>
+          <p class="hint">Este comprovante é uma simulação visual.</p>
+        </article>
 
-            <article class="action-card" aria-labelledby="payment-status-title">
-                <header>
-                    <p class="eyebrow">Pagamento</p>
-                    <h2 id="payment-status-title">Pagamento confirmado</h2>
-                </header>
-                <p id="payment-status-text">Seu último pagamento foi confirmado e está registrado na plataforma.</p>
-            </article>
-        </section>
+        <article class="action-card" aria-labelledby="payment-status-title">
+          <header>
+            <p class="eyebrow">Pagamento</p>
+            <h2 id="payment-status-title">Pagamento confirmado</h2>
+          </header>
+          <p id="payment-status-text">
+            Seu último pagamento foi confirmado e está registrado na plataforma.
+          </p>
+        </article>
+      </section>
 
-        <section class="maintenance-panel" aria-labelledby="maintenance-title">
-            <header>
-                <p class="eyebrow">Manutenção</p>
-                <h2 id="maintenance-title">Relatar problema</h2>
-                <p>Envie uma solicitação rápida para o proprietário com fotos ou descrição do defeito.</p>
-            </header>
+      <section class="maintenance-panel" aria-labelledby="maintenance-title">
+        <header>
+          <p class="eyebrow">Manutenção</p>
+          <h2 id="maintenance-title">Relatar problema</h2>
+          <p>
+            Envie uma solicitação rápida para o proprietário com fotos ou
+            descrição do defeito.
+          </p>
+        </header>
 
-            <form id="maintenance-form" class="maintenance-form">
-                <label for="issue-type">Tipo de problema</label>
-                <select id="issue-type" required>
-                    <option value="">Selecione...</option>
-                    <option value="hidraulico">Hidráulico</option>
-                    <option value="eletrico">Elétrico</option>
-                    <option value="estrutural">Estrutural</option>
-                    <option value="limpeza">Limpeza</option>
-                </select>
+        <form id="maintenance-form" class="maintenance-form">
+          <label for="issue-type">Tipo de problema</label>
+          <select id="issue-type" required>
+            <option value="">Selecione...</option>
+            <option value="hidraulico">Hidráulico</option>
+            <option value="eletrico">Elétrico</option>
+            <option value="estrutural">Estrutural</option>
+            <option value="limpeza">Limpeza</option>
+          </select>
 
-                <label for="issue-details">Descrição</label>
-                <textarea id="issue-details" rows="4" placeholder="Descreva o problema..." required></textarea>
+          <label for="issue-details">Descrição</label>
+          <textarea
+            id="issue-details"
+            rows="4"
+            placeholder="Descreva o problema..."
+            required
+          ></textarea>
 
-                <button type="submit">Enviar solicitação</button>
-            </form>
+          <button type="submit">Enviar solicitação</button>
+        </form>
 
-            <article class="issue-log">
-                <p class="label">Solicitações recentes</p>
-                <ul id="issue-list"></ul>
-            </article>
-        </section>
+        <article class="issue-log">
+          <p class="label">Solicitações recentes</p>
+          <ul id="issue-list"></ul>
+        </article>
+      </section>
 
-        <section class="chat-panel" aria-labelledby="chat-title">
-            <header>
-                <p class="eyebrow">Comunicação</p>
-                <h2 id="chat-title">Chat com o proprietário</h2>
-                <p>Envie mensagens e acompanhe o histórico de atendimento.</p>
-            </header>
+      <section class="chat-panel" aria-labelledby="chat-title">
+        <header>
+          <p class="eyebrow">Comunicação</p>
+          <h2 id="chat-title">Chat com o proprietário</h2>
+          <p>Envie mensagens e acompanhe o histórico de atendimento.</p>
+        </header>
 
-            <article class="chat-window" id="chat-window" aria-live="polite"></article>
-            <form id="chat-form" class="chat-form">
-                <label for="chat-message">Nova mensagem</label>
-                <input id="chat-message" type="text" placeholder="Escreva sua mensagem..." required>
-                <button type="submit">Enviar</button>
-            </form>
-        </section>
+        <article
+          class="chat-window"
+          id="chat-window"
+          aria-live="polite"
+        ></article>
+        <form id="chat-form" class="chat-form">
+          <label for="chat-message">Nova mensagem</label>
+          <input
+            id="chat-message"
+            type="text"
+            placeholder="Escreva sua mensagem..."
+            required
+          />
+          <button type="submit">Enviar</button>
+        </form>
+      </section>
     </main>
 
     <footer class="app-footer">
-        <p>Área do inquilino com pagamentos assistidos e controle de solicitações.</p>
+      <p>
+        Área do inquilino com pagamentos assistidos e controle de solicitações.
+      </p>
     </footer>
 
-    <a href="#quick-access-title" class="return-dashboard-fab" aria-label="Voltar ao acesso rápido">↑</a>
+    <a
+      href="#quick-access-title"
+      class="return-dashboard-fab"
+      aria-label="Voltar ao acesso rápido"
+      >↑</a
+    >
 
     <script src="scripts/tenant.js"></script>
-</body>
+  </body>
 </html>
