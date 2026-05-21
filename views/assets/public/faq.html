@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs - SGDI</title>
+    <link rel="stylesheet" href="styles/faq.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="navbar-content">
+            <h1 class="logo">SGDI</h1>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="sobre.html" class="nav-link">Sobre</a>
+                <a href="contato.html" class="nav-link">Contato</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="cadastro.html" class="nav-link nav-link-primary">Cadastro</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-faq">
+            <article class="hero-content">
+                <h1>Perguntas Frequentes</h1>
+                <p>Encontre respostas para as dúvidas mais comuns</p>
+            </article>
+        </section>
+
+        <section class="faq-content">
+            <div class="faq-category">
+                <h2>Conta e Cadastro</h2>
+                
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como criar uma conta no SGDI?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Para criar uma conta, acesse a página de Cadastro, preencha seus dados pessoais, selecione se é proprietário ou inquilino, defina uma senha segura e clique em "Criar Conta". Você receberá um email de confirmação.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Posso ter múltiplas contas?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Não, cada email pode ter apenas uma conta. Se precisar de múltiplas contas para gerenciar diferentes propriedades, entre em contato com nosso suporte.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como recuperar minha senha?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Na página de login, clique em "Esqueci minha senha" e siga as instruções enviadas para seu email. Você poderá resetar sua senha em poucos minutos.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="faq-category">
+                <h2>Para Proprietários</h2>
+                
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como adicionar um novo imóvel?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Na área de aplicação, acesse "Meus Imóveis" e clique em "Adicionar Imóvel". Preencha as informações da propriedade, localização, valores de aluguel e confirme.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como definir horários de atendimento?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Vá para "Configurações" → "Horários de Atendimento" e defina os dias e horas em que estará disponível para comunicação com inquilinos.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como confirmar um pagamento?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Quando receber um pagamento, você receberá uma notificação no sistema. Verifique a transação em seu banco e confirme no SGDI. O inquilino receberá um comprovante automaticamente.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como gerar relatórios de inadimplência?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Na seção "Relatórios", selecione o período e o imóvel desejado. O sistema gerará automaticamente um relatório com histórico de pagamentos e pendências.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="faq-category">
+                <h2>Para Inquilinos</h2>
+                
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como saber o valor do meu aluguel?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Após fazer login, acesse "Meu Aluguel" onde você verá o valor mensal, data de vencimento e histórico de pagamentos.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como pagar meu aluguel?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Em "Meu Aluguel", clique em "Pagar". Você verá as opções de pagamento (Pix ou QR Code) configuradas pelo proprietário. Realize a transferência e o comprovante será enviado automaticamente.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como solicitar manutenção do imóvel?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Vá para "Solicitações" → "Nova Solicitação", descreva o problema e anexe fotos se necessário. Seu proprietário receberá um chamado e poderá agendar o atendimento.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Como visualizar se estou atrasado?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Na página inicial, você verá um resumo do seu status. Se tiver algum atraso, aparecerá uma notificação com o valor devido e a taxa de juros aplicada.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="faq-category">
+                <h2>Pagamentos e Segurança</h2>
+                
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>O SGDI é seguro?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim! Utilizamos criptografia SSL, senhas seguras e armazenamento seguro de dados. Suas informações são protegidas conforme os padrões internacionais de segurança.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Quais são as formas de pagamento aceitas?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Atualmente aceitamos Pix e QR Code. O proprietário escolhe qual método disponibilizar para seus inquilinos. Estamos trabalhando em outras opções de pagamento.</p>
+                    </div>
+                </article>
+
+                <article class="faq-item">
+                    <button class="faq-question" onclick="toggleAnswer(this)">
+                        <span>Vocês têm acesso aos meus dados bancários?</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Não. Você faz as transferências diretamente de seu banco para o proprietário usando as informações que ele disponibiliza (Pix ou QR Code). Nunca compartilhamos dados bancários.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="cta-faq">
+            <h2>Não Encontrou Sua Resposta?</h2>
+            <p>Entre em contato com nosso suporte através da página de contato</p>
+            <a href="contato.html" class="button button-primary">Fale Conosco</a>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 SGDI - Sistema de Gerenciamento de Aluguel de Imóveis. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="scripts/faq.js"></script>
+</body>
+</html>

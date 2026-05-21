@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SGDI</title>
+    <link rel="stylesheet" href="styles/auth.css">
+</head>
+<body>
+    <header class="navbar-simple">
+        <nav>
+            <a href="index.html" class="logo">SGDI</a>
+        </nav>
+    </header>
+
+    <main class="auth-page">
+        <section class="auth-card">
+            <header class="auth-header">
+                <h1>Acesso SGDI</h1>
+                <p>Entre com seu email e senha para continuar.</p>
+            </header>
+
+            <form id="login-form" class="auth-form" action="#" method="post" autocomplete="off">
+                <label for="email">Email
+                    <input id="email" type="email" name="email" placeholder="usuario@provedor.com" required>
+                </label>
+
+                <label for="senha">Senha
+                    <input id="senha" type="password" name="senha" placeholder="••••••••" required>
+                </label>
+
+                <button type="submit">Entrar</button>
+            </form>
+
+            <p class="auth-note">Não tem conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+        </section>
+    </main>
+</body>
+</html>

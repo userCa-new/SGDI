@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGDI Área do Usuário</title>
+    <link rel="stylesheet" href="styles/app.css">
+</head>
+<body>
+    <header class="app-header">
+        <nav aria-label="Área do usuário">
+            <a href="../../views/assets/public/index.html">Site público</a>
+        </nav>
+        <p class="header-note">Escolha seu perfil para acessar o painel correspondente.</p>
+    </header>
+
+    <main class="selection-main">
+        <section class="selection-panel" aria-labelledby="selection-title">
+            <h1 id="selection-title">Contas separadas</h1>
+            <p>Selecione o tipo de usuário para acessar a interface adequada.</p>
+            <ul class="selection-list">
+                <li>
+                    <article class="selection-card">
+                        <p class="eyebrow">Inquilino</p>
+                        <h2>Visualize pagamentos e o imóvel</h2>
+                        <p>Acompanhe aluguel, local do imóvel, solicitações de manutenção e chat assistido.</p>
+                        <a class="selection-button" href="tenant.html">Acessar como inquilino</a>
+                    </article>
+                </li>
+                <li>
+                    <article class="selection-card">
+                        <p class="eyebrow">Proprietário</p>
+                        <h2>Gerencie imóveis e confirme pagamentos</h2>
+                        <p>Veja cobranças, confirme pagamentos assistidos e acompanhe pedidos de manutenção.</p>
+                        <a class="selection-button" href="owner.html">Acessar como proprietário</a>
+                    </article>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>Use contas separadas para inquilino e proprietário. Esta área usa a mesma paleta visual do site público.</p>
+    </footer>
+</body>
+</html>

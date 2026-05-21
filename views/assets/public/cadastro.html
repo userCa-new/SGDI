@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - SGDI</title>
+    <link rel="stylesheet" href="styles/auth.css">
+</head>
+<body>
+    <header class="navbar-simple">
+        <nav>
+            <a href="index.html" class="logo">SGDI</a>
+        </nav>
+    </header>
+
+    <main class="auth-page">
+        <section class="auth-card">
+            <header class="auth-header">
+                <h1>Criar Conta</h1>
+                <p>Preencha os dados abaixo para se cadastrar no sistema.</p>
+            </header>
+
+            <form id="signup-form" class="auth-form" action="#" method="post" autocomplete="off">
+                <label for="nome">Nome Completo
+                    <input id="nome" type="text" name="nome" placeholder="Seu nome" required>
+                </label>
+
+                <label for="email-signup">Email
+                    <input id="email-signup" type="email" name="email" placeholder="usuario@provedor.com" required>
+                </label>
+
+                <label for="tipo">Tipo de Usuário
+                    <select id="tipo" name="tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="proprietario">Proprietário</option>
+                        <option value="inquilino">Inquilino</option>
+                    </select>
+                </label>
+
+                <label for="senha-signup">Senha
+                    <input id="senha-signup" type="password" name="senha" placeholder="••••••••" required>
+                </label>
+
+                <label for="confirmacao">Confirmar Senha
+                    <input id="confirmacao" type="password" name="confirmacao" placeholder="••••••••" required>
+                </label>
+
+                <button type="submit">Criar Conta</button>
+            </form>
+
+            <p class="auth-note">Já tem conta? <a href="login.html">Faça login aqui</a></p>
+        </section>
+    </main>
+</body>
+</html>

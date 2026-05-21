@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - SGDI</title>
+    <link rel="stylesheet" href="styles/contact.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="navbar-content">
+            <h1 class="logo">SGDI</h1>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="sobre.html" class="nav-link">Sobre</a>
+                <a href="faq.html" class="nav-link">FAQs</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="cadastro.html" class="nav-link nav-link-primary">Cadastro</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-contact">
+            <article class="hero-content">
+                <h1>Entre em Contato</h1>
+                <p>Estamos aqui para ajudar e responder suas dúvidas</p>
+            </article>
+        </section>
+
+        <section class="contact-content">
+            <div class="contact-info">
+                <article class="info-card">
+                    <h3>📍 Localização</h3>
+                    <p>Rua das Soluções, 1000<br>
+                    São Paulo, SP 01000-000<br>
+                    Brasil</p>
+                </article>
+
+                <article class="info-card">
+                    <h3>📞 Telefone</h3>
+                    <p>+55 (11) 3000-0000<br>
+                    Segunda a Sexta<br>
+                    08:00 - 18:00</p>
+                </article>
+
+                <article class="info-card">
+                    <h3>✉️ Email</h3>
+                    <p>suporte@sgdi.com.br<br>
+                    vendas@sgdi.com.br<br>
+                    Resposta em 24h</p>
+                </article>
+            </div>
+
+            <form class="contact-form" id="contact-form" action="#" method="post">
+                <h2>Envie uma Mensagem</h2>
+
+                <label for="nome">Nome Completo
+                    <input id="nome" type="text" name="nome" placeholder="Seu nome" required>
+                </label>
+
+                <label for="email">Email
+                    <input id="email" type="email" name="email" placeholder="seu@email.com" required>
+                </label>
+
+                <label for="telefone">Telefone (Opcional)
+                    <input id="telefone" type="tel" name="telefone" placeholder="(11) 9000-0000">
+                </label>
+
+                <label for="assunto">Assunto
+                    <select id="assunto" name="assunto" required>
+                        <option value="">Selecione um assunto</option>
+                        <option value="duvida">Dúvida sobre funcionalidade</option>
+                        <option value="suporte">Problema técnico</option>
+                        <option value="comercial">Consultoria comercial</option>
+                        <option value="feedback">Feedback / Sugestão</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </label>
+
+                <label for="mensagem">Mensagem
+                    <textarea id="mensagem" name="mensagem" placeholder="Descreva sua mensagem aqui..." rows="6" required></textarea>
+                </label>
+
+                <button type="submit">Enviar Mensagem</button>
+            </form>
+        </section>
+
+        <section class="map-section">
+            <h2>Nos Localize</h2>
+            <div class="map-placeholder">
+                <p>🗺️ Mapa interativo será exibido aqui</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 SGDI - Sistema de Gerenciamento de Aluguel de Imóveis. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>

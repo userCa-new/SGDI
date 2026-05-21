@@ -1,0 +1,160 @@
+@import url('common.css');
+
+.contact-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 60px;
+}
+
+/* ============= INFO CARDS ============= */
+
+.contact-info {
+    display: grid;
+    gap: 24px;
+}
+
+.info-card {
+    background: rgba(169, 57, 1, 0.1);
+    border: 1px solid rgba(169, 57, 1, 0.3);
+    border-radius: 16px;
+    padding: 28px 24px;
+}
+
+.info-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    color: var(--color1);
+}
+
+.info-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* ============= CONTACT FORM ============= */
+
+.contact-form {
+    display: grid;
+    gap: 18px;
+}
+
+.contact-form h2 {
+    margin: 0 0 24px;
+    font-size: 1.6rem;
+    color: var(--color1);
+}
+
+.contact-form label {
+    display: grid;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    width: 100%;
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text);
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(244, 230, 221, 0.6);
+}
+
+.contact-form select {
+    cursor: pointer;
+}
+
+.contact-form select option {
+    background: #0f0a08;
+    color: var(--text);
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    outline: 2px solid rgba(169, 57, 1, 0.45);
+    outline-offset: 2px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.contact-form button {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: linear-gradient(120deg, var(--color1), var(--color2));
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 500;
+    margin-top: 12px;
+}
+
+.contact-form button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 32px rgba(169, 57, 1, 0.2);
+}
+
+/* ============= MAP SECTION ============= */
+
+.map-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.map-section h2 {
+    margin: 0 0 30px;
+    font-size: 2rem;
+    color: var(--color1);
+}
+
+.map-placeholder {
+    background: rgba(169, 57, 1, 0.1);
+    border: 2px dashed rgba(169, 57, 1, 0.3);
+    border-radius: 16px;
+    padding: 60px 24px;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
+/* ============= RESPONSIVE ============= */
+
+@media (max-width: 1024px) {
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-content {
+        padding: 60px 24px;
+    }
+
+    .contact-info {
+        grid-template-columns: 1fr;
+    }
+
+    .map-section {
+        padding: 40px 24px;
+    }
+}

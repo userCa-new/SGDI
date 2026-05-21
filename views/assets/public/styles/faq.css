@@ -1,0 +1,129 @@
+@import url('common.css');
+
+.faq-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 24px;
+}
+
+/* ============= FAQ CATEGORY ============= */
+
+.faq-category {
+    margin-bottom: 60px;
+}
+
+.faq-category h2 {
+    margin: 0 0 24px;
+    font-size: 1.6rem;
+    color: var(--color1);
+    border-bottom: 2px solid var(--color1);
+    padding-bottom: 14px;
+}
+
+/* ============= FAQ ITEM ============= */
+
+.faq-item {
+    margin-bottom: 16px;
+}
+
+.faq-question {
+    width: 100%;
+    background: rgba(169, 57, 1, 0.1);
+    border: 1px solid rgba(169, 57, 1, 0.3);
+    border-radius: 12px;
+    padding: 18px 24px;
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    text-align: left;
+    font-family: inherit;
+}
+
+.faq-question:hover {
+    background: rgba(169, 57, 1, 0.15);
+    border-color: var(--color1);
+}
+
+.faq-question span:first-child {
+    font-weight: 500;
+    flex: 1;
+}
+
+.faq-question .icon {
+    color: var(--color1);
+    font-weight: bold;
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
+}
+
+.faq-question.active .icon {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    display: none;
+    background: rgba(169, 57, 1, 0.08);
+    border: 1px solid rgba(169, 57, 1, 0.2);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 24px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.faq-answer.show {
+    display: block;
+}
+
+.faq-answer p {
+    margin: 0;
+}
+
+/* ============= CTA ============= */
+
+.cta-faq {
+    background: linear-gradient(135deg, var(--color4), var(--color5));
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.cta-faq h2 {
+    margin: 0 0 14px;
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+}
+
+.cta-faq p {
+    margin: 0 0 30px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.05rem;
+}
+
+/* ============= RESPONSIVE ============= */
+
+@media (max-width: 768px) {
+    .faq-content {
+        padding: 60px 24px;
+    }
+
+    .faq-category h2 {
+        font-size: 1.3rem;
+    }
+
+    .faq-question {
+        padding: 16px 18px;
+        font-size: 0.95rem;
+    }
+
+    .faq-answer {
+        padding: 18px;
+        font-size: 0.95rem;
+    }
+
+    .cta-faq {
+        padding: 40px 24px;
+    }
+}

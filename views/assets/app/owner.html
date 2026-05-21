@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGDI Proprietário</title>
+    <link rel="stylesheet" href="styles/owner.css">
+</head>
+<body>
+    <header class="app-header">
+        <nav class="breadcrumbs" aria-label="Navegação principal">
+            <a href="index.html">Área do usuário</a>
+            <a href="owner.html">Proprietário</a>
+        </nav>
+        <div class="header-actions">
+            <a href="index.html" class="button-dashboard">Dashboard</a>
+            <a href="../../views/assets/public/index.html" class="button-logout">Sair</a>
+        </div>
+    </header>
+
+    <main class="owner-main">
+        <section class="hero-panel" aria-labelledby="owner-welcome">
+            <article>
+                <p class="eyebrow">Painel do Proprietário</p>
+                <h1 id="owner-welcome">Controle de imóveis e confirmações</h1>
+                <p>Gerencie inquilinos, confirme pagamentos assistidos e acompanhe pedidos de manutenção.</p>
+            </article>
+            <aside class="hero-note">
+                <p>A plataforma permite indexar QR Codes e chaves Pix e confirmar pagamentos manualmente.</p>
+            </aside>
+        </section>
+
+        <section class="quick-access-panel" aria-labelledby="owner-quick-access-title">
+            <header>
+                <p class="eyebrow">Acesso rápido</p>
+                <h2 id="owner-quick-access-title">Dashboard rápido</h2>
+            </header>
+            <div class="quick-access-grid">
+                <a href="#owner-payments-title" class="quick-card">
+                    <strong>Pagamentos</strong>
+                    <p>Verifique confirmações e valores pendentes.</p>
+                </a>
+                <a href="#owner-pix-title" class="quick-card">
+                    <strong>Pix / QR</strong>
+                    <p>Atualize e compartilhe chaves de cobrança.</p>
+                </a>
+                <a href="#owner-issues-title" class="quick-card">
+                    <strong>Manutenção</strong>
+                    <p>Acompanhe pedidos abertos e prioridades.</p>
+                </a>
+                <a href="#owner-welcome" class="quick-card">
+                    <strong>Resumo</strong>
+                    <p>Volte ao topo do painel sempre que precisar.</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Indicadores principais">
+            <article class="stat-card">
+                <p class="label">Imóveis cadastrados</p>
+                <p class="value">9</p>
+            </article>
+            <article class="stat-card">
+                <p class="label">Pagamentos pendentes</p>
+                <p class="value status-alert">4</p>
+            </article>
+            <article class="stat-card">
+                <p class="label">Solicitações abertas</p>
+                <p class="value">6</p>
+            </article>
+            <article class="stat-card">
+                <p class="label">Receita projetada</p>
+                <p class="value">R$ 58.320</p>
+            </article>
+        </section>
+
+        <section class="payments-panel" aria-labelledby="owner-payments-title">
+            <header>
+                <p class="eyebrow">Pagamentos</p>
+                <h2 id="owner-payments-title">Confirmações assistidas</h2>
+                <p>Liste pagamentos recebidos e confirme apenas os que já foram verificados no banco.</p>
+            </header>
+
+            <article class="payment-list" id="payment-list"></article>
+        </section>
+
+        <section class="schedule-panel" aria-labelledby="owner-schedule-title">
+            <header>
+                <p class="eyebrow">Agendamento</p>
+                <h2 id="owner-schedule-title">Agenda de atendimento</h2>
+                <p>Defina um horário para o inquilino e mantenha o registro de visitas.</p>
+            </header>
+
+            <form id="schedule-form" class="schedule-form">
+                <label for="schedule-date">Data</label>
+                <input id="schedule-date" type="date" required>
+
+                <label for="schedule-time">Hora</label>
+                <input id="schedule-time" type="time" required>
+
+                <label for="schedule-note">Observação</label>
+                <textarea id="schedule-note" rows="3" placeholder="Descreva o motivo do atendimento"></textarea>
+
+                <button type="submit">Agendar atendimento</button>
+            </form>
+
+            <article class="schedule-summary">
+                <p class="label">Último agendamento</p>
+                <p id="schedule-display">Nenhum agendamento definido.</p>
+            </article>
+        </section>
+
+        <section class="pix-panel" aria-labelledby="owner-pix-title">
+            <header>
+                <p class="eyebrow">Cobranças</p>
+                <h2 id="owner-pix-title">Pix e QR Code</h2>
+                <p>Atualize os métodos de cobrança que serão apresentados para seus inquilinos.</p>
+            </header>
+
+            <div class="method-control">
+                <p>Fixe aqui o meio de pagamento principal para o aluguel.</p>
+                <button id="manage-payment-method" type="button">Fixar método de pagamento</button>
+            </div>
+
+            <ul class="pix-list">
+                <li><strong>Email:</strong> aluguel@proprietario.com</li>
+                <li><strong>CPF:</strong> 111.222.333-44</li>
+                <li><strong>Chave aleatória:</strong> 1a2b3c4d-5e6f-7g8h-9i0j</li>
+            </ul>
+        </section>
+
+        <section class="chat-panel" aria-labelledby="owner-chat-title">
+            <header>
+                <p class="eyebrow">Comunicação</p>
+                <h2 id="owner-chat-title">Chat com o inquilino</h2>
+                <p>Troque mensagens diretamente com seu inquilino.</p>
+            </header>
+
+            <article class="chat-window" id="owner-chat-window" aria-live="polite"></article>
+            <form id="owner-chat-form" class="chat-form">
+                <label for="owner-chat-message">Nova mensagem</label>
+                <input id="owner-chat-message" type="text" placeholder="Escreva sua mensagem..." required>
+                <button type="submit">Enviar</button>
+            </form>
+        </section>
+
+        <section class="issues-panel" aria-labelledby="owner-issues-title">
+            <header>
+                <p class="eyebrow">Manutenção</p>
+                <h2 id="owner-issues-title">Pedidos de manutenção</h2>
+                <p>Gerencie as solicitações de problemas relatadas pelos inquilinos.</p>
+            </header>
+
+            <ol class="issue-list">
+                <li>
+                    <strong>Vazamento no banheiro</strong>
+                    <p>Ap. 201 • Urgente • Agendar vistoria</p>
+                </li>
+                <li>
+                    <strong>Troca de lâmpadas</strong>
+                    <p>Ap. 304 • Manutenção leve</p>
+                </li>
+                <li>
+                    <strong>Instalação de tranca</strong>
+                    <p>Ap. 110 • Confirmar orçamento</p>
+                </li>
+            </ol>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>Contas separadas para inquilino e proprietário com funcionalidades distintas.</p>
+    </footer>
+
+    <a href="#owner-quick-access-title" class="return-dashboard-fab" aria-label="Voltar ao acesso rápido">↑</a>
+    <div class="toast" id="toast"></div>
+
+    <script src="scripts/owner.js"></script>
+</body>
+</html>
