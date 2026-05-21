@@ -248,6 +248,19 @@ function renderChat() {
     .join('');
 
   chatWindow.scrollTop = chatWindow.scrollHeight;
+  adjustChatScrolling(chatWindow);
+}
+
+function adjustChatScrolling(container) {
+  if (!container) return;
+  const messages = container.querySelectorAll('.chat-message');
+  if (messages.length > 3) {
+    container.style.maxHeight = '320px';
+    container.style.overflowY = 'auto';
+  } else {
+    container.style.maxHeight = '';
+    container.style.overflowY = '';
+  }
 }
 
 function renderAppointment() {
