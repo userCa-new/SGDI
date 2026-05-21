@@ -344,9 +344,6 @@ function createPropertyFormModal() {
           <option value="true">Sim</option>
         </select>
 
-        <label for="property-status">Status</label>
-        <input id="property-status" type="text" placeholder="Ex: Em dia, Atrasado" />
-
         <div class="modal-actions">
           <button type="button" class="button-secondary" id="property-form-cancel">Cancelar</button>
           <button type="submit" class="confirm-button">Salvar imóvel</button>
@@ -362,7 +359,6 @@ function createPropertyFormModal() {
   const tenantsInput = modal.querySelector('#property-tenants');
   const overdueSelect = modal.querySelector('#property-overdue');
   const vacantSelect = modal.querySelector('#property-vacant');
-  const statusInput = modal.querySelector('#property-status');
   let currentIndex = null;
 
   function open(property = null, index = null) {
@@ -372,7 +368,6 @@ function createPropertyFormModal() {
       tenantsInput.value = property.tenants;
       overdueSelect.value = property.overdue ? 'true' : 'false';
       vacantSelect.value = property.vacant ? 'true' : 'false';
-      statusInput.value = property.status || '';
     } else {
       form.reset();
     }
@@ -397,9 +392,6 @@ function createPropertyFormModal() {
       tenants: Number(tenantsInput.value),
       overdue: overdueSelect.value === 'true',
       vacant: vacantSelect.value === 'true',
-      status:
-        statusInput.value.trim() ||
-        (overdueSelect.value === 'true' ? 'Atrasado' : 'Normal'),
       updatedAt: new Date().toISOString(),
     };
 
@@ -463,17 +455,26 @@ function createPropertiesModal() {
       .map((property, index) => {
         return `
           <article class="property-card">
-            <p class="method-type">Localização</p>
-            <p class="method-value">${property.location}</p>
-            <p class="method-type">Inquilinos</p>
-            <p class="method-value">${property.tenants}</p>
-            <p class="method-type">Atrasado</p>
-            <p class="method-value">${property.overdue ? 'Sim' : 'Não'}</p>
-            <p class="method-type">Vago</p>
-            <p class="method-value">${property.vacant ? 'Sim' : 'Não'}</p>
-            <p class="method-type">Status</p>
-            <p class="method-value">${property.status || '—'}</p>
-            <button type="button" class="confirm-button update-property" data-index="${index}">Atualizar</button>
+            <div class="property-card-header">
+              <div>
+                <p class="method-type">Localização</p>
+                <p class="method-value">${property.location}</p>
+              </div>
+              <div class="property-badges">
+                <span class="badge ${property.overdue ? 'badge-danger' : 'badge-success'}">${property.overdue ? 'Atrasado' : 'Em dia'}</span>
+                <span class="badge ${property.vacant ? 'badge-warning' : 'badge-info'}">${property.vacant ? 'Vago' : 'Ocupado'}</span>
+              </div>
+            </div>
+            <div class="property-grid">
+              <div>
+                <p class="method-type">Inquilinos</p>
+                <p class="method-value">${property.tenants}</p>
+              </div>
+            </div>
+            <div class="property-card-actions">
+              <button type="button" class="confirm-button update-property" data-index="${index}">Atualizar</button>
+              <button type="button" class="button-secondary remove-property" data-index="${index}">Remover</button>
+            </div>
           </article>
         `;
       })
@@ -508,14 +509,27 @@ function createPropertiesModal() {
   });
 
   grid.addEventListener('click', (event) => {
-    const button = event.target.closest('.update-property');
-    if (!button) return;
-    const index = Number(button.dataset.index);
-    if (Number.isNaN(index)) return;
-    const properties = getOwnerProperties();
-    const property = properties[index];
-    if (propertyFormModal) {
-      propertyFormModal.open(property, index);
+    const updateButton = event.target.closest('.update-property');
+    if (updateButton) {
+      const index = Number(updateButton.dataset.index);
+      if (Number.isNaN(index)) return;
+      const properties = getOwnerProperties();
+      const property = properties[index];
+      if (propertyFormModal) {
+        close();
+        propertyFormModal.open(property, index);
+      }
+      return;
+    }
+
+    const removeButton = event.target.closest('.remove-property');
+    if (removeButton) {
+      const index = Number(removeButton.dataset.index);
+      if (Number.isNaN(index)) return;
+      const properties = getOwnerProperties();
+      properties.splice(index, 1);
+      saveOwnerProperties(properties);
+      renderList();
     }
   });
 

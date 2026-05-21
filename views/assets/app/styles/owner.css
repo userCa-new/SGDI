@@ -473,7 +473,73 @@ button:hover,
 
 .properties-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 18px;
+}
+
+.property-card {
+  display: grid;
+  gap: 16px;
+}
+
+.property-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.property-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.property-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.property-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.badge-danger {
+  background: rgba(255, 95, 95, 0.16);
+  border-color: rgba(255, 95, 95, 0.28);
+  color: #ffccc0;
+}
+
+.badge-success {
+  background: rgba(112, 240, 183, 0.18);
+  border-color: rgba(112, 240, 183, 0.3);
+  color: #d2ffe3;
+}
+
+.badge-warning {
+  background: rgba(255, 189, 89, 0.18);
+  border-color: rgba(255, 189, 89, 0.28);
+  color: #fff0c0;
+}
+
+.badge-info {
+  background: rgba(118, 179, 255, 0.16);
+  border-color: rgba(118, 179, 255, 0.3);
+  color: #dbe9ff;
 }
 
 .payment-method-card .method-type,
@@ -532,8 +598,8 @@ button:hover,
 }
 
 .modal {
-  width: min(540px, 100%);
-  max-height: min(700px, calc(100vh - 48px));
+  width: min(900px, 100%);
+  max-height: min(85vh, calc(100vh - 48px));
   overflow: auto;
   background: rgba(16, 8, 9, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.14);
