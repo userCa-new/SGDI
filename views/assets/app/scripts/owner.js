@@ -4,6 +4,7 @@ const scheduleForm = document.getElementById('schedule-form');
 const scheduleDisplay = document.getElementById('schedule-display');
 const chatWindow = document.getElementById('owner-chat-window');
 const ownerChatForm = document.getElementById('owner-chat-form');
+const ownerChatProperty = document.getElementById('owner-chat-property');
 
 const savedPayments = JSON.parse(localStorage.getItem('ownerPayments') || '[]');
 const chatMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
@@ -405,6 +406,7 @@ function createPropertyFormModal() {
     if (propertiesModal) {
       propertiesModal.refresh();
     }
+    renderChatPropertyOptions();
   });
 
   modal.addEventListener('click', (event) => {
@@ -530,6 +532,7 @@ function createPropertiesModal() {
       properties.splice(index, 1);
       saveOwnerProperties(properties);
       renderList();
+      renderChatPropertyOptions();
     }
   });
 
@@ -642,6 +645,7 @@ function renderChat() {
     .map((message) => {
       return `
             <article class="chat-message ${message.from}">
+                ${message.property ? `<p class="chat-property">Imóvel: ${message.property}</p>` : ''}
                 <p>${message.text}</p>
                 <time>${new Date(message.createdAt).toLocaleTimeString('pt-BR')}</time>
             </article>
@@ -663,6 +667,28 @@ function adjustChatScrolling(container) {
     container.style.maxHeight = '';
     container.style.overflowY = '';
   }
+}
+
+function renderChatPropertyOptions() {
+  if (!ownerChatProperty) return;
+
+  const properties = getOwnerProperties();
+  if (!properties.length) {
+    ownerChatProperty.innerHTML =
+      '<option value="">Nenhum imóvel cadastrado</option>';
+    ownerChatProperty.disabled = true;
+    return;
+  }
+
+  ownerChatProperty.disabled = false;
+  ownerChatProperty.innerHTML =
+    '<option value="">Selecionar imóvel</option>' +
+    properties
+      .map(
+        (property, index) =>
+          `<option value="${index}">${property.location}</option>`,
+      )
+      .join('');
 }
 
 function renderAppointment() {
@@ -809,9 +835,17 @@ if (ownerChatForm) {
       return;
     }
 
+    let propertyValue = null;
+    if (ownerChatProperty && ownerChatProperty.value !== '') {
+      const index = Number(ownerChatProperty.value);
+      const property = getOwnerProperties()[index];
+      propertyValue = property ? property.location : null;
+    }
+
     chatMessages.push({
       from: 'owner',
       text: messageText,
+      property: propertyValue,
       createdAt: new Date().toISOString(),
     });
 
@@ -823,5 +857,6 @@ if (ownerChatForm) {
 
 renderPaymentList();
 renderAppointment();
+renderChatPropertyOptions();
 renderChat();
 renderOwnerIssues();

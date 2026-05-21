@@ -653,6 +653,13 @@ button:hover,
   padding: 14px 16px;
 }
 
+.chat-property {
+  margin: 0 0 8px;
+  color: #d4c9bf;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 .qr-preview {
   display: grid;
   gap: 12px;
