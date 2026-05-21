@@ -302,6 +302,240 @@ function createOwnerProofModal() {
 const ownerProofModal = createOwnerProofModal();
 document.body.appendChild(ownerProofModal.modal);
 
+function getOwnerProperties() {
+  return JSON.parse(localStorage.getItem('ownerProperties') || '[]');
+}
+
+function saveOwnerProperties(properties) {
+  localStorage.setItem('ownerProperties', JSON.stringify(properties));
+}
+
+function createPropertyFormModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+
+  modal.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="property-form-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Adicionar imóvel</p>
+          <h2 id="property-form-title">Cadastrar ou atualizar imóvel</h2>
+        </div>
+        <button type="button" class="modal-close" id="property-form-close" aria-label="Fechar">×</button>
+      </header>
+      <form id="property-form" class="payment-method-form">
+        <label for="property-location">Localização</label>
+        <input id="property-location" type="text" placeholder="Rua / Bairro / Cidade" required />
+
+        <label for="property-tenants">Quantidade de inquilinos</label>
+        <input id="property-tenants" type="number" min="0" placeholder="0" required />
+
+        <label for="property-overdue">Atrasado</label>
+        <select id="property-overdue">
+          <option value="false">Não</option>
+          <option value="true">Sim</option>
+        </select>
+
+        <label for="property-vacant">Vago</label>
+        <select id="property-vacant">
+          <option value="false">Não</option>
+          <option value="true">Sim</option>
+        </select>
+
+        <label for="property-status">Status</label>
+        <input id="property-status" type="text" placeholder="Ex: Em dia, Atrasado" />
+
+        <div class="modal-actions">
+          <button type="button" class="button-secondary" id="property-form-cancel">Cancelar</button>
+          <button type="submit" class="confirm-button">Salvar imóvel</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  const form = modal.querySelector('#property-form');
+  const closeButton = modal.querySelector('#property-form-close');
+  const cancelButton = modal.querySelector('#property-form-cancel');
+  const locationInput = modal.querySelector('#property-location');
+  const tenantsInput = modal.querySelector('#property-tenants');
+  const overdueSelect = modal.querySelector('#property-overdue');
+  const vacantSelect = modal.querySelector('#property-vacant');
+  const statusInput = modal.querySelector('#property-status');
+  let currentIndex = null;
+
+  function open(property = null, index = null) {
+    currentIndex = index;
+    if (property) {
+      locationInput.value = property.location;
+      tenantsInput.value = property.tenants;
+      overdueSelect.value = property.overdue ? 'true' : 'false';
+      vacantSelect.value = property.vacant ? 'true' : 'false';
+      statusInput.value = property.status || '';
+    } else {
+      form.reset();
+    }
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    locationInput.focus();
+  }
+
+  function close() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    currentIndex = null;
+  }
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const properties = getOwnerProperties();
+    const propertyData = {
+      location: locationInput.value.trim(),
+      tenants: Number(tenantsInput.value),
+      overdue: overdueSelect.value === 'true',
+      vacant: vacantSelect.value === 'true',
+      status:
+        statusInput.value.trim() ||
+        (overdueSelect.value === 'true' ? 'Atrasado' : 'Normal'),
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (currentIndex !== null) {
+      properties[currentIndex] = propertyData;
+    } else {
+      properties.unshift(propertyData);
+    }
+    saveOwnerProperties(properties);
+    close();
+    if (propertiesModal) {
+      propertiesModal.refresh();
+    }
+  });
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      close();
+    }
+  });
+  closeButton.addEventListener('click', close);
+  cancelButton.addEventListener('click', close);
+
+  return { modal, open };
+}
+
+function createPropertiesModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+
+  modal.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="properties-title">
+      <header class="modal-header">
+        <div>
+          <p class="eyebrow">Imóveis</p>
+          <h2 id="properties-title">Meus imóveis</h2>
+        </div>
+        <button type="button" class="button-secondary" id="add-property-button" aria-label="Adicionar imóvel">+</button>
+      </header>
+      <div class="properties-grid" id="properties-grid"></div>
+      <div class="modal-actions">
+        <button type="button" class="button-secondary" id="properties-close">Fechar</button>
+      </div>
+    </div>
+  `;
+
+  const grid = modal.querySelector('#properties-grid');
+  const closeButton = modal.querySelector('#properties-close');
+  const addButton = modal.querySelector('#add-property-button');
+
+  function renderList() {
+    const properties = getOwnerProperties();
+    if (!properties.length) {
+      grid.innerHTML =
+        '<p class="hint">Nenhum imóvel cadastrado ainda. Adicione um usando o botão +.</p>';
+      return;
+    }
+    grid.innerHTML = properties
+      .map((property, index) => {
+        return `
+          <article class="property-card">
+            <p class="method-type">Localização</p>
+            <p class="method-value">${property.location}</p>
+            <p class="method-type">Inquilinos</p>
+            <p class="method-value">${property.tenants}</p>
+            <p class="method-type">Atrasado</p>
+            <p class="method-value">${property.overdue ? 'Sim' : 'Não'}</p>
+            <p class="method-type">Vago</p>
+            <p class="method-value">${property.vacant ? 'Sim' : 'Não'}</p>
+            <p class="method-type">Status</p>
+            <p class="method-value">${property.status || '—'}</p>
+            <button type="button" class="confirm-button update-property" data-index="${index}">Atualizar</button>
+          </article>
+        `;
+      })
+      .join('');
+  }
+
+  function open() {
+    renderList();
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      close();
+    }
+  });
+
+  closeButton.addEventListener('click', close);
+  addButton.addEventListener('click', () => {
+    if (propertyFormModal) {
+      close();
+      propertyFormModal.open();
+    }
+  });
+
+  grid.addEventListener('click', (event) => {
+    const button = event.target.closest('.update-property');
+    if (!button) return;
+    const index = Number(button.dataset.index);
+    if (Number.isNaN(index)) return;
+    const properties = getOwnerProperties();
+    const property = properties[index];
+    if (propertyFormModal) {
+      propertyFormModal.open(property, index);
+    }
+  });
+
+  return { modal, open, refresh: renderList };
+}
+
+const propertyFormModal = createPropertyFormModal();
+document.body.appendChild(propertyFormModal.modal);
+
+const propertiesModal = createPropertiesModal();
+document.body.appendChild(propertiesModal.modal);
+
+const ownerPropertiesButton = document.getElementById(
+  'owner-properties-button',
+);
+if (ownerPropertiesButton) {
+  ownerPropertiesButton.addEventListener('click', () => {
+    propertiesModal.open();
+  });
+}
 
 paymentList.addEventListener('click', (ev) => {
   const btn = ev.target.closest('.show-proof');
@@ -309,7 +543,6 @@ paymentList.addEventListener('click', (ev) => {
   const tenant = btn.dataset.tenant;
   ownerProofModal.openFor(tenant);
 });
-
 
 function getTenantIssues() {
   return JSON.parse(localStorage.getItem('tenantIssues') || '[]');
@@ -346,7 +579,6 @@ function renderOwnerIssues() {
     .join('');
 }
 
-
 document.addEventListener('click', (event) => {
   const btn = event.target.closest('.issue-complete');
   if (!btn) return;
@@ -358,7 +590,6 @@ document.addEventListener('click', (event) => {
   saveTenantIssues(remaining);
   renderOwnerIssues();
 
-  
   const removed = issues.find((i) => i.createdAt === createdAt);
   if (removed) {
     localStorage.setItem(
@@ -368,11 +599,10 @@ document.addEventListener('click', (event) => {
   }
 
   showToast('Solicitação marcada como concluída.', () => {
-    
     if (!removed) return;
     remaining.unshift(removed);
     saveTenantIssues(remaining);
-    
+
     localStorage.removeItem('lastMaintenanceCompleted');
     renderOwnerIssues();
   });
