@@ -1,14 +1,47 @@
-<<<<<<< HEAD
 <?php
 
-namespace source\Controller;
+namespace Source\Controller;
+
+use Source\Models\User;
+use Source\Core\JWTToken;
 
 class Api
 {
+    protected $userAuthId = null;
 
-    public function hello()
+    public function authToken (int $typeId): bool
     {
-        echo "Olá, mundo! Estamos com a API funcionando, graças a Deus!";
+
+        $header = getallheaders();
+
+        $token = $header["token"] ?? $header['Authorization'] ?? $header['authorization'] ?? null;
+
+        if(!$token){
+            return false;
+        }
+
+        if(str_starts_with($token, 'Bearer ')){
+            $token = substr($token, 7);
+        }
+
+        $jwt = new JWTToken();
+
+        $jwtToken = $jwt->decode($token);
+
+        if(!$jwtToken){
+            return false;
+        }
+
+        //var_dump($jwtToken->data->id, $jwtToken->data->email);
+        $user = new User();
+        if(!$user->permissionVerify($jwtToken->data->email, $typeId)){
+            return false;
+        }
+
+        $this->userAuthId = $jwtToken->data->id;
+
+        return true;
+
     }
 
     protected function call (int $code, ?string $status = null, ?string $message = null, ?string $type = null): Api
@@ -25,7 +58,7 @@ class Api
         return $this;
     }
 
-    protected function back(?array $data = null): Api
+    protected function back(object | array $data = null): Api
     {
         header('Content-Type: application/json');
         if ($data) {
@@ -35,40 +68,4 @@ class Api
         return $this;
     }
 
-=======
-<?php
-
-namespace source\Controller;
-
-class Api
-{
-
-    public function hello()
-    {
-        echo "Olá, mundo! Estamos com a API funcionando, graças a Deus!";
-    }
-
-    protected function call (int $code, ?string $status = null, ?string $message = null, ?string $type = null): \Source\WebService\Api
-    {
-        if(!empty($status)){
-            $this->response = [
-                "code" => $code,
-                "type" => $type,
-                "status" => $status,
-                "message" => (!empty($message) ? $message : null)
-            ];
-        }
-        return $this;
-    }
-
-    protected function back(?array $data = null): Api
-    {
-        if ($data) {
-            $this->response["data"] = $data;
-        }
-        echo json_encode($this->response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        return $this;
-    }
-
->>>>>>> bff15ef (Initial commit)
 }

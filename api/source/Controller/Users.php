@@ -9,5 +9,6 @@ class Users extends Api
     public function usersList ()
     {
         echo "Lista de Usuários";
+        
     }
 }
