@@ -7,7 +7,7 @@ use Source\Core\JWTToken;
 
 class Api
 {
-    protected $userAuthId = null;
+    protected ?int $userAuthId = null;
 
     public function authToken (int $typeId): bool
     {
@@ -32,7 +32,6 @@ class Api
             return false;
         }
 
-        //var_dump($jwtToken->data->id, $jwtToken->data->email);
         $user = new User();
         if(!$user->permissionVerify($jwtToken->data->email, $typeId)){
             return false;

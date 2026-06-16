@@ -24,22 +24,45 @@ use CoffeeCode\Router\Router;
 $route = new Router(url("api"),":");
 
 $route->namespace("Source\Controller");
-// localhost/acme-3am/api/hello
-$route->get("/hello", "Api:hello");
-$route->get("/products/list", "Products:productsList");
-$route->get("/products-categories/list", "ProductsCategories:productsCategoriesList");
-$route->get("/users/list", "Users:usersList");
+
+$route->group("/users");
+$route->post("/register","Users:register"); // Registrar usuário comum
+$route->post("/login","Users:auth"); // login de usuário comum
+$route->put("/update","Users:update"); // update de usuário comum
+$route->post("/register-admin","Users:registerAdmin"); // Registrar usuário admin NÃO IMPLEMENTADO
+$route->post("/login-admin","Users:authAdmin"); // login de usuário admin
+$route->put("/update-admin","Users:updateAdmin"); // update de usuário admin
+$route->group(null);
+
+$route->group("/address");
+$route->post("/register","Addresses:register");
+$route->put("/update","Addresses:update");
+$route->get("/by-user","Addresses:getAddressByUserId");
+$route->group(null);
+
+// Início - Exercícios - Desafios
+// Produtos
+$route->group("/products");
+$route->get("/list/{product_id}","Products:listById"); // select by id
+$route->get("/list","Products:listAll"); // select all
+$route->get("/list/paginator/{page}/{per_page}","Products:listPaginator"); // select all
+$route->post("/","Products:insert"); // insert
+$route->put("/{product_id}","Products:update"); // update
+$route->delete("/{product_id}","Products:delete"); // update
+$route->group(null);
+// Categorias de FAQs
+$route->group("/products-categories");
 
 $route->group(null);
+// FAQs
 $route->group("/faqs");
-$route->get("/list", "faqs\Faqs:listAll");
-$route->get("/list/{faqId}", "faqs\Faqs:listById");
-$route->post("/", "faqs\Faqs:insert");
-$route->put("/{faqId}", "faqs\Faqs:update");
+
 $route->group(null);
+// Categorias de FAQs
+$route->group("/faqs-categories");
 
-
-
+$route->group(null);
+// Fim - Exercícios - Desafios
 
 
 $route->dispatch();
