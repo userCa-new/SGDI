@@ -42,10 +42,14 @@ $route->post("/","Faqs:insert");
 $route->group(null);
 // Categorias de FAQs
 $route->group("/faqs-categories");
-
 $route->group(null);
 // Fim - Exercícios - Desafios
 
+$route->namespace("Source\Controller");
+
+$route->group("/appointment");
+$route->post("/register", "Appointments:register");
+$route->group(null);
 
 $route->dispatch();
 
