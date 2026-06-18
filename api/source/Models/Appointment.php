@@ -80,7 +80,7 @@ class Appointment extends Model
     {
         $query = "SELECT * FROM {$this->table} WHERE date = :date";
         $stmt = Connect::getInstance()->prepare($query);
-        $stmt->bindValue(":date", $this->date);
+        $stmt->bindParam(":date", $this->date);
         $stmt->execute();
 
         if ($stmt->fetch()) {
