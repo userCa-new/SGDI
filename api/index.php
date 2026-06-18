@@ -49,6 +49,7 @@ $route->namespace("Source\Controller");
 
 $route->group("/appointment");
 $route->post("/register", "Appointments:register");
+$route->put("/update/{id}", "Appointments:update");
 $route->group(null);
 
 $route->dispatch();

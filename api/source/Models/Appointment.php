@@ -8,27 +8,27 @@ use Source\Core\Model;
 class Appointment extends Model
 {
     protected ?int $id;
-    protected ?int $id_property;
+    protected ?int $idProperty;
     protected ?string $date;
     protected ?string $observation;
-    protected ?bool $completed;
+    protected ?int $completed;
 
     public function __construct(
         ?int $id = null,
-        ?int $id_property = null,
+        ?int $idProperty = null,
         ?string $date = null,
         ?string $observation = null,
-        ?bool $completed = null,
+        ?int $completed = null,
     ) {
         $this->id = $id;
-        $this->id_property = $id_property;
+        $this->idProperty = $idProperty;
         $this->date = $date;
         $this->observation = $observation;
         $this->completed = $completed;
 
         $this->table = "appointments";
         $this->primaryKey = "id_appointment";
-        $this->fillable = ["id_property", "date", "observation", "completed"];
+        $this->fillable = ["idProperty", "date", "observation", "completed"];
     }
 
     public function getId(): ?int
@@ -40,13 +40,13 @@ class Appointment extends Model
         $this->id = $id;
     }
 
-    public function getPropertyId(): ?int
+    public function getIdProperty(): ?int
     {
-        return $this->id_property;
+        return $this->idProperty;
     }
-    public function setPropertyId(?int $id_property): void
+    public function setIdProperty(?int $idProperty): void
     {
-        $this->id_property = $id_property;
+        $this->idProperty = $idProperty;
     }
 
     public function getDate(): ?string
@@ -67,11 +67,11 @@ class Appointment extends Model
         $this->observation = $observation;
     }
 
-    public function getCompleted(): ?bool
+    public function getCompleted(): ?int
     {
         return $this->completed;
     }
-    public function setCompleted(?bool $completed): void
+    public function setCompleted(?int $completed): void
     {
         $this->completed = $completed;
     }
@@ -89,8 +89,6 @@ class Appointment extends Model
         }
 
         if (!parent::insert()) {
-            $this->errorMessage =
-                "Algo deu errado ao salvar o registro no banco.";
             return false;
         }
 

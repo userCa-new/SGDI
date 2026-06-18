@@ -25,7 +25,7 @@ class Appointments extends Api
             $data["id_property"],
             $data["date"],
             $data["observation"],
-            $data["completed"],
+            $data["completed"] ? 1 : 0,
         );
 
         if (!$atendimento->insert()) {
@@ -40,7 +40,7 @@ class Appointments extends Api
 
         $response = [
             "id" => $atendimento->getId(),
-            "id_property" => $atendimento->getPropertyId(),
+            "id_property" => $atendimento->getIdProperty(),
             "date" => $atendimento->getDate(),
             "observation" => $atendimento->getObservation(),
             "completed" => $atendimento->getCompleted(),
@@ -50,6 +50,63 @@ class Appointments extends Api
             201,
             "success",
             "Atendimento cadastrado com sucesso!",
+            "success",
+        )->back($response);
+    }
+    public function update(array $data): void
+    {
+        $currentId = $data["id"] ?? null;
+        $data = json_decode(file_get_contents("php://input"), true);
+        $data["id"] = $currentId;
+        var_dump($data);
+        if (!$this->validate($data) || !isset($data["id"]) || !filter_var($data["id"], FILTER_VALIDATE_INT)) {
+            $this->call(
+                400,
+                "bad_request",
+                "Dados incorretos ou campos obrigatórios ausentes.",
+                "error",
+            )->back();
+            return;
+        }
+
+        $atendimento = new Appointment();
+        if (!$atendimento->selectById($data["id"])) {
+            $this->call(
+                404,
+                "not_found",
+                "Atendimento não encontrado.",
+                "error",
+            )->back();
+            return;
+        }
+
+        $atendimento->setIdProperty($data["id_property"]);
+        $atendimento->setDate($data["date"]);
+        $atendimento->setObservation($data["observation"]);
+        $atendimento->setCompleted($data["completed"] ? 1 : 0);
+
+        if (!$atendimento->updateById($data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $atendimento->getErrorMessage(),
+                "error",
+            )->back();
+            return;
+        }
+
+        $response = [
+            "id" => $atendimento->getId(),
+            "id_property" => $atendimento->getIdProperty(),
+            "date" => $atendimento->getDate(),
+            "observation" => $atendimento->getObservation(),
+            "completed" => $atendimento->getCompleted(),
+        ];
+
+        $this->call(
+            200,
+            "success",
+            "Atendimento atualizado com sucesso!",
             "success",
         )->back($response);
     }
