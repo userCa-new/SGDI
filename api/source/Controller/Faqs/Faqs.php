@@ -1,6 +1,6 @@
 <?php
 
-namespace source\Controller\Faqs;
+namespace Source\Controller\Faqs;
 
 use Source\Controller\Api;
 use Source\Models\Faq\Faq;
@@ -51,6 +51,8 @@ class Faqs extends Api
 
     public function insert (array $data): void
     {
+
+        $data = json_decode(file_get_contents("php://input"), true);
         if(!$this->validate($data)){
             $this->call(
                 400,
@@ -63,7 +65,7 @@ class Faqs extends Api
 
         $faq = new Faq(
             null,
-            $data["faqs_category_id"],
+            $data["idCategory"],
             $data["question"],
             $data["answer"]
         );
@@ -74,7 +76,7 @@ class Faqs extends Api
         }
         $response = [
             "id" => $faq->getId(),
-            "faqs_category_id" => $faq->getFaqsCategoryId(),
+            "idCategory" => $faq->getIdCategory(),
             "question" => $faq->getQuestion(),
             "answer" => $faq->getAnswer(),
             "active" => $faq->getActive()
@@ -109,7 +111,7 @@ class Faqs extends Api
 
         $faq = new Faq(
             null,
-            $data["faqs_category_id"],
+            $data["idCategory"],
             $data["question"],
             $data["answer"]
         );
@@ -131,9 +133,9 @@ class Faqs extends Api
 
     public function validate (array $data): bool
     {
-        if(!isset($data["faqs_category_id"]) || !isset($data["question"]) || !isset($data["answer"]) ||
-            empty($data["faqs_category_id"]) || empty($data["question"]) || empty($data["answer"]) ||
-           !filter_var($data["faqs_category_id"], FILTER_VALIDATE_INT)) {
+        if(!isset($data["idCategory"]) || !isset($data["question"]) || !isset($data["answer"]) ||
+            empty($data["idCategory"]) || empty($data["question"]) || empty($data["answer"]) ||
+           !filter_var($data["idCategory"], FILTER_VALIDATE_INT)) {
             return false;
         }
         return true;

@@ -10,27 +10,25 @@ use Source\Core\JWTToken;
 class User extends Model
 {
     private ?int $id;
-    private ?int $typeId;
+    private ?int $idUserType;
     private ?string $name;
     private ?string $email;
     private ?string $password;
-    private ?string $photo;
     private ?string $active;
 
     private ?string $token = null;
 
-    public function __construct(?int $id = null, ?int $typeId = null, ?string $name = null, ?string $email = null, ?string $password = null, ?string $photo = null)
+    public function __construct(?int $id = null, ?int $idUserType = null, ?string $name = null, ?string $email = null, ?string $password = null)
     {
         $this->id = $id;
-        $this->typeId = $typeId;
+        $this->idUserType = $idUserType;
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
-        $this->photo = $photo;
 
         $this->table = 'users'; // nome da tabela do banco
-        $this->primaryKey = 'id'; // nome da chave primária da tabela
-        $this->fillable = ['typeId', 'name', 'email', 'password', 'photo']; // camelCase
+        $this->primaryKey = 'id_user'; // nome da chave primária da tabela
+        $this->fillable = ['idUserType', 'name', 'email', 'password']; // camelCase
     }
 
     public function getId(): ?int
@@ -43,14 +41,14 @@ class User extends Model
         $this->id = $id;
     }
 
-    public function getTypeId(): ?int
+    public function getIdUserType(): ?int
     {
-        return $this->typeId;
+        return $this->idUserType;
     }
 
-    public function setTypeId(?int $typeId): void
+    public function setIdUserType(?int $idUserType): void
     {
-        $this->typeId = $typeId;
+        $this->idUserType = $idUserType;
     }
 
     public function getName(): ?string
@@ -83,15 +81,6 @@ class User extends Model
         $this->password = $password;
     }
 
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto(?string $photo): void
-    {
-        $this->photo = $photo;
-    }
 
     public function getToken(): ?string
     {
@@ -119,10 +108,11 @@ class User extends Model
 
     public function login (string $email, string $password, int $typeId = 2): bool
     {
-        $query = "SELECT * FROM {$this->table} WHERE email = :email AND type_id = :typeId";
+        
+        $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :idUserType";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":typeId", $typeId);
+        $stmt->bindParam(":idUserType", $typeId);
         $stmt->execute();
         if($stmt->rowCount() == 0){
             $this->errorMessage = "Email não cadastrado";
@@ -133,24 +123,26 @@ class User extends Model
             $this->errorMessage = "Senha incorreta";
             return false;
         }
-        $this->id = $user->id;
-        $this->typeId = $user->type_id;
+        $this->id = $user->id_user;
+        $this->idUserType = $user->id_user_type;
         $this->name = $user->name;
         $this->email = $user->email;
-        $this->photo = $user->photo;
+        var_dump("cheguei aqui");
         $jwt = new JWTToken();
+        var_dump("cheguei aquiaa");
         // definir quais informações irão par o payload do token
         $this->token = $jwt->encode([
-            "id" => $user->id,
+            "id" => $user->id_user,
             "name" => $user->name,
             "email" => $user->email
         ]);
+        var_dump("token criado");
         return true;
     }
 
     public function permissionVerify (string $email, $typeId): bool
     {
-        $query = "SELECT * FROM {$this->table} WHERE email = :email AND type_id = :typeId";
+        $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :typeId";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":typeId", $typeId);

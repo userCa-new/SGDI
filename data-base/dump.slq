@@ -1,198 +1,235 @@
+```sql
+DROP DATABASE IF EXISTS imobiliaria;
+
 CREATE DATABASE imobiliaria;
 USE imobiliaria;
 
--- =====================================
--- TIPOS DE USUÁRIO
--- =====================================
-
-CREATE TABLE UserType (
-    idUserType INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(45) NOT NULL
+CREATE TABLE user_type (
+    id_user_type INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(45) NOT NULL
 );
 
--- =====================================
--- USUÁRIOS
--- =====================================
-
-CREATE TABLE Users (
-    idUser INT AUTO_INCREMENT PRIMARY KEY,
-    idUserType INT NOT NULL,
-    nome VARCHAR(100) NOT NULL,
+CREATE TABLE users (
+    id_user INT AUTO_INCREMENT PRIMARY KEY,
+    id_user_type INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
-    senha VARCHAR(255) NOT NULL,
-
-    FOREIGN KEY (idUserType)
-        REFERENCES UserType(idUserType)
+    password VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_user_type)
+        REFERENCES user_type(id_user_type)
 );
 
--- =====================================
--- INQUILINOS
--- =====================================
-
-CREATE TABLE Inquilinos (
-    idInquilino INT AUTO_INCREMENT PRIMARY KEY,
-    idUser INT NOT NULL UNIQUE,
-    mensagemInquilino VARCHAR(200),
-
-    FOREIGN KEY (idUser)
-        REFERENCES Users(idUser)
+CREATE TABLE tenants (
+    id_tenant INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL UNIQUE,
+    tenant_message VARCHAR(200),
+    FOREIGN KEY (id_user)
+        REFERENCES users(id_user)
 );
 
--- =====================================
--- PROPRIETÁRIOS
--- =====================================
-
-CREATE TABLE Proprietarios (
-    idProprietario INT AUTO_INCREMENT PRIMARY KEY,
-    idUser INT NOT NULL UNIQUE,
-    receita DECIMAL(10,2) DEFAULT 0,
-    mensagemProprietario VARCHAR(200),
-
-    FOREIGN KEY (idUser)
-        REFERENCES Users(idUser)
+CREATE TABLE owners (
+    id_owner INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL UNIQUE,
+    revenue DECIMAL(10,2) DEFAULT 0,
+    owner_message VARCHAR(200),
+    FOREIGN KEY (id_user)
+        REFERENCES users(id_user)
 );
 
--- =====================================
--- IMÓVEIS
--- =====================================
-
-CREATE TABLE Imoveis (
-    idImovel INT AUTO_INCREMENT PRIMARY KEY,
-    idProprietario INT NOT NULL,
-
-    localizacao VARCHAR(150) NOT NULL,
-    quantidadeQuartos INT NOT NULL,
-    disponibilidade BOOLEAN DEFAULT TRUE,
-    atraso BOOLEAN DEFAULT FALSE,
-
-    FOREIGN KEY (idProprietario)
-        REFERENCES Proprietarios(idProprietario)
+CREATE TABLE properties (
+    id_property INT AUTO_INCREMENT PRIMARY KEY,
+    id_owner INT NOT NULL,
+    location VARCHAR(150) NOT NULL,
+    number_of_rooms INT NOT NULL,
+    availability BOOLEAN DEFAULT TRUE,
+    late_payment BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_owner)
+        REFERENCES owners(id_owner)
 );
 
--- =====================================
--- CONTRATOS
--- =====================================
-
-CREATE TABLE Contratos (
-    idContrato INT AUTO_INCREMENT PRIMARY KEY,
-
-    idImovel INT NOT NULL,
-    idInquilino INT NOT NULL,
-
-    valorAluguel DECIMAL(10,2) NOT NULL,
-    dataInicio DATE NOT NULL,
-    dataFim DATE,
+CREATE TABLE contracts (
+    id_contract INT AUTO_INCREMENT PRIMARY KEY,
+    id_property INT NOT NULL,
+    id_tenant INT NOT NULL,
+    rent_value DECIMAL(10,2) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE,
     status ENUM(
-        'ATIVO',
-        'ENCERRADO',
-        'PENDENTE'
-    ) DEFAULT 'ATIVO',
-
-    FOREIGN KEY (idImovel)
-        REFERENCES Imoveis(idImovel),
-
-    FOREIGN KEY (idInquilino)
-        REFERENCES Inquilinos(idInquilino)
+        'ACTIVE',
+        'CLOSED',
+        'PENDING'
+    ) DEFAULT 'ACTIVE',
+    FOREIGN KEY (id_property)
+        REFERENCES properties(id_property),
+    FOREIGN KEY (id_tenant)
+        REFERENCES tenants(id_tenant)
 );
 
--- =====================================
--- PAGAMENTOS
--- =====================================
-
-CREATE TABLE Pagamentos (
-    idPagamento INT AUTO_INCREMENT PRIMARY KEY,
-
-    idContrato INT NOT NULL,
-
+CREATE TABLE payments (
+    id_payment INT AUTO_INCREMENT PRIMARY KEY,
+    id_contract INT NOT NULL,
     pix VARCHAR(500),
-    qrCode VARCHAR(500),
-    comprovante VARCHAR(120),
-
-    valor DECIMAL(10,2) NOT NULL,
-    dataPagamento DATE,
+    qr_code VARCHAR(500),
+    receipt VARCHAR(120),
+    value DECIMAL(10,2) NOT NULL,
+    payment_date DATE,
     status ENUM(
-        'PENDENTE',
-        'PAGO',
-        'ATRASADO'
-    ) DEFAULT 'PENDENTE',
-
-    FOREIGN KEY (idContrato)
-        REFERENCES Contratos(idContrato)
+        'PENDING',
+        'PAID',
+        'LATE'
+    ) DEFAULT 'PENDING',
+    FOREIGN KEY (id_contract)
+        REFERENCES contracts(id_contract)
 );
 
--- =====================================
--- ATENDIMENTOS
--- =====================================
-
-CREATE TABLE Atendimentos (
-    idAtendimento INT AUTO_INCREMENT PRIMARY KEY,
-
-    idImovel INT NOT NULL,
-
-    data DATE NOT NULL,
-    observacao VARCHAR(200),
-    realizado BOOLEAN DEFAULT FALSE,
-
-    FOREIGN KEY (idImovel)
-        REFERENCES Imoveis(idImovel)
+CREATE TABLE appointments (
+    id_appointment INT AUTO_INCREMENT PRIMARY KEY,
+    id_property INT NOT NULL,
+    date DATE NOT NULL,
+    observation VARCHAR(200),
+    completed BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_property)
+        REFERENCES properties(id_property)
 );
 
--- =====================================
--- FAQ CATEGORIAS
--- =====================================
-
-CREATE TABLE Faq_Categorias (
-    idCategoria INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(45) NOT NULL,
-    ativo BOOLEAN DEFAULT TRUE
+CREATE TABLE faq_categories (
+    id_category INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(45) NOT NULL,
+    active BOOLEAN DEFAULT TRUE
 );
 
--- =====================================
--- FAQS
--- =====================================
-
-CREATE TABLE Faqs (
-    idFaq INT AUTO_INCREMENT PRIMARY KEY,
-
-    idCategoria INT,
-
-    pergunta VARCHAR(255) NOT NULL,
-    resposta VARCHAR(255) NOT NULL,
-    ativo BOOLEAN DEFAULT TRUE,
-
-    FOREIGN KEY (idCategoria)
-        REFERENCES Faq_Categorias(idCategoria)
+CREATE TABLE faqs (
+    id_faq INT AUTO_INCREMENT PRIMARY KEY,
+    id_category INT,
+    question VARCHAR(255) NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (id_category)
+        REFERENCES faq_categories(id_category)
 );
 
--- =====================================
--- CHAT
--- =====================================
-
-CREATE TABLE Chat (
-    idChat INT AUTO_INCREMENT PRIMARY KEY,
-    idContrato INT,
-    dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (idContrato)
-        REFERENCES Contratos(idContrato)
+CREATE TABLE chat (
+    id_chat INT AUTO_INCREMENT PRIMARY KEY,
+    id_contract INT,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_contract)
+        REFERENCES contracts(id_contract)
 );
 
--- =====================================
--- MENSAGENS
--- =====================================
-
-CREATE TABLE Mensagens (
-    idMensagem INT AUTO_INCREMENT PRIMARY KEY,
-
-    idChat INT NOT NULL,
-    idRemetente INT NOT NULL,
-
-    mensagem TEXT NOT NULL,
-    dataHora DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (idChat)
-        REFERENCES Chat(idChat),
-
-    FOREIGN KEY (idRemetente)
-        REFERENCES Users(idUser)
+CREATE TABLE messages (
+    id_message INT AUTO_INCREMENT PRIMARY KEY,
+    id_chat INT NOT NULL,
+    id_sender INT NOT NULL,
+    message TEXT NOT NULL,
+    date_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_chat)
+        REFERENCES chat(id_chat),
+    FOREIGN KEY (id_sender)
+        REFERENCES users(id_user)
 );
+
+INSERT INTO user_type (name)
+VALUES
+('Tenant'),
+('Owner'),
+('Administrator');
+
+INSERT INTO users (id_user_type, name, email, password)
+VALUES
+(1, 'João Silva', 'joao@email.com', '123456'),
+(1, 'Maria Souza', 'maria@email.com', '123456'),
+(2, 'Carlos Pereira', 'carlos@email.com', '123456'),
+(2, 'Ana Lima', 'ana@email.com', '123456'),
+(3, 'Administrator', 'admin@email.com', 'admin123');
+
+INSERT INTO tenants (id_user, tenant_message)
+VALUES
+(1, 'Looking for a property near downtown'),
+(2, 'Interested in an apartment with garage');
+
+INSERT INTO owners (id_user, revenue, owner_message)
+VALUES
+(3, 3500.00, 'I have properties available'),
+(4, 5200.00, 'Open to proposals');
+
+INSERT INTO properties (
+    id_owner,
+    location,
+    number_of_rooms,
+    availability,
+    late_payment
+)
+VALUES
+(1, 'Rua das Flores, 100', 2, TRUE, FALSE),
+(1, 'Av. Brasil, 250', 3, TRUE, FALSE),
+(2, 'Rua Independência, 45', 1, FALSE, FALSE);
+
+INSERT INTO contracts (
+    id_property,
+    id_tenant,
+    rent_value,
+    start_date,
+    end_date,
+    status
+)
+VALUES
+(1, 1, 1200.00, '2025-01-01', NULL, 'ACTIVE'),
+(3, 2, 1800.00, '2025-03-01', NULL, 'ACTIVE');
+
+INSERT INTO payments (
+    id_contract,
+    pix,
+    qr_code,
+    receipt,
+    value,
+    payment_date,
+    status
+)
+VALUES
+(1, 'pixjoao@email.com', 'qrcode_001', 'receipt001.pdf', 1200.00, '2025-06-05', 'PAID'),
+(2, 'pixmaria@email.com', 'qrcode_002', NULL, 1800.00, NULL, 'PENDING');
+
+INSERT INTO appointments (
+    id_property,
+    date,
+    observation,
+    completed
+)
+VALUES
+(1, '2025-06-10', 'Lock replacement', TRUE),
+(2, '2025-06-15', 'Bedroom painting', FALSE);
+
+INSERT INTO faq_categories (name, active)
+VALUES
+('Payments', TRUE),
+('Contracts', TRUE),
+('Properties', TRUE);
+
+INSERT INTO faqs (
+    id_category,
+    question,
+    answer,
+    active
+)
+VALUES
+(1, 'How can I pay the rent?', 'Payment can be made via PIX or bank slip.', TRUE),
+(1, 'Can I delay the payment?', 'Late payments may incur penalties.', TRUE),
+(2, 'How do I terminate a contract?', 'Contact the real estate agency to request termination.', TRUE),
+(3, 'Can I visit a property before renting?', 'Yes, you can schedule a visit.', TRUE);
+
+INSERT INTO chat (id_contract)
+VALUES
+(1),
+(2);
+
+INSERT INTO messages (
+    id_chat,
+    id_sender,
+    message
+)
+VALUES
+(1, 1, 'Hello, I have a question about the rent.'),
+(1, 3, 'Sure, how can I help you?'),
+(2, 2, 'When is the next payment due?'),
+(2, 4, 'The due date is the 10th of each month.');
+```

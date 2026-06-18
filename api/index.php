@@ -34,29 +34,11 @@ $route->post("/login-admin","Users:authAdmin"); // login de usuário admin
 $route->put("/update-admin","Users:updateAdmin"); // update de usuário admin
 $route->group(null);
 
-$route->group("/address");
-$route->post("/register","Addresses:register");
-$route->put("/update","Addresses:update");
-$route->get("/by-user","Addresses:getAddressByUserId");
-$route->group(null);
-
-// Início - Exercícios - Desafios
-// Produtos
-$route->group("/products");
-$route->get("/list/{product_id}","Products:listById"); // select by id
-$route->get("/list","Products:listAll"); // select all
-$route->get("/list/paginator/{page}/{per_page}","Products:listPaginator"); // select all
-$route->post("/","Products:insert"); // insert
-$route->put("/{product_id}","Products:update"); // update
-$route->delete("/{product_id}","Products:delete"); // update
-$route->group(null);
-// Categorias de FAQs
-$route->group("/products-categories");
-
-$route->group(null);
 // FAQs
+$route->namespace("Source\Controller\Faqs");
 $route->group("/faqs");
-
+$route->get("/list","Faqs:listAll"); 
+$route->post("/","Faqs:insert");
 $route->group(null);
 // Categorias de FAQs
 $route->group("/faqs-categories");

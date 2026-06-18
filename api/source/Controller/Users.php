@@ -8,6 +8,7 @@ class Users extends Api
 {
     public function register (array $data): void
     {
+        $data = json_decode(file_get_contents("php://input"), true);
         if(!isset($data['password']) || empty($data['password'])) {
             $this->call(400,
                 "bad_request",
@@ -48,6 +49,7 @@ class Users extends Api
 
     public function auth (array $data): void
     {
+        $data = json_decode(file_get_contents("php://input"), true);
         if(!isset($data['email'], $data['password']) ||
             empty($data['email']) || empty($data['password']) ||
             !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
@@ -72,9 +74,9 @@ class Users extends Api
         $response = [
             "id" => $user->getId(),
             "name" => $user->getName(),
-            "photo" => $user->getPhoto(),
             "token" => $user->getToken(),
         ];
+
 
         $this->call(
             200,
