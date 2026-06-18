@@ -47,10 +47,18 @@ $route->group(null);
 
 $route->namespace("Source\Controller");
 
+//Appointment
 $route->group("/appointment");
 $route->post("/register", "Appointments:register");
 $route->put("/update/{id}", "Appointments:update");
 $route->group(null);
+
+//Properties
+$route->namespace("Source\Controller");
+$route->group("/propertie");
+$route->post("/insert", "Properties:insert");
+$route->group(null);
+
 
 $route->dispatch();
 
