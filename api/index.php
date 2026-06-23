@@ -50,7 +50,9 @@ $route->namespace("Source\Controller");
 //Appointment
 $route->group("/appointment");
 $route->post("/register", "Appointments:register");
+$route->get("/list/{id}", "Appointments:listById");
 $route->put("/update/{id}", "Appointments:update");
+$route->delete("/{id}", "Appointments:delete");
 $route->group(null);
 
 //Properties
