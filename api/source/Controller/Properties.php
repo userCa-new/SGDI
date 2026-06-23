@@ -49,7 +49,7 @@ class Properties extends Api
 
         $response = [
             "id" => $propriedade->getId(),
-            "location" => $propriedade->getIdProperty(),
+            "location" => $propriedade->getLocation(),
             "numberRooms" => $propriedade->getNumberRooms(),
             "availability" => $propriedade->getAvailability(),
             "latePayment" => $propriedade->getLatePayment(),
