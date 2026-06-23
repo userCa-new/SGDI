@@ -14,6 +14,8 @@ header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header('Access-Control-Allow-Credentials: true'); // Permitir credenciais
 
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -34,16 +36,21 @@ $route->post("/login-admin","Users:authAdmin"); // login de usuário admin
 $route->put("/update-admin","Users:updateAdmin"); // update de usuário admin
 $route->group(null);
 
+
 // FAQs
 $route->namespace("Source\Controller\Faqs");
 $route->group("/faqs");
 $route->get("/list","Faqs:listAll"); 
 $route->post("/","Faqs:insert");
 $route->group(null);
+
+
 // Categorias de FAQs
 $route->group("/faqs-categories");
 $route->group(null);
 // Fim - Exercícios - Desafios
+
+
 
 $route->namespace("Source\Controller");
 
@@ -54,6 +61,8 @@ $route->get("/list/{id}", "Appointments:listById");
 $route->put("/update/{id}", "Appointments:update");
 $route->delete("/{id}", "Appointments:delete");
 $route->group(null);
+
+
 
 //Properties
 $route->namespace("Source\Controller");
