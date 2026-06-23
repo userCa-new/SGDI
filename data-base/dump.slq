@@ -22,7 +22,7 @@ CREATE TABLE properties (
     id_property INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
     location VARCHAR(150) NOT NULL,
-    number_of_rooms INT NOT NULL,
+    number_rooms INT NOT NULL,
     availability BOOLEAN DEFAULT TRUE,
     late_payment BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_user)
@@ -127,7 +127,7 @@ VALUES
 INSERT INTO properties (
     id_user,
     location,
-    number_of_rooms,
+    number_rooms,
     availability,
     late_payment
 )

@@ -8,7 +8,7 @@ use Source\Core\Connect;
 class Propertie extends Model
 {
    protected ?int $id;
-   protected ?int $idOwner; 
+   protected ?int $idUser; 
    protected ?string $location;
    protected ?int $numberRooms;
    protected ?int $availability;
@@ -16,7 +16,7 @@ class Propertie extends Model
 
    public function __construct(
     ?int $id = null,
-    ?int $idOwner = null,
+    ?int $idUser = null,
     ?string $location = null,
     ?int $numberRooms = null,
     ?int $availability = null,
@@ -24,7 +24,7 @@ class Propertie extends Model
    )
    {
     $this->id = $id;
-    $this->idOwner = $idOwner;
+    $this->idUser = $idUser;
     $this->location = $location;
     $this->numberRooms = $numberRooms;
     $this->availability = $availability;
@@ -32,7 +32,7 @@ class Propertie extends Model
 
     $this->table = "properties";
     $this->primaryKey = "id_property";
-    $this->fillable = ["idOwner", "location", "numberRooms", "availability", "latePayment"];
+    $this->fillable = ["idUser", "location", "numberRooms", "availability", "latePayment"];
    }
 
    public function getId(): ?int
@@ -45,14 +45,14 @@ class Propertie extends Model
     $this->id = $id;
    }
 
-   public function getIdOwner(): ?int 
+   public function getIdUser(): ?int 
    {
-    return $this->idOwner;
+    return $this->idUser;
    }
 
-   public function setIdOwner(?int $idOwner): void
+   public function setIdUser(?int $idUser): void
    {
-     $this->idOwner = $idOwner;
+     $this->idUser = $idUser;
    }
 
    public function getLocation(): ?string

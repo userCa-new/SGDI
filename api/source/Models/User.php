@@ -106,7 +106,7 @@ class User extends Model
         return true;
     }
 
-    public function login (string $email, string $password, int $typeId = 2): bool
+    public function login (string $email, string $password, int $typeId=2): bool
     {
         
         $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :idUserType";

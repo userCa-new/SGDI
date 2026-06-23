@@ -99,7 +99,7 @@ class Users extends Api
         }
 
         $user = new User();
-        if(!$user->login($data['email'], $data['password'], 1)) {
+        if(!$user->login($data['email'], $data['password'], $data['user_type'])) {
             $this->call(
                 401,
                 "unauthorized",
