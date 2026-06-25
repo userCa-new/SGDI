@@ -50,8 +50,6 @@ $route->group("/faqs-categories");
 $route->group(null);
 // Fim - Exercícios - Desafios
 
-
-
 $route->namespace("Source\Controller");
 
 //Appointment
@@ -62,12 +60,12 @@ $route->put("/update/{id}", "Appointments:update");
 $route->delete("/{id}", "Appointments:delete");
 $route->group(null);
 
-
-
 //Properties
 $route->namespace("Source\Controller");
 $route->group("/propertie");
 $route->post("/insert", "Properties:insert");
+$route->get("/listAll", "Properties:listAll");
+$route->delete("/delete/{id}", "Properties:delete");
 $route->group(null);
 
 

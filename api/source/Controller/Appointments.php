@@ -55,7 +55,7 @@ class Appointments extends Api
     }
     public function update(array $data): void
     {
-         $currentId = $data["id"] ?? null;
+        $currentId = $data["id"] ?? null;
         $data = json_decode(file_get_contents("php://input"), true);
         $data["id"] = intval($currentId);
         
@@ -163,6 +163,7 @@ class Appointments extends Api
             )->back();
             return;
         }
+        var_dump($data["id"]);
         $atendimento = new Appointment();
 
         if(!$atendimento->deleteById($data["id"]))

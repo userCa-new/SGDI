@@ -62,6 +62,33 @@ class Properties extends Api
             "success",
         )->back($response);
     }
+    public function listAll(): void{
+        $propriedade = new Propertie();
+        $this->call(200,"success","Lista de propriedades","success")->back($propriedade->selectAll());
+    }
+    public function delete (array $data): void
+    {
+        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
+        {
+            $this->call(
+            400,
+            "bad_request",
+            "ID da propriedade é obrigatório e deve ser um número inteiro",
+            "error"
+            )->back();
+            return;
+        }
+        var_dump($data["id"]);
+        $propriedade = new Propertie();
+        
+        if(!$propriedade->deleteById($data["id"]))
+        {
+            $this->call(500, "internal_server_error", $propriedade->getErrorMessage(), "error")->back();
+            return;
+        }
+
+        $this->call(200, "success", "Propriedade excluida com sucesso", "success")->back();
+    }
     public function validate(array $data): bool
     {
         if (
