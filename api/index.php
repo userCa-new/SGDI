@@ -1,5 +1,7 @@
 <?php
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 // timezone para São Paulo América
 date_default_timezone_set('America/Sao_Paulo');
@@ -36,7 +38,6 @@ $route->post("/login-admin","Users:authAdmin"); // login de usuário admin
 $route->put("/update-admin","Users:updateAdmin"); // update de usuário admin
 $route->group(null);
 
-
 // FAQs
 $route->namespace("Source\Controller\Faqs");
 $route->group("/faqs");
@@ -57,15 +58,26 @@ $route->group("/appointment");
 $route->post("/register", "Appointments:register");
 $route->get("/list/{id}", "Appointments:listById");
 $route->put("/update/{id}", "Appointments:update");
-$route->delete("/{id}", "Appointments:delete");
+$route->delete("/delete/{id}", "Appointments:delete");
 $route->group(null);
 
 //Properties
 $route->namespace("Source\Controller");
 $route->group("/propertie");
-$route->post("/insert", "Properties:insert");
-$route->get("/listAll", "Properties:listAll");
-$route->delete("/delete/{id}", "Properties:delete");
+$route->post("/insert", "Properties:insert"); //funcionando
+$route->get("/listAll", "Properties:listAll"); //funcionando
+$route->get("/list/{id}", "Properties:listById"); //funcionando
+$route->put("/update/{id}", "Properties:update"); //funcionando
+$route->delete("/delete/{id}", "Properties:delete"); //funcionando
+$route->group(null);
+
+$route->namespace("Source\Controller");
+$route->group("/payments");
+$route->post("/insert", "Payments:register"); //funcionando
+$route->get("/listAll", "Payments:listAll"); //funcionando
+$route->get("/list/{id}", "Payments:listById"); //funcionando
+$route->put("/update/{id}", "Payments:update");
+$route->delete("/delete/{id}", "Payments:delete");
 $route->group(null);
 
 

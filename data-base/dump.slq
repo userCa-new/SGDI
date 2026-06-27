@@ -14,64 +14,80 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+
     FOREIGN KEY (id_user_type)
         REFERENCES user_type(id_user_type)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE properties (
     id_property INT AUTO_INCREMENT PRIMARY KEY,
-    id_user INT NOT NULL,
     location VARCHAR(150) NOT NULL,
-    number_rooms INT NOT NULL,
+    number_of_rooms INT NOT NULL,
     availability BOOLEAN DEFAULT TRUE,
-    late_payment BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (id_user)
-        REFERENCES users(id_user)
+    late_payment BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE contracts (
     id_contract INT AUTO_INCREMENT PRIMARY KEY,
     id_property INT NOT NULL,
     id_user INT NOT NULL,
+
     rent_value DECIMAL(10,2) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE,
+
     status ENUM(
         'ACTIVE',
         'CLOSED',
         'PENDING'
     ) DEFAULT 'ACTIVE',
+
     FOREIGN KEY (id_property)
-        REFERENCES properties(id_property),
+        REFERENCES properties(id_property)
+        ON DELETE CASCADE,
+
     FOREIGN KEY (id_user)
         REFERENCES users(id_user)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE payments (
     id_payment INT AUTO_INCREMENT PRIMARY KEY,
+
     id_contract INT NOT NULL,
+
     pix VARCHAR(500),
     qr_code VARCHAR(500),
     receipt VARCHAR(120),
+
     value DECIMAL(10,2) NOT NULL,
     payment_date DATE,
+
     status ENUM(
         'PENDING',
         'PAID',
         'LATE'
     ) DEFAULT 'PENDING',
+
     FOREIGN KEY (id_contract)
         REFERENCES contracts(id_contract)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE appointments (
     id_appointment INT AUTO_INCREMENT PRIMARY KEY,
+
     id_property INT NOT NULL,
+
     date DATE NOT NULL,
     observation VARCHAR(200),
+
     completed BOOLEAN DEFAULT FALSE,
+
     FOREIGN KEY (id_property)
         REFERENCES properties(id_property)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE faq_categories (
@@ -82,32 +98,47 @@ CREATE TABLE faq_categories (
 
 CREATE TABLE faqs (
     id_faq INT AUTO_INCREMENT PRIMARY KEY,
+
     id_category INT,
+
     question VARCHAR(255) NOT NULL,
     answer VARCHAR(255) NOT NULL,
+
     active BOOLEAN DEFAULT TRUE,
+
     FOREIGN KEY (id_category)
         REFERENCES faq_categories(id_category)
+        ON DELETE SET NULL
 );
 
 CREATE TABLE chat (
     id_chat INT AUTO_INCREMENT PRIMARY KEY,
+
     id_contract INT,
+
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (id_contract)
         REFERENCES contracts(id_contract)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE messages (
     id_message INT AUTO_INCREMENT PRIMARY KEY,
+
     id_chat INT NOT NULL,
     id_sender INT NOT NULL,
+
     message TEXT NOT NULL,
     date_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (id_chat)
-        REFERENCES chat(id_chat),
+        REFERENCES chat(id_chat)
+        ON DELETE CASCADE,
+
     FOREIGN KEY (id_sender)
         REFERENCES users(id_user)
+        ON DELETE CASCADE
 );
 
 INSERT INTO user_type (name)
@@ -116,7 +147,12 @@ VALUES
 ('Owner'),
 ('Administrator');
 
-INSERT INTO users (id_user_type, name, email, password)
+INSERT INTO users (
+    id_user_type,
+    name,
+    email,
+    password
+)
 VALUES
 (1, 'João Silva', 'joao@email.com', '123456'),
 (1, 'Maria Souza', 'maria@email.com', '123456'),
@@ -125,16 +161,15 @@ VALUES
 (3, 'Administrator', 'admin@email.com', 'admin123');
 
 INSERT INTO properties (
-    id_user,
     location,
-    number_rooms,
+    number_of_rooms,
     availability,
     late_payment
 )
 VALUES
-(3, 'Rua das Flores, 100', 2, TRUE, FALSE),
-(3, 'Av. Brasil, 250', 3, TRUE, FALSE),
-(4, 'Rua Independência, 45', 1, FALSE, FALSE);
+('Rua das Flores, 100', 2, TRUE, FALSE),
+('Av. Brasil, 250', 3, TRUE, FALSE),
+('Rua Independência, 45', 1, FALSE, FALSE);
 
 INSERT INTO contracts (
     id_property,
@@ -171,7 +206,10 @@ VALUES
 (1, '2025-06-10', 'Lock replacement', TRUE),
 (2, '2025-06-15', 'Bedroom painting', FALSE);
 
-INSERT INTO faq_categories (name, active)
+INSERT INTO faq_categories (
+    name,
+    active
+)
 VALUES
 ('Payments', TRUE),
 ('Contracts', TRUE),
@@ -184,12 +222,14 @@ INSERT INTO faqs (
     active
 )
 VALUES
-(1, 'How can I pay the rent?', 'Payment can be made via PIX or bank slip.', TRUE),
+(1, 'How can I pay the rent?', 'Payment can be made via PIX or bank transfer.', TRUE),
 (1, 'Can I delay the payment?', 'Late payments may incur penalties.', TRUE),
 (2, 'How do I terminate a contract?', 'Contact the real estate agency to request termination.', TRUE),
 (3, 'Can I visit a property before renting?', 'Yes, you can schedule a visit.', TRUE);
 
-INSERT INTO chat (id_contract)
+INSERT INTO chat (
+    id_contract
+)
 VALUES
 (1),
 (2);

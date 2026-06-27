@@ -1,15 +1,16 @@
 <?php
 
 namespace Source\Controller\Faqs;
-
+echo "aqui";
 use Source\Controller\Api;
 use Source\Models\Faq\Faq;
-
+echo "aqui";
 class Faqs extends Api
 {
 
     public function listAll (array $data): void
     {
+        echo "feito";
         $faq = new Faq();
         $this->call(200,"success","Lista de FAQs","success")->back($faq->selectAll());
     }
@@ -52,7 +53,7 @@ class Faqs extends Api
     public function insert (array $data): void
     {
 
-        $data = json_decode(file_get_contents("php://input"), true);
+        
         if(!$this->validate($data)){
             $this->call(
                 400,

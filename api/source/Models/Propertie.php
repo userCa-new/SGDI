@@ -94,4 +94,21 @@ class Propertie extends Model
     {
         $this->latePayment = $latePayment;
     }
+    public function deleteById(int $id): bool
+    {
+        try {
+            $query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
+            $stmt = Connect::getInstance()->prepare($query);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            if ($stmt->rowCount() < 1) {
+                $this->errorMessage = "Registro não encontrado ou inativo.";
+                return false;
+            }
+            return true;
+        } catch (PDOException $e) {
+            $this->errorMessage = $e->getMessage();
+            return false;
+        }
+    }
 }

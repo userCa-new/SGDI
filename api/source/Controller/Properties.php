@@ -68,6 +68,7 @@ class Properties extends Api
     }
     public function delete (array $data): void
     {
+        
         if(!filter_var($data["id"], FILTER_VALIDATE_INT))
         {
             $this->call(
@@ -78,7 +79,7 @@ class Properties extends Api
             )->back();
             return;
         }
-        var_dump($data["id"]);
+    
         $propriedade = new Propertie();
         
         if(!$propriedade->deleteById($data["id"]))
@@ -88,6 +89,77 @@ class Properties extends Api
         }
 
         $this->call(200, "success", "Propriedade excluida com sucesso", "success")->back();
+    }
+    public function listById(array $data): void
+    {
+
+        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
+        {
+            $this->call(
+            400,
+            "bad_request",
+            "ID da propriedade é obrigatório e deve ser um número inteiro",
+            "error"
+            )->back();
+            return;
+        }
+    
+        $propriedade = new Propertie();
+        $result = $propriedade->selectById($data["id"]);
+        
+        if(!$result)
+        {
+            $this->call(404, "not_found", "Propriedade não encontrada", "error")->back();
+            return;
+        }
+
+        $this->call(200, "success", "Propriedade encontrada com sucesso", "success")->back($result);
+    }
+
+    public function update(array $data): void
+    {
+        if(!$this->authToken(2)){
+            $this->call(401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error")->back();
+            return;
+        }
+        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
+        {
+            $this->call(
+            400,
+            "bad_request",
+            "ID da propriedade é obrigatório e deve ser um número inteiro",
+            "error"
+            )->back();
+            return;
+        }
+
+        if (!$this->validate($data)) {
+            $this->call(
+                400,
+                "bad_request",
+                "Dados incorretos ou campos obrigatórios ausentes.",
+                "error",
+            )->back();
+            return;
+        }
+
+        $propriedade = new Propertie();
+        $propriedade->setId($data["id"]);
+        $propriedade->setLocation($data["location"]);
+        $propriedade->setNumberRooms($data["numberRooms"]);
+        $propriedade->setAvailability($data["availability"] ? 1 : 0);
+        $propriedade->setLatePayment($data["latePayment"] ? 1 : 0);
+        
+        if(!$propriedade->updateById($data["id"]))
+        {
+            $this->call(500, "internal_server_error", $propriedade->getErrorMessage(), "error")->back();
+            return;
+        }
+
+        $this->call(200, "success", "Propriedade atualizada com sucesso", "success")->back();
     }
     public function validate(array $data): bool
     {
