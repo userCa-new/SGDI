@@ -48,9 +48,9 @@ $route->group("/faqs-categories");
 $route->group(null);
 // Fim - Exercícios - Desafios
 
-$route->namespace("Source\Controller");
 
 //Appointment
+$route->namespace("Source\Controller");
 $route->group("/appointment");
 $route->post("/register", "Appointments:register");
 $route->get("/list/{id}", "Appointments:listById");
