@@ -54,9 +54,12 @@ class Appointments extends Api
         )->back($response);
     }
     public function update(array $data): void
-    {   
-     
-        if (!$this->validate($data) || !isset($data["id"]) || !filter_var($data["id"], FILTER_VALIDATE_INT)) {
+    {
+        if (
+            !$this->validate($data) ||
+            !isset($data["id"]) ||
+            !filter_var($data["id"], FILTER_VALIDATE_INT)
+        ) {
             $this->call(
                 400,
                 "bad_request",
@@ -107,67 +110,78 @@ class Appointments extends Api
             "success",
         )->back($response);
     }
-    
+
     public function listById(array $data): void
     {
-     
-        if(!isset($data["id"]) || empty($data["id"]) || !filter_var($data["id"], FILTER_VALIDATE_INT))
-        {
-            $this->call(400,
-            "bad_request",
-            "ID do atendimento é obrigatório e deve ser um número inteiro",
-            "error"
+        if (
+            !isset($data["id"]) ||
+            empty($data["id"]) ||
+            !filter_var($data["id"], FILTER_VALIDATE_INT)
+        ) {
+            $this->call(
+                400,
+                "bad_request",
+                "ID do atendimento é obrigatório e deve ser um número inteiro",
+                "error",
             )->back();
             return;
         }
 
         $atendimento = new Appointment();
-        if(!$atendimento->selectById($data["id"]))
-        {
+        if (!$atendimento->selectById($data["id"])) {
             $this->call(
-            404,
-            "not_found",
-            "Atendimento não encontrado",
-            "error"
+                404,
+                "not_found",
+                "Atendimento não encontrado",
+                "error",
             )->back();
             return;
         }
         $response = [
-        "id" => $data["id"],
-        "idProperty" => $atendimento->getIdProperty(),
-        "date" => $atendimento->getDate(),
-        "observation" => $atendimento->getObservation(),
-        "completed" => $atendimento->getCompleted(),
+            "id" => $data["id"],
+            "idProperty" => $atendimento->getIdProperty(),
+            "date" => $atendimento->getDate(),
+            "observation" => $atendimento->getObservation(),
+            "completed" => $atendimento->getCompleted(),
         ];
-        
-        $this->call(200, "success", "Atendimento encontrado", "success")->back($response);
-        
+
+        $this->call(200, "success", "Atendimento encontrado", "success")->back(
+            $response,
+        );
     }
 
-    public function delete (array $data): void
+    public function delete(array $data): void
     {
-        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
-        {
+        if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
-            400,
-            "bad_request",
-            "ID do atendimento é obrigatório e deve ser um número inteiro",
-            "error"
+                400,
+                "bad_request",
+                "ID do atendimento é obrigatório e deve ser um número inteiro",
+                "error",
             )->back();
             return;
         }
         var_dump($data["id"]);
         $atendimento = new Appointment();
 
-        if(!$atendimento->deleteById($data["id"]))
-        {
-            $this->call(500, "internal_server_error", $atendimento->getErrorMessage(), "error")->back();
+        if (!$atendimento->deleteById($data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $atendimento->getErrorMessage(),
+                "error",
+            )->back();
             return;
         }
 
-        $this->call(200, "success", "Atendimento excluido com sucesso", "success")->back();
+        $this->call(
+            200,
+            "success",
+            "Atendimento excluido com sucesso",
+            "success",
+        )->back();
     }
-    
+
     public function validate(array $data): bool
     {
         if (

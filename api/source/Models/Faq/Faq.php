@@ -12,17 +12,22 @@ class Faq extends Model
     private ?string $answer;
     private ?int $active;
 
-    public function __construct(?int $id = null, ?int $idCategory = null, ?string $question = null, ?string $answer = null, ?int $active = 1)
-    {
+    public function __construct(
+        ?int $id = null,
+        ?int $idCategory = null,
+        ?string $question = null,
+        ?string $answer = null,
+        ?int $active = 1,
+    ) {
         $this->id = $id;
         $this->idCategory = $idCategory;
         $this->question = $question;
         $this->answer = $answer;
         $this->active = $active;
 
-        $this->table = 'faqs';
-        $this->primaryKey = 'id_faq';
-        $this->fillable = ['idCategory', 'question', 'answer', 'active'];
+        $this->table = "faqs";
+        $this->primaryKey = "id_faq";
+        $this->fillable = ["idCategory", "question", "answer", "active"];
     }
 
     public function getId(): ?int
@@ -30,7 +35,7 @@ class Faq extends Model
         return $this->id;
     }
 
-    public function setId(?int $id):void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -40,7 +45,7 @@ class Faq extends Model
         return $this->idCategory;
     }
 
-    public function setIdCategory(?int $idCategory):void
+    public function setIdCategory(?int $idCategory): void
     {
         $this->idCategory = $idCategory;
     }
@@ -50,7 +55,7 @@ class Faq extends Model
         return $this->question;
     }
 
-    public function setQuestion(?string $question):void
+    public function setQuestion(?string $question): void
     {
         $this->question = $question;
     }
@@ -60,7 +65,7 @@ class Faq extends Model
         return $this->answer;
     }
 
-    public function setAnswer(?string $answer):void
+    public function setAnswer(?string $answer): void
     {
         $this->answer = $answer;
     }
@@ -74,5 +79,4 @@ class Faq extends Model
     {
         $this->active = $active;
     }
-
 }

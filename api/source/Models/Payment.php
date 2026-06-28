@@ -16,8 +16,13 @@ class Payment extends Model
 
     public function __construct(
         $idPayment = null,
-    $idContract = null, $pix = null, $receipt = null, $value = null, $paymentDate = null, $status = null)
-    {
+        $idContract = null,
+        $pix = null,
+        $receipt = null,
+        $value = null,
+        $paymentDate = null,
+        $status = null,
+    ) {
         $this->idPayment = $idPayment;
         $this->idContract = $idContract;
         $this->pix = $pix;
@@ -28,7 +33,14 @@ class Payment extends Model
 
         $this->table = "payments";
         $this->primaryKey = "id_payment";
-        $this->fillable = ["idContract", "pix", "receipt", "value", "paymentDate", "status"];
+        $this->fillable = [
+            "idContract",
+            "pix",
+            "receipt",
+            "value",
+            "paymentDate",
+            "status",
+        ];
     }
 
     public function getIdContract()
@@ -68,23 +80,28 @@ class Payment extends Model
     {
         $this->status = $status;
     }
-    public function getIdPayment(){
+    public function getIdPayment()
+    {
         return $this->idPayment;
     }
-    public function setIdPayment($idPayment){
+    public function setIdPayment($idPayment)
+    {
         $this->idPayment = $idPayment;
     }
-    public function getValue(){
+    public function getValue()
+    {
         return $this->value;
     }
-    public function setValue($value){
+    public function setValue($value)
+    {
         $this->value = $value;
     }
-    public function getPaymentDate(){
+    public function getPaymentDate()
+    {
         return $this->paymentDate;
     }
-    public function setPaymentDate($paymentDate){
+    public function setPaymentDate($paymentDate)
+    {
         $this->paymentDate = $paymentDate;
     }
-    
 }

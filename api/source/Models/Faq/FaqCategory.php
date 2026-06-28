@@ -11,15 +11,18 @@ class FaqCategory extends Model
     private ?string $name;
     private ?int $active;
 
-    public function __construct(?int $id = null, ?string $name = null, ?int $active = 1)
-    {
+    public function __construct(
+        ?int $id = null,
+        ?string $name = null,
+        ?int $active = 1,
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->active = $active;
 
-        $this->table = 'faqs_categories';
-        $this->primaryKey = 'id';
-        $this->fillable = ['name', 'active'];
+        $this->table = "faqs_categories";
+        $this->primaryKey = "id";
+        $this->fillable = ["name", "active"];
     }
 
     public function getId(): ?int
@@ -27,7 +30,7 @@ class FaqCategory extends Model
         return $this->id;
     }
 
-    public function setId(?int $id):void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -37,7 +40,7 @@ class FaqCategory extends Model
         return $this->name;
     }
 
-    public function setName(?string $name):void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -51,5 +54,4 @@ class FaqCategory extends Model
     {
         $this->active = $active;
     }
-
 }
