@@ -7,6 +7,7 @@ use Source\Core\Connect;
 
 class Propertie extends Model
 {
+<<<<<<< HEAD
    protected ?int $id;
    protected ?int $idUser; 
    protected ?string $location;
@@ -34,37 +35,72 @@ class Propertie extends Model
     $this->primaryKey = "id_property";
     $this->fillable = ["idUser", "location", "numberOfRooms", "availability", "latePayment"];
    }
+=======
+    protected ?int $id;
+    protected ?int $idUser;
+    protected ?string $location;
+    protected ?int $numberRooms;
+    protected ?int $availability;
+    protected ?int $latePayment;
 
-   public function getId(): ?int
-   {
-    return $this->id;
-   }
+    public function __construct(
+        ?int $id = null,
+        ?int $idUser = null,
+        ?string $location = null,
+        ?int $numberRooms = null,
+        ?int $availability = null,
+        ?int $latePayment = null,
+    ) {
+        $this->id = $id;
+        $this->idUser = $idUser;
+        $this->location = $location;
+        $this->numberRooms = $numberRooms;
+        $this->availability = $availability;
+        $this->latePayment = $latePayment;
 
-   public function setId(?int $id): void
-   {
-    $this->id = $id;
-   }
+        $this->table = "properties";
+        $this->primaryKey = "id_property";
+        $this->fillable = [
+            "idUser",
+            "location",
+            "numberRooms",
+            "availability",
+            "latePayment",
+        ];
+    }
+>>>>>>> 677adf9d14f33d078a7f20f4373e2a9ad2b89f8f
 
-   public function getIdUser(): ?int 
-   {
-    return $this->idUser;
-   }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-   public function setIdUser(?int $idUser): void
-   {
-     $this->idUser = $idUser;
-   }
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
 
-   public function getLocation(): ?string
-   {
-    return $this->location;
-   }
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
 
-   public function setLocation(?string $location): void
-   {
-    $this->location = $location;
-   }
+    public function setIdUser(?int $idUser): void
+    {
+        $this->idUser = $idUser;
+    }
 
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): void
+    {
+        $this->location = $location;
+    }
+
+<<<<<<< HEAD
    public function getNumberOfRooms(): ?int
    {
     return $this->numberOfRooms;
@@ -74,6 +110,17 @@ class Propertie extends Model
    {
     $this->numberOfRooms = $numberOfRooms;
    }
+=======
+    public function getNumberRooms(): ?int
+    {
+        return $this->numberRooms;
+    }
+
+    public function setNumberRooms(?int $numberRooms): void
+    {
+        $this->numberRooms = $numberRooms;
+    }
+>>>>>>> 677adf9d14f33d078a7f20f4373e2a9ad2b89f8f
 
     public function getAvailability(): ?int
     {
@@ -99,7 +146,7 @@ class Propertie extends Model
         try {
             $query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
             $stmt = Connect::getInstance()->prepare($query);
-            $stmt->bindValue(':id', $id);
+            $stmt->bindValue(":id", $id);
             $stmt->execute();
             if ($stmt->rowCount() < 1) {
                 $this->errorMessage = "Registro não encontrado ou inativo.";

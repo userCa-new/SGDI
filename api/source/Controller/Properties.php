@@ -9,11 +9,13 @@ class Properties extends Api
 {
     public function insert(array $data): void
     {
-        if(!$this->authToken(2)){
-            $this->call(401,
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
                 "unauthorized",
                 "Token de autenticação inválido ou expirado.",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
         $data = json_decode(file_get_contents("php://input"), true);
@@ -26,7 +28,7 @@ class Properties extends Api
             )->back();
             return;
         }
-        
+
         $propriedade = new Propertie(
             null,
             $this->userAuthId,
@@ -35,8 +37,7 @@ class Properties extends Api
             $data["availability"] ? 1 : 0,
             $data["latePayment"] ? 1 : 0,
         );
-        
-        
+
         if (!$propriedade->insert()) {
             $this->call(
                 500,
@@ -62,44 +63,52 @@ class Properties extends Api
             "success",
         )->back($response);
     }
-    public function listAll(): void{
-        $propriedade = new Propertie();
-        $this->call(200,"success","Lista de propriedades","success")->back($propriedade->selectAll());
-    }
-    public function delete (array $data): void
+    public function listAll(): void
     {
-        
-        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
-        {
+        $propriedade = new Propertie();
+        $this->call(200, "success", "Lista de propriedades", "success")->back(
+            $propriedade->selectAll(),
+        );
+    }
+    public function delete(array $data): void
+    {
+        if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
-            400,
-            "bad_request",
-            "ID da propriedade é obrigatório e deve ser um número inteiro",
-            "error"
+                400,
+                "bad_request",
+                "ID da propriedade é obrigatório e deve ser um número inteiro",
+                "error",
             )->back();
             return;
         }
-    
+
         $propriedade = new Propertie();
-        
-        if(!$propriedade->deleteById($data["id"]))
-        {
-            $this->call(500, "internal_server_error", $propriedade->getErrorMessage(), "error")->back();
+
+        if (!$propriedade->deleteById($data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $propriedade->getErrorMessage(),
+                "error",
+            )->back();
             return;
         }
 
-        $this->call(200, "success", "Propriedade excluida com sucesso", "success")->back();
+        $this->call(
+            200,
+            "success",
+            "Propriedade excluida com sucesso",
+            "success",
+        )->back();
     }
     public function listById(array $data): void
     {
-
-        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
-        {
+        if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
-            400,
-            "bad_request",
-            "ID da propriedade é obrigatório e deve ser um número inteiro",
-            "error"
+                400,
+                "bad_request",
+                "ID da propriedade é obrigatório e deve ser um número inteiro",
+                "error",
             )->back();
             return;
         }
@@ -129,10 +138,10 @@ class Properties extends Api
         if(!filter_var($data["id"], FILTER_VALIDATE_INT))
         {
             $this->call(
-            400,
-            "bad_request",
-            "ID da propriedade é obrigatório e deve ser um número inteiro",
-            "error"
+                400,
+                "bad_request",
+                "ID da propriedade é obrigatório e deve ser um número inteiro",
+                "error",
             )->back();
             return;
         }
@@ -145,14 +154,23 @@ class Properties extends Api
         $propriedade->setNumberOfRooms($data["numberOfRooms"]);
         $propriedade->setAvailability($data["availability"] ? 1 : 0);
         $propriedade->setLatePayment($data["latePayment"] ? 1 : 0);
-        
-        if(!$propriedade->updateById($data["id"]))
-        {
-            $this->call(500, "internal_server_error", $propriedade->getErrorMessage(), "error")->back();
+
+        if (!$propriedade->updateById($data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $propriedade->getErrorMessage(),
+                "error",
+            )->back();
             return;
         }
 
-        $this->call(200, "success", "Propriedade atualizada com sucesso", "success")->back();
+        $this->call(
+            200,
+            "success",
+            "Propriedade atualizada com sucesso",
+            "success",
+        )->back();
     }
     public function validate(array $data): bool
     {   
@@ -167,4 +185,3 @@ class Properties extends Api
         filter_var($data["numberOfRooms"], FILTER_VALIDATE_INT) !== false;
     }
 }
-

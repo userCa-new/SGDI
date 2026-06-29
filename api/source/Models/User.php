@@ -18,17 +18,22 @@ class User extends Model
 
     private ?string $token = null;
 
-    public function __construct(?int $id = null, ?int $idUserType = null, ?string $name = null, ?string $email = null, ?string $password = null)
-    {
+    public function __construct(
+        ?int $id = null,
+        ?int $idUserType = null,
+        ?string $name = null,
+        ?string $email = null,
+        ?string $password = null,
+    ) {
         $this->id = $id;
         $this->idUserType = $idUserType;
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
 
-        $this->table = 'users'; // nome da tabela do banco
-        $this->primaryKey = 'id_user'; // nome da chave primária da tabela
-        $this->fillable = ['idUserType', 'name', 'email', 'password']; // camelCase
+        $this->table = "users"; // nome da tabela do banco
+        $this->primaryKey = "id_user"; // nome da chave primária da tabela
+        $this->fillable = ["idUserType", "name", "email", "password"]; // camelCase
     }
 
     public function getId(): ?int
@@ -81,45 +86,46 @@ class User extends Model
         $this->password = $password;
     }
 
-
     public function getToken(): ?string
     {
         return $this->token;
     }
 
-    public function insert (): bool
+    public function insert(): bool
     {
         $query = "SELECT * FROM {$this->table} WHERE email = :email";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $this->email);
         $stmt->execute();
-        if($stmt->rowCount() > 0){
+        if ($stmt->rowCount() > 0) {
             $this->errorMessage = "Email já cadastrado";
             return false;
         }
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
 
-        if(!parent::insert()){
+        if (!parent::insert()) {
             $this->errorMessage = "Algo deu errado";
             return false;
         }
         return true;
     }
 
-    public function login (string $email, string $password, int $typeId=2): bool
-    {
-        
+    public function login(
+        string $email,
+        string $password,
+        int $typeId = 2,
+    ): bool {
         $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :idUserType";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":idUserType", $typeId);
         $stmt->execute();
-        if($stmt->rowCount() == 0){
+        if ($stmt->rowCount() == 0) {
             $this->errorMessage = "Email não cadastrado";
             return false;
         }
         $user = $stmt->fetch();
-        if(!password_verify($password, $user->password)){
+        if (!password_verify($password, $user->password)) {
             $this->errorMessage = "Senha incorreta";
             return false;
         }
@@ -134,23 +140,22 @@ class User extends Model
         $this->token = $jwt->encode([
             "id" => $user->id_user,
             "name" => $user->name,
-            "email" => $user->email
+            "email" => $user->email,
         ]);
         var_dump("token criado");
         return true;
     }
 
-    public function permissionVerify (string $email, $typeId): bool
+    public function permissionVerify(string $email, $typeId): bool
     {
         $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :typeId";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":typeId", $typeId);
         $stmt->execute();
-        if($stmt->rowCount() == 0) {
+        if ($stmt->rowCount() == 0) {
             return false;
         }
         return true;
     }
-
 }
