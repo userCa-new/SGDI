@@ -10,7 +10,7 @@ class Propertie extends Model
    protected ?int $id;
    protected ?int $idUser; 
    protected ?string $location;
-   protected ?int $numberRooms;
+   protected ?int $numberOfRooms;
    protected ?int $availability;
    protected ?int $latePayment;
 
@@ -18,7 +18,7 @@ class Propertie extends Model
     ?int $id = null,
     ?int $idUser = null,
     ?string $location = null,
-    ?int $numberRooms = null,
+    ?int $numberOfRooms = null,
     ?int $availability = null,
     ?int $latePayment = null,
    )
@@ -26,13 +26,13 @@ class Propertie extends Model
     $this->id = $id;
     $this->idUser = $idUser;
     $this->location = $location;
-    $this->numberRooms = $numberRooms;
+    $this->numberOfRooms = $numberOfRooms;
     $this->availability = $availability;
     $this->latePayment = $latePayment;
 
     $this->table = "properties";
     $this->primaryKey = "id_property";
-    $this->fillable = ["idUser", "location", "numberRooms", "availability", "latePayment"];
+    $this->fillable = ["idUser", "location", "numberOfRooms", "availability", "latePayment"];
    }
 
    public function getId(): ?int
@@ -65,14 +65,14 @@ class Propertie extends Model
     $this->location = $location;
    }
 
-   public function getNumberRooms(): ?int
+   public function getNumberOfRooms(): ?int
    {
-    return $this->numberRooms;
+    return $this->numberOfRooms;
    }
 
-   public function setNumberRooms(?int $numberRooms): void
+   public function setNumberOfRooms(?int $numberOfRooms): void
    {
-    $this->numberRooms = $numberRooms;
+    $this->numberOfRooms = $numberOfRooms;
    }
 
     public function getAvailability(): ?int

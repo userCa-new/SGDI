@@ -67,7 +67,7 @@ $route->group("/propertie");
 $route->post("/insert", "Properties:insert"); //funcionando
 $route->get("/listAll", "Properties:listAll"); //funcionando
 $route->get("/list/{id}", "Properties:listById"); //funcionando
-$route->put("/update/{id}", "Properties:update"); //funcionando
+$route->put("/update/{id}", "Properties:update"); //funcionando?
 $route->delete("/delete/{id}", "Properties:delete"); //funcionando
 $route->group(null);
 

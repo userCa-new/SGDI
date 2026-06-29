@@ -31,7 +31,7 @@ class Properties extends Api
             null,
             $this->userAuthId,
             $data["location"],
-            $data["numberRooms"],
+            $data["numberOfRooms"],
             $data["availability"] ? 1 : 0,
             $data["latePayment"] ? 1 : 0,
         );
@@ -50,7 +50,7 @@ class Properties extends Api
         $response = [
             "id" => $propriedade->getId(),
             "location" => $propriedade->getLocation(),
-            "numberRooms" => $propriedade->getNumberRooms(),
+            "numberOfRooms" => $propriedade->getNumberOfRooms(),
             "availability" => $propriedade->getAvailability(),
             "latePayment" => $propriedade->getLatePayment(),
         ];
@@ -103,28 +103,29 @@ class Properties extends Api
             )->back();
             return;
         }
-    
+            
         $propriedade = new Propertie();
-        $result = $propriedade->selectById($data["id"]);
-        
-        if(!$result)
+        if(!$propriedade->selectById($data["id"]))
         {
             $this->call(404, "not_found", "Propriedade não encontrada", "error")->back();
             return;
         }
+        $response = [
+            "id" => $propriedade->getId(),
+            "location" => $propriedade->getLocation(),
+            "numberOfRooms" => $propriedade->getNumberOfRooms(),
+            "availability" => $propriedade->getAvailability(),
+            "latePayment" => $propriedade->getLatePayment()
+        ];
+        
 
-        $this->call(200, "success", "Propriedade encontrada com sucesso", "success")->back($result);
+
+        $this->call(200, "success", "Propriedade encontrada com sucesso", "success")->back($response);
     }
 
     public function update(array $data): void
     {
-        if(!$this->authToken(2)){
-            $this->call(401,
-                "unauthorized",
-                "Token de autenticação inválido ou expirado.",
-                "error")->back();
-            return;
-        }
+        
         if(!filter_var($data["id"], FILTER_VALIDATE_INT))
         {
             $this->call(
@@ -136,20 +137,12 @@ class Properties extends Api
             return;
         }
 
-        if (!$this->validate($data)) {
-            $this->call(
-                400,
-                "bad_request",
-                "Dados incorretos ou campos obrigatórios ausentes.",
-                "error",
-            )->back();
-            return;
-        }
+        
 
         $propriedade = new Propertie();
         $propriedade->setId($data["id"]);
         $propriedade->setLocation($data["location"]);
-        $propriedade->setNumberRooms($data["numberRooms"]);
+        $propriedade->setNumberOfRooms($data["numberOfRooms"]);
         $propriedade->setAvailability($data["availability"] ? 1 : 0);
         $propriedade->setLatePayment($data["latePayment"] ? 1 : 0);
         
@@ -162,21 +155,16 @@ class Properties extends Api
         $this->call(200, "success", "Propriedade atualizada com sucesso", "success")->back();
     }
     public function validate(array $data): bool
-    {
-        if (
-            !isset($data["location"]) ||
-            !isset($data["numberRooms"]) ||
-            !isset($data["availability"]) ||
-            !isset($data["latePayment"]) ||
-            empty($data["location"]) ||
-            empty($data["numberRooms"]) ||
-            empty($data["availability"]) ||
-            empty($data["latePayment"]) 
-        )
-        {
-            return false;
-        }
-        return true;
+    {   
+    return
+        isset(
+            $data["location"],
+            $data["numberOfRooms"],
+            $data["availability"],
+            $data["latePayment"]
+        ) &&
+        trim($data["location"]) !== "" &&
+        filter_var($data["numberOfRooms"], FILTER_VALIDATE_INT) !== false;
     }
 }
 
