@@ -14,26 +14,31 @@ class Propertie extends Model
    protected ?int $availability;
    protected ?int $latePayment;
 
-   public function __construct(
-    ?int $id = null,
-    ?int $idUser = null,
-    ?string $location = null,
-    ?int $numberOfRooms = null,
-    ?int $availability = null,
-    ?int $latePayment = null,
-   )
-   {
-    $this->id = $id;
-    $this->idUser = $idUser;
-    $this->location = $location;
-    $this->numberOfRooms = $numberOfRooms;
-    $this->availability = $availability;
-    $this->latePayment = $latePayment;
+    public function __construct(
+        ?int $id = null,
+        ?int $idUser = null,
+        ?string $location = null,
+        ?int $numberOfRooms = null,
+        ?int $availability = null,
+        ?int $latePayment = null,
+    ) {
+        $this->id = $id;
+        $this->idUser = $idUser;
+        $this->location = $location;
+        $this->numberOfRooms = $numberOfRooms;
+        $this->availability = $availability;
+        $this->latePayment = $latePayment;
 
-    $this->table = "properties";
-    $this->primaryKey = "id_property";
-    $this->fillable = ["idUser", "location", "numberOfRooms", "availability", "latePayment"];
-   }
+        $this->table = "properties";
+        $this->primaryKey = "id_property";
+        $this->fillable = [
+            "idUser",
+            "location",
+            "numberOfRooms",
+            "availability",
+            "latePayment",
+        ];
+    }
 
     public function getId(): ?int
     {
@@ -65,15 +70,15 @@ class Propertie extends Model
         $this->location = $location;
     }
 
-   public function getNumberOfRooms(): ?int
-   {
-    return $this->numberOfRooms;
-   }
+    public function getNumberOfRooms(): ?int
+    {
+        return $this->numberOfRooms;
+    }
 
-   public function setNumberOfRooms(?int $numberOfRooms): void
-   {
-    $this->numberOfRooms = $numberOfRooms;
-   }
+    public function setNumberOfRooms(?int $numberOfRooms): void
+    {
+        $this->numberOfRooms = $numberOfRooms;
+    }
 
     public function getAvailability(): ?int
     {

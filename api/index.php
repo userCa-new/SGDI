@@ -25,8 +25,8 @@ use CoffeeCode\Router\Router;
 // localhost/acme-3am/api
 $route = new Router(url("api"), ":");
 
+// User
 $route->namespace("Source\Controller");
-
 $route->group("/users");
 $route->post("/register", "Users:register"); // Registrar usuário comum
 $route->post("/login", "Users:auth"); // login de usuário comum
@@ -47,7 +47,6 @@ $route->group(null);
 $route->group("/faqs-categories");
 $route->group(null);
 // Fim - Exercícios - Desafios
-
 
 //Appointment
 $route->namespace("Source\Controller");
@@ -74,14 +73,24 @@ $route->group("/payments");
 $route->post("/insert", "Payments:register"); //funcionando
 $route->get("/listAll", "Payments:listAll"); //funcionando
 $route->get("/list/{id}", "Payments:listById"); //funcionando
-$route->put("/update/{id}", "Payments:update");
-$route->delete("/delete/{id}", "Payments:delete");
+$route->put("/update/{id}", "Payments:update"); //funcionando?
+$route->delete("/delete/{id}", "Payments:delete"); //funcionando
 $route->group(null);
 
 //Contracts
 $route->namespace("Source\Controller");
 $route->group("/contract");
-$route->post("/register", "Contracts:register");
+$route->post("/register", "Contracts:register"); //funcionando
+$route->get("/listAll", "Contracts:listAll"); //funcionando
+$route->get("/list/{id}", "Contracts:listById"); //funcionando
+$route->put("/update/{id}", "Contracts:update");
+$route->delete("/delete/{id}", "Contracts:delete"); //funcionando
+$route->group(null);
+
+//Messages
+$route->namespace("Source\Controller");
+$route->group("/message");
+$route->post("/register", "Messages:register"); // Necessário chat
 $route->group(null);
 
 $route->dispatch();

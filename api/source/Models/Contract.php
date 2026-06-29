@@ -2,44 +2,44 @@
 
 namespace Source\Models;
 
-use Source\Core\Connect;
 use Source\Core\Model;
 
 class Contract extends Model
 {
-    private ?int $id;
-    private ?int $id_property;
-    private ?int $id_user;
-    private ?int $rent_value;
-    private ?string $start_date;
-    private ?string $end_date;
-    private ?string $status;
+    private ?int $id = null;
+    private ?int $idProperty = null;
+    private ?int $idUser = null;
+    private ?float $rentValue = null;
+    private ?string $startDate = null;
+    private ?string $endDate = null;
+    private ?string $status = null;
 
     public function __construct(
         ?int $id = null,
-        ?int $id_property = null,
-        ?int $id_user = null,
-        ?int $rent_value = null,
-        ?string $start_date = null,
-        ?string $end_date = null,
+        ?int $idProperty = null,
+        ?int $idUser = null,
+        ?float $rentValue = null,
+        ?string $startDate = null,
+        ?string $endDate = null,
         ?string $status = null,
     ) {
         $this->id = $id;
-        $this->id_property = $id_property;
-        $this->id_user = $id_user;
-        $this->rent_value = $rent_value;
-        $this->start_date = $start_date;
-        $this->end_date = $end_date;
+        $this->idProperty = $idProperty;
+        $this->idUser = $idUser;
+        $this->rentValue = $rentValue;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
         $this->status = $status;
 
         $this->table = "contracts";
         $this->primaryKey = "id_contract";
+
         $this->fillable = [
-            "id_property",
-            "id_user",
-            "rent_value",
-            "start_date",
-            "end_date",
+            "idProperty",
+            "idUser",
+            "rentValue",
+            "startDate",
+            "endDate",
             "status",
         ];
     }
@@ -56,52 +56,52 @@ class Contract extends Model
 
     public function getIdProperty(): ?int
     {
-        return $this->id_property;
+        return $this->idProperty;
     }
 
-    public function setIdProperty(?int $id_property): void
+    public function setIdProperty(?int $idProperty): void
     {
-        $this->id_property = $id_property;
+        $this->idProperty = $idProperty;
     }
 
     public function getIdUser(): ?int
     {
-        return $this->id_user;
+        return $this->idUser;
     }
 
-    public function setIdUser(?int $id_user): void
+    public function setIdUser(?int $idUser): void
     {
-        $this->id_user = $id_user;
+        $this->idUser = $idUser;
     }
 
-    public function getRentValue(): ?int
+    public function getRentValue(): ?float
     {
-        return $this->rent_value;
+        return $this->rentValue;
     }
 
-    public function setRentValue(?int $rent_value): void
+    public function setRentValue(?float $rentValue): void
     {
-        $this->rent_value = $rent_value;
+        $this->rentValue = $rentValue;
     }
 
     public function getStartDate(): ?string
     {
-        return $this->start_date;
+        return $this->startDate;
     }
 
-    public function setStartDate(?int $start_date): void
+    public function setStartDate(?string $startDate): void
     {
-        $this->start_date = $start_date;
+        $this->startDate = $startDate;
     }
 
     public function getEndDate(): ?string
     {
-        return $this->end_date;
+        return $this->endDate;
     }
 
-    public function setEndDate(?int $end_date): void
+    public function setEndDate(?string $endDate): void
     {
-        $this->end_date = $end_date;
+        $this->endDate = $endDate;
     }
 
     public function getStatus(): ?string
@@ -109,7 +109,7 @@ class Contract extends Model
         return $this->status;
     }
 
-    public function setStatus(?int $status): void
+    public function setStatus(?string $status): void
     {
         $this->status = $status;
     }

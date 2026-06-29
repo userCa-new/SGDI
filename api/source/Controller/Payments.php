@@ -104,6 +104,36 @@ class Payments extends Api
         );
     }
 
+    public function delete(array $data): void
+    {
+        if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
+            $this->call(
+                400,
+                "bad_request",
+                "Id do pagamento é obrigatório e deve ser um número inteiro",
+            )->back();
+            return;
+        }
+
+        $payment = new Payment();
+        if (!$payment->deleteById($data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $payment->getErrorMessage(),
+                "error",
+            )->back();
+            return;
+        }
+
+        $this->call(
+            200,
+            "success",
+            "Pagamento excluido com sucesso",
+            "success",
+        )->back();
+    }
+
     public function validate(array $data): bool
     {
         if (

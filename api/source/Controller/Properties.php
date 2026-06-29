@@ -112,7 +112,7 @@ class Properties extends Api
             )->back();
             return;
         }
-            
+
         $propriedade = new Propertie();
         if(!$propriedade->selectById($data["id"]))
         {
@@ -124,19 +124,20 @@ class Properties extends Api
             "location" => $propriedade->getLocation(),
             "numberOfRooms" => $propriedade->getNumberOfRooms(),
             "availability" => $propriedade->getAvailability(),
-            "latePayment" => $propriedade->getLatePayment()
+            "latePayment" => $propriedade->getLatePayment(),
         ];
-        
 
-
-        $this->call(200, "success", "Propriedade encontrada com sucesso", "success")->back($response);
+        $this->call(
+            200,
+            "success",
+            "Propriedade encontrada com sucesso",
+            "success",
+        )->back($response);
     }
 
     public function update(array $data): void
     {
-        
-        if(!filter_var($data["id"], FILTER_VALIDATE_INT))
-        {
+        if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,
                 "bad_request",
@@ -145,8 +146,6 @@ class Properties extends Api
             )->back();
             return;
         }
-
-        
 
         $propriedade = new Propertie();
         $propriedade->setId($data["id"]);
@@ -173,15 +172,14 @@ class Properties extends Api
         )->back();
     }
     public function validate(array $data): bool
-    {   
-    return
-        isset(
+    {
+        return isset(
             $data["location"],
             $data["numberOfRooms"],
             $data["availability"],
-            $data["latePayment"]
+            $data["latePayment"],
         ) &&
-        trim($data["location"]) !== "" &&
-        filter_var($data["numberOfRooms"], FILTER_VALIDATE_INT) !== false;
+            trim($data["location"]) !== "" &&
+            filter_var($data["numberOfRooms"], FILTER_VALIDATE_INT) !== false;
     }
 }

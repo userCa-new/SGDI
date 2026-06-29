@@ -6,68 +6,87 @@ use Source\Models\User;
 
 class Users extends Api
 {
-    public function register (array $data): void
+    public function register(array $data): void
     {
-        $data = json_decode(file_get_contents("php://input"), true);
-        if(!isset($data['password']) || empty($data['password'])) {
-            $this->call(400,
+        //$data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data["password"]) || empty($data["password"])) {
+            $this->call(
+                400,
                 "bad_request",
                 "A senha é obrigatória.",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
 
-        if(!$this->validateNameEmail($data)){
-            $this->call(400,
+        if (!$this->validateNameEmail($data)) {
+            $this->call(
+                400,
                 "bad_request",
                 "Nome e e-mail são obrigatórios. O e-mail deve ser válido.",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
 
         $user = new User(
             null,
             2,
-            $data['name'],
-            $data['email'],
-            $data['password']
+            $data["name"],
+            $data["email"],
+            $data["password"],
         );
 
-        if(!$user->insert()) {
-            $this->call(500, "internal_server_error", $user->getErrorMessage(), "error")->back();
+        if (!$user->insert()) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $user->getErrorMessage(),
+                "error",
+            )->back();
             return;
         }
 
         $response = [
             "id" => $user->getId(),
             "name" => $user->getName(),
-            "email" => $user->getEmail()
+            "email" => $user->getEmail(),
         ];
 
-        $this->call(201,"success","Usuário inserido com sucesso","created")->back($response);
+        $this->call(
+            201,
+            "success",
+            "Usuário inserido com sucesso",
+            "created",
+        )->back($response);
     }
 
-    public function auth (array $data): void
+    public function auth(array $data): void
     {
-        $data = json_decode(file_get_contents("php://input"), true);
-        if(!isset($data['email'], $data['password']) ||
-            empty($data['email']) || empty($data['password']) ||
-            !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        // $data = json_decode(file_get_contents("php://input"), true);
+        if (
+            !isset($data["email"], $data["password"]) ||
+            empty($data["email"]) ||
+            empty($data["password"]) ||
+            !filter_var($data["email"], FILTER_VALIDATE_EMAIL)
+        ) {
             $this->call(
                 400,
                 "bad_request",
                 "E-mail e senha são obrigatórios. O e-mail deve ser válido.",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
 
         $user = new User();
-        if(!$user->login($data['email'], $data['password'])) {
+        if (!$user->login($data["email"], $data["password"])) {
             $this->call(
                 401,
                 "unauthorized",
                 $user->getErrorMessage(),
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
 
@@ -77,34 +96,41 @@ class Users extends Api
             "token" => $user->getToken(),
         ];
 
-
         $this->call(
             200,
             "success",
             "Usuário logado com sucesso",
-            "success")->back($response);
+            "success",
+        )->back($response);
     }
 
-    public function authAdmin (array $data): void
+    public function authAdmin(array $data): void
     {
-        if(!isset($data['email'], $data['password']) ||
-            empty($data['email']) || empty($data['password']) ||
-            !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (
+            !isset($data["email"], $data["password"]) ||
+            empty($data["email"]) ||
+            empty($data["password"]) ||
+            !filter_var($data["email"], FILTER_VALIDATE_EMAIL)
+        ) {
             $this->call(
                 400,
                 "bad_request",
                 "E-mail e senha são obrigatórios. O e-mail deve ser válido.",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
 
         $user = new User();
-        if(!$user->login($data['email'], $data['password'], $data['user_type'])) {
+        if (
+            !$user->login($data["email"], $data["password"], $data["user_type"])
+        ) {
             $this->call(
                 401,
                 "unauthorized",
                 $user->getErrorMessage(),
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
 
@@ -119,34 +145,42 @@ class Users extends Api
             200,
             "success",
             "Usuário logado com sucesso",
-            "success")->back($response);
+            "success",
+        )->back($response);
     }
 
-    public function update (array $data): void
+    public function update(array $data): void
     {
-        if(!$this->authToken (2)){
+        if (!$this->authToken(2)) {
             $this->call(
                 401,
                 "unauthorized",
                 "Usuário não está autenticado (sem token ou token inválido).",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
         // fazer o update do usuário agora autenticado preciso do id
 
         var_dump($this->userAuthId);
 
-        $this->call(200,"success","Usuário atualizado com sucesso","success")->back();
+        $this->call(
+            200,
+            "success",
+            "Usuário atualizado com sucesso",
+            "success",
+        )->back();
     }
 
-    public function updateAdmin (array $data): void
+    public function updateAdmin(array $data): void
     {
-        if(!$this->authToken (1)){
+        if (!$this->authToken(1)) {
             $this->call(
                 401,
                 "unauthorized",
                 "Usuário não está autenticado (sem token ou token inválido).",
-                "error")->back();
+                "error",
+            )->back();
             return;
         }
         // validar campos
@@ -155,16 +189,19 @@ class Users extends Api
             200,
             "success",
             "Usuário atualizado com sucesso",
-            "success")->back();
-
+            "success",
+        )->back();
     }
 
     // Valida somente Nome e Email, mas pode ser alterada para validar mais campos
     private function validateNameEmail(array $data): bool
     {
-        if(!isset($data["name"],$data["email"]) ||
-            empty($data["name"]) || empty($data["email"]) ||
-            !filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
+        if (
+            !isset($data["name"], $data["email"]) ||
+            empty($data["name"]) ||
+            empty($data["email"]) ||
+            !filter_var($data["email"], FILTER_VALIDATE_EMAIL)
+        ) {
             return false;
         }
         return true;

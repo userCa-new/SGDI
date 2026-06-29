@@ -9,7 +9,7 @@ class Appointments extends Api
 {
     public function register(array $data): void
     {
-        $data = json_decode(file_get_contents("php://input"), true);
+        //$data = json_decode(file_get_contents("php://input"), true);
         if (!$this->validate($data)) {
             $this->call(
                 400,
