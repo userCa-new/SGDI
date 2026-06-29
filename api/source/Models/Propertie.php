@@ -7,12 +7,12 @@ use Source\Core\Connect;
 
 class Propertie extends Model
 {
-   protected ?int $id;
-   protected ?int $idUser; 
-   protected ?string $location;
-   protected ?int $numberOfRooms;
-   protected ?int $availability;
-   protected ?int $latePayment;
+    protected ?int $id;
+    protected ?int $idUser;
+    protected ?string $location;
+    protected ?int $numberOfRooms;
+    protected ?int $availability;
+    protected ?int $latePayment;
 
     public function __construct(
         ?int $id = null,

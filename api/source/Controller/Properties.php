@@ -114,9 +114,13 @@ class Properties extends Api
         }
 
         $propriedade = new Propertie();
-        if(!$propriedade->selectById($data["id"]))
-        {
-            $this->call(404, "not_found", "Propriedade não encontrada", "error")->back();
+        if (!$propriedade->selectById($data["id"])) {
+            $this->call(
+                404,
+                "not_found",
+                "Propriedade não encontrada",
+                "error",
+            )->back();
             return;
         }
         $response = [
