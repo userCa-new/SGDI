@@ -7,7 +7,6 @@ use Source\Core\Connect;
 
 class Propertie extends Model
 {
-<<<<<<< HEAD
    protected ?int $id;
    protected ?int $idUser; 
    protected ?string $location;
@@ -35,40 +34,6 @@ class Propertie extends Model
     $this->primaryKey = "id_property";
     $this->fillable = ["idUser", "location", "numberOfRooms", "availability", "latePayment"];
    }
-=======
-    protected ?int $id;
-    protected ?int $idUser;
-    protected ?string $location;
-    protected ?int $numberRooms;
-    protected ?int $availability;
-    protected ?int $latePayment;
-
-    public function __construct(
-        ?int $id = null,
-        ?int $idUser = null,
-        ?string $location = null,
-        ?int $numberRooms = null,
-        ?int $availability = null,
-        ?int $latePayment = null,
-    ) {
-        $this->id = $id;
-        $this->idUser = $idUser;
-        $this->location = $location;
-        $this->numberRooms = $numberRooms;
-        $this->availability = $availability;
-        $this->latePayment = $latePayment;
-
-        $this->table = "properties";
-        $this->primaryKey = "id_property";
-        $this->fillable = [
-            "idUser",
-            "location",
-            "numberRooms",
-            "availability",
-            "latePayment",
-        ];
-    }
->>>>>>> 677adf9d14f33d078a7f20f4373e2a9ad2b89f8f
 
     public function getId(): ?int
     {
@@ -100,7 +65,6 @@ class Propertie extends Model
         $this->location = $location;
     }
 
-<<<<<<< HEAD
    public function getNumberOfRooms(): ?int
    {
     return $this->numberOfRooms;
@@ -110,17 +74,6 @@ class Propertie extends Model
    {
     $this->numberOfRooms = $numberOfRooms;
    }
-=======
-    public function getNumberRooms(): ?int
-    {
-        return $this->numberRooms;
-    }
-
-    public function setNumberRooms(?int $numberRooms): void
-    {
-        $this->numberRooms = $numberRooms;
-    }
->>>>>>> 677adf9d14f33d078a7f20f4373e2a9ad2b89f8f
 
     public function getAvailability(): ?int
     {
