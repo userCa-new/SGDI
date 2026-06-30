@@ -51,10 +51,11 @@ $route->group(null);
 //Appointment
 $route->namespace("Source\Controller");
 $route->group("/appointment");
-$route->post("/register", "Appointments:register");
-$route->get("/list/{id}", "Appointments:listById");
+$route->post("/register", "Appointments:register"); //funcionando
+$route->get("/listAll", "Appointments:listAll"); //funcionando
+$route->get("/list/{id}", "Appointments:listById"); //funcionando
 $route->put("/update/{id}", "Appointments:update");
-$route->delete("/delete/{id}", "Appointments:delete");
+$route->delete("/delete/{id}", "Appointments:delete"); //funcionando
 $route->group(null);
 
 //Properties
@@ -73,7 +74,7 @@ $route->group("/payments");
 $route->post("/insert", "Payments:register"); //funcionando
 $route->get("/listAll", "Payments:listAll"); //funcionando
 $route->get("/list/{id}", "Payments:listById"); //funcionando
-$route->put("/update/{id}", "Payments:update"); //funcionando?
+$route->put("/update/{id}", "Payments:update");
 $route->delete("/delete/{id}", "Payments:delete"); //funcionando
 $route->group(null);
 
@@ -90,7 +91,21 @@ $route->group(null);
 //Messages
 $route->namespace("Source\Controller");
 $route->group("/message");
-$route->post("/register", "Messages:register"); // Necessário chat
+$route->post("/register", "Messages:register"); //funcionando
+$route->get("/listAll", "Messages:listAll"); //funcionando
+$route->get("/list/{id}", "Messages:listById"); //funcionando
+$route->put("/update/{id}", "Messages:update");
+$route->delete("/delete/{id}", "Messages:delete"); //funcionando
+$route->group(null);
+
+//Chats
+$route->namespace("Source\Controller");
+$route->group("chat");
+$route->post("/register", "Chats:register"); //funcionando
+$route->get("/listAll", "Chats:listAll"); //funcionando
+$route->get("/list/{id}", "Chats:listById"); //funcionando
+$route->put("/update/{id}", "Chats:update");
+$route->delete("/delete/{id}", "Chats:delete"); //funcionando
 $route->group(null);
 
 $route->dispatch();

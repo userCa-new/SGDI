@@ -228,19 +228,21 @@ VALUES
 (3, 'Can I visit a property before renting?', 'Yes, you can schedule a visit.', TRUE);
 
 INSERT INTO chat (
-    id_contract
+    id_contract,
+    creation_date
 )
 VALUES
-(1),
-(2);
+(1, '2025-05-25'),
+(2, '2025-05-25');
 
 INSERT INTO messages (
     id_chat,
     id_sender,
-    message
+    message,
+    date_time
 )
 VALUES
-(1, 1, 'Hello, I have a question about the rent.'),
-(1, 3, 'Sure, how can I help you?'),
-(2, 2, 'When is the next payment due?'),
-(2, 4, 'The due date is the 10th of each month.');
+(1, 1, 'Hello, I have a question about the rent.', '2026-10-10'),
+(1, 3, 'Sure, how can I help you?', '2025-09-01'),
+(2, 2, 'When is the next payment due?', '2025-07-11'),
+(2, 4, 'The due date is the 10th of each month.', '2023-12-30');

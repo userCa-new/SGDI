@@ -1,11 +1,11 @@
 <?php
-//a
+
 namespace Source\Controller;
 
-use Source\Models\Message;
+use Source\Models\Chat;
 use Source\Controller\Api;
 
-class Messages extends Api
+class Chats extends Api
 {
     public function register(array $data): void
     {
@@ -13,49 +13,43 @@ class Messages extends Api
             $this->call(
                 400,
                 "bad_request",
-                "Dados incorretos ou campos obrigatórios ausentes.",
+                "Dados incorretos ou campos obrigatórios ausentes",
                 "error",
             )->back();
             return;
         }
 
-        $message = new Message(
-            null,
-            $data["idChat"],
-            $data["idSender"],
-            $data["message"],
-            $data["dateTime"],
-        );
-        if (!$message->insert()) {
+        $chat = new Chat(null, $data["idContract"], $data["creationDate"]);
+
+        if (!$chat->insert()) {
             $this->call(
                 500,
                 "internal_server_error",
-                $message->getErrorMessage(),
+                $chat->getErrorMessage(),
                 "error",
             )->back();
             return;
         }
 
         $response = [
-            "id" => $message->getId(),
-            "idChat" => $message->getIdChat(),
-            "idSender" => $message->getIdSender(),
-            "message" => $message->getMessage(),
-            "dateTime" => $message->getDateTime(),
+            "id" => $chat->getId(),
+            "idContract" => $chat->getIdContract(),
+            "creationDate" => $chat->getCreationDate(),
         ];
+
         $this->call(
             200,
             "success",
-            "mensagem cadastrada com sucesso!",
+            "Chat registrado com sucesso",
             "success",
         )->back($response);
     }
 
     public function listAll(array $data): void
     {
-        $message = new Message();
-        $this->call(200, "success", "Lista de messagens", "success")->back(
-            $message->selectAll(),
+        $chat = new Chat();
+        $this->call(200, "success", "Lista de chats", "success")->back(
+            $chat->selectAll(),
         );
     }
 
@@ -65,34 +59,32 @@ class Messages extends Api
             $this->call(
                 400,
                 "bad_request",
-                "ID da messagem é obrigatório e deve ser um número inteiro",
+                "ID do chat é obrigatório e deve ser um número inteiro",
                 "error",
             )->back();
             return;
         }
 
-        $message = new Message();
-        if (!$message->selectById($data["id"])) {
+        $chat = new Chat();
+        if (!$chat->selectById($data["id"])) {
             $this->call(
                 404,
                 "not_found",
-                "Mensagem não encontrada",
+                "Chat não encontrado",
                 "error",
             )->back();
             return;
         }
         $response = [
-            "id" => $message->getId(),
-            "idChat" => $message->getIdChat(),
-            "idSender" => $message->getIdSender(),
-            "message" => $message->getMessage(),
-            "dateTime" => $message->getDateTime(),
+            "id" => $chat->getId(),
+            "idContract" => $chat->getIdContract(),
+            "creationDate" => $chat->getCreationDate(),
         ];
 
         $this->call(
             200,
             "success",
-            "Mensagem encontrada com sucesso",
+            "Chat encontrado com sucesso",
             "success",
         )->back($response);
     }
@@ -105,19 +97,19 @@ class Messages extends Api
             $this->call(
                 400,
                 "bad_request",
-                "id da messagem é obrigatório e deve ser um número inteiro",
+                "id do chat é obrigatório e deve ser um número inteiro",
                 "error",
             )->back();
             return;
         }
 
-        $message = new Message();
+        $chat = new Chat();
 
-        if (!$message->deleteById($data["id"])) {
+        if (!$chat->deleteById($data["id"])) {
             $this->call(
                 500,
                 "internal_server_error",
-                $message->getErrorMessage(),
+                $chat->getErrorMessage(),
                 "error",
             )->back();
             return;
@@ -126,7 +118,7 @@ class Messages extends Api
         $this->call(
             200,
             "success",
-            "Messagem excluida com sucesso",
+            "Chat excluido com sucesso",
             "success",
         )->back();
     }
@@ -134,14 +126,10 @@ class Messages extends Api
     public function validate(array $data): bool
     {
         if (
-            !isset($data["idChat"]) ||
-            empty($data["idChat"]) ||
-            !isset($data["idSender"]) ||
-            empty($data["idSender"]) ||
-            !isset($data["message"]) ||
-            empty($data["message"]) ||
-            !isset($data["dateTime"]) ||
-            empty($data["dateTime"])
+            !isset($data["idContract"]) ||
+            empty($data["idContract"]) ||
+            !isset($data["creationDate"]) ||
+            empty($data["creationDate"])
         ) {
             return false;
         }

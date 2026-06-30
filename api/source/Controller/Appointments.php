@@ -62,6 +62,15 @@ class Appointments extends Api
             "success",
         )->back($response);
     }
+
+    public function listAll(array $data): void
+    {
+        $appointment = new Appointment();
+        $this->call(200, "success", "Lista de atendimentos", "success")->back(
+            $appointment->selectAll(),
+        );
+    }
+
     public function update(array $data): void
     {
         if (!$this->authToken(2)) {
