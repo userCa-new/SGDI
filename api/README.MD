@@ -1,90 +1,433 @@
-# 📁 api/
+# API - Sistema de Imóveis
 
-## O Back-End — A API REST em PHP
+## Descrição
 
----
+Esta API foi desenvolvida em PHP utilizando o framework CoffeeCode Router para gerenciamento das rotas.
 
-### 🎯 Para que serve esta pasta?
+Ela permite o gerenciamento de:
 
-A pasta `api/` contém todo o **código do servidor** (back-end). Aqui é onde o PHP processa as
-requisições vindas do front-end e retorna respostas, geralmente em formato **JSON**.
-
-Esta pasta funciona como uma **API REST** — ou seja, ela **não gera HTML**. Ela apenas recebe
-requisições e devolve dados, sendo assim, aqui é necessário esquecer que existe `echo` ou `var_dump` — tudo deve ser retornado em JSON.
-
----
-
-### 📦 O que é uma API REST?
-
-**API** (Application Programming Interface) é uma interface que permite a comunicação entre sistemas.
-
-**REST** (Representational State Transfer) é um padrão que utiliza os métodos HTTP:
-
-| Método HTTP | Ação no banco de dados | Exemplo                    |
-|-------------|------------------------|----------------------------|
-| `GET`       | **Ler** dados          | Buscar lista de usuários   |
-| `POST`      | **Criar** dados        | Cadastrar um novo usuário  |
-| `PUT`       | **Atualizar** dados    | Editar dados de um usuário |
-| `DELETE`    | **Excluir** dados      | Remover um usuário         |
-
-> 💡 Esses 4 métodos formam o famoso **CRUD** (Create, Read, Update, Delete).
+- Usuários
+- FAQs
+- Agendamentos
+- Imóveis
+- Pagamentos
+- Contratos
+- Mensagens
+- Chats
 
 ---
 
-### 📂 Estrutura desta pasta
+## URL Base
 
 ```
-api/
-├── .htaccess        ← Configuração do Apache para URLs amigáveis
-├── composer.json    ← Arquivo de configuração do Composer (dependências)
-├── index.php        ← Front Controller — ponto de entrada de TODAS as requisições
-├── vendor/          ← Bibliotecas instaladas pelo Composer (NÃO editar!)
-└── source/          ← Código-fonte da API
+http://localhost/SGDI/api
 ```
 
 ---
 
-### 🔑 Arquivos importantes
-
-#### `index.php` — Front Controller
-Este é o **ponto de entrada** da API. Toda requisição que chega ao servidor passa por aqui primeiro.
-Ele é responsável por:
-- Carregar o autoload do Composer
-- Iniciar o roteamento (Router)
-- Direcionar a requisição para o Controller correto
-
-#### `.htaccess` — Reescrita de URL
-Este arquivo configura o Apache para redirecionar **todas** as requisições para o `index.php`.
-Por exemplo, ao acessar `api/usuarios`, o Apache reescreve internamente para `api/index.php?route=/usuarios`.
-
-```apache
-RewriteEngine On
-RewriteCond %{SCRIPT_FILENAME} !-f
-RewriteCond %{SCRIPT_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?route=/$1 [L,QSA]
+```bash
+git clone https://github.com/userCa-new/SGDI.git
 ```
 
-#### `composer.json` — Gerenciador de Dependências
-O Composer é o gerenciador de pacotes do PHP (similar ao `npm` do JavaScript).
-Aqui definimos as dependências do projeto e o **autoload** das classes.
+# Usuários
+
+## Registrar usuário
+
+**POST**
+
+```
+/users/register
+```
+
+### Corpo da requisição
+
+```json
+{
+    "name":"caca",
+    "email":"caca@email.com",
+    "password":"123"
+}
+```
+
+### Resposta
+
+```json
+{
+  "code": 201,
+  "type": "created",
+  "status": "success",
+  "message": "Usuário inserido com sucesso",
+  "data": {
+    "id": 2,
+    "name": "caca",
+    "email": "caca@gmail.com"
+  }
+}
+```
+
+### Status HTTP
+
+| Código | Descrição |
+|---------|-----------|
+|201|Usuário inserido com sucesso|
+|400|A senha é obrigatória|
+|400|bad_request|
+|500|internal_server_error|
 
 ---
 
-### 🔗 Relação com o MVC
+## Login
+
+**POST**
 
 ```
-index.php (Front Controller)
-    ↓
-Router (Core/Router.php) → identifica a rota
-    ↓
-Controller (Controller/Api.php) → processa a lógica
-    ↓
-Model (Models/User.php) → acessa o banco de dados
-    ↓
-Resposta JSON → enviada ao front-end
+/users/login
+```
+
+### Corpo
+
+```json
+{
+    "email":"caca@email.com",
+    "password":"123"
+}
+```
+
+### Resposta
+
+```json
+{
+  "code": 200,
+  "type": "success",
+  "status": "success",
+  "message": "Usuário logado com sucesso",
+  "data": {
+    "id": 2,
+    "name": "caca",
+    "token": "xxx"
+  }
+}
+```
+
+### Status
+
+|Código|Descrição|
+|------|---------|
+|200|Login realizado|
+|401|Credenciais inválidas|
+
+---
+
+## Atualizar usuário
+
+**PUT**
+
+```
+/users/update
 ```
 
 ---
 
-> 📚 Acesse a pasta `source/` para entender cada camada do MVC em detalhes.
+# Administrador
 
+## Registrar administrador
+**POST**
+```
+/users/register-admin
+```
+
+> Ainda não implementado.
+
+---
+
+## Login administrador
+**POST**
+```
+/users/login-admin
+```
+
+---
+
+## Atualizar administrador
+**PUT**
+```
+/users/update-admin
+```
+
+---
+
+# FAQs
+
+## Listar FAQs
+**GET**
+```
+/faqs/list
+```
+
+### Resposta
+
+```json
+[
+    {
+        "id":1,
+        "question":"Pergunta",
+        "answer":"Resposta"
+    }
+]
+```
+
+---
+
+## Inserir FAQ
+**POST**
+```
+/faqs/
+```
+
+---
+
+# Atendimentos
+
+## Cadastrar
+**POST**
+```
+/appointment/register
+```
+
+## Listar todos
+**GET**
+```
+/appointment/listAll
+```
+
+## Buscar por ID
+**GET**
+```
+/appointment/list/{id}
+```
+
+Exemplo
+
+```
+GET /appointment/list/5
+```
+
+## Atualizar
+**PUT**
+```
+/appointment/update/{id}
+```
+
+## Excluir
+**DELETE**
+```
+/appointment/delete/{id}
+```
+
+---
+
+# Imóveis
+
+## Inserir
+**POST**
+```
+/propertie/insert
+```
+
+## Listar
+**GET**
+```
+/propertie/listAll
+```
+
+## Buscar
+**GET**
+```
+/propertie/list/{id}
+```
+
+## Atualizar
+**PUT**
+```
+/propertie/update/{id}
+```
+
+## Excluir
+**DELETE**
+```
+/propertie/delete/{id}
+```
+
+---
+
+# Pagamentos
+
+## Inserir
+**POST**
+```
+/payments/insert
+```
+
+## Listar
+**GET**
+```
+/payments/listAll
+```
+
+## Buscar
+**GET**
+```
+/payments/list/{id}
+```
+
+## Atualizar
+**PUT**
+```
+/payments/update/{id}
+```
+
+## Excluir
+**DELETE**
+```
+/payments/delete/{id}
+```
+
+---
+
+# Contratos
+
+## Registrar
+**POST**
+```
+/contract/register
+```
+
+## Listar
+**GET**
+```
+/contract/listAll
+```
+
+## Buscar
+**GET**
+```
+/contract/list/{id}
+```
+
+## Atualizar
+**PUT**
+```
+/contract/update/{id}
+```
+
+## Excluir
+**DELETE**
+```
+/contract/delete/{id}
+```
+
+---
+
+# Mensagens
+
+## Registrar
+**POST**
+```
+/message/register
+```
+
+## Listar
+**GET**
+```
+/message/listAll
+```
+
+## Buscar
+**GET**
+```
+/message/list/{id}
+```
+
+## Atualizar
+**PUT**
+```
+/message/update/{id}
+```
+
+## Excluir
+**DELETE**
+```
+/message/delete/{id}
+```
+
+---
+
+# Chats
+
+## Registrar
+**POST**
+```
+/chat/register
+```
+
+## Listar
+**GET**
+```
+/chat/listAll
+```
+
+## Buscar
+**GET**
+```
+/chat/list/{id}
+```
+
+## Atualizar
+**PUT**
+```
+/chat/update/{id}
+```
+
+## Excluir
+**DELETE**
+```
+/chat/delete/{id}
+```
+
+---
+
+# Respostas HTTP
+
+| Código | Significado |
+|---------|-------------|
+|200|Requisição realizada com sucesso|
+|201|Registro criado|
+|400|Requisição inválida|
+|401|Não autorizado|
+|404|URL não encontrada|
+|409|Conflito (registro existente)|
+|500|Erro interno do servidor|
+
+---
+
+# Exemplo de erro
+
+```json
+{
+    "code":404,
+    "status":"not_found",
+    "message":"URL não encontrada"
+}
+```
+
+---
+
+# Versionamento
+
+O projeto é versionado utilizando Git.
+
+Para clonar o repositório:
+
+
+
+---
