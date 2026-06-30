@@ -76,7 +76,7 @@ class Properties extends Api
             $this->call(
                 400,
                 "bad_request",
-                "ID da propriedade é obrigatório e deve ser um número inteiro",
+                "id da propriedade é obrigatório e deve ser um número inteiro",
                 "error",
             )->back();
             return;
@@ -97,7 +97,7 @@ class Properties extends Api
         $this->call(
             200,
             "success",
-            "Propriedade excluida com sucesso",
+            "propriedade excluida com sucesso",
             "success",
         )->back();
     }

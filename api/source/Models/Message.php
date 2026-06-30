@@ -1,6 +1,4 @@
 <?php
-
-//a
 namespace Source\Models;
 
 use Source\Core\Model;
