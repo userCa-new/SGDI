@@ -55,6 +55,15 @@ class Faqs extends Api
 
     public function insert(array $data): void
     {
+        if (!$this->authToken(3)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!$this->validate($data)) {
             $this->call(
                 400,
@@ -99,6 +108,15 @@ class Faqs extends Api
 
     public function update(array $data): void
     {
+        if (!$this->authToken(3)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!filter_var($data["faqId"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,

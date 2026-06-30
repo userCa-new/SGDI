@@ -10,6 +10,15 @@ class Appointments extends Api
     public function register(array $data): void
     {
         //$data = json_decode(file_get_contents("php://input"), true);
+        if (!$this->authToken(1)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!$this->validate($data)) {
             $this->call(
                 400,
@@ -55,6 +64,15 @@ class Appointments extends Api
     }
     public function update(array $data): void
     {
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (
             !$this->validate($data) ||
             !isset($data["id"]) ||
@@ -79,10 +97,6 @@ class Appointments extends Api
             )->back();
             return;
         }
-
-        $atendimento->setIdProperty($data["id_property"]);
-        $atendimento->setDate($data["date"]);
-        $atendimento->setObservation($data["observation"]);
         $atendimento->setCompleted($data["completed"] ? 1 : 0);
 
         if (!$atendimento->updateById($data["id"])) {
@@ -152,6 +166,15 @@ class Appointments extends Api
 
     public function delete(array $data): void
     {
+        if (!$this->authToken(1)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,

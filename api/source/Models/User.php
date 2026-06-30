@@ -112,13 +112,11 @@ class User extends Model
 
     public function login(
         string $email,
-        string $password,
-        int $typeId = 2,
+        string $password
     ): bool {
-        $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :idUserType";
+        $query = "SELECT * FROM {$this->table} WHERE email = :email";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":idUserType", $typeId);
         $stmt->execute();
         if ($stmt->rowCount() == 0) {
             $this->errorMessage = "Email não cadastrado";
@@ -146,16 +144,18 @@ class User extends Model
         return true;
     }
 
-    public function permissionVerify(string $email, $typeId): bool
-    {
-        $query = "SELECT * FROM {$this->table} WHERE email = :email AND id_user_type = :typeId";
-        $stmt = Connect::getInstance()->prepare($query);
-        $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":typeId", $typeId);
-        $stmt->execute();
-        if ($stmt->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }
+   public function permissionVerify(string $email, int $typeId): bool
+{
+    $query = "SELECT *
+              FROM users
+              WHERE email = :email
+              AND id_user_type = :typeId";
+
+    $stmt = Connect::getInstance()->prepare($query);
+    $stmt->bindParam(":email", $email);
+    $stmt->bindParam(":typeId", $typeId);
+    $stmt->execute();
+
+    return $stmt->rowCount() > 0;
+}
 }

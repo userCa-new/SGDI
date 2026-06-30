@@ -31,7 +31,7 @@ class Users extends Api
 
         $user = new User(
             null,
-            2,
+            $data["type_user"],
             $data["name"],
             $data["email"],
             $data["password"],

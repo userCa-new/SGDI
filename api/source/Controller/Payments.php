@@ -8,6 +8,15 @@ class Payments extends Api
 {
     public function register(array $data): void
     {
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!$this->validate($data)) {
             $this->call(
                 400,
@@ -132,6 +141,72 @@ class Payments extends Api
             "Pagamento excluido com sucesso",
             "success",
         )->back();
+    }
+    public function update(array $data): void
+    {
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
+        if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
+            $this->call(
+                400,
+                "bad_request",
+                "Id do pagamento é obrigatório e deve ser um número inteiro",
+            )->back();
+            return;
+        }
+
+        if (!$this->validate($data)) {
+            $this->call(
+                400,
+                "bad_request",
+                "Dados incorretos ou campos obrigatórios ausentes.",
+                "error",
+            )->back();
+            return;
+        }
+
+        $payment = new Payment();
+        $payment->setIdPayment($data["id"]);
+        $payment->setIdContract($data["id_contract"]);
+        $payment->setPix($data["pix"]);
+        $payment->setReceipt($data["receipt"]);
+        $payment->setValue($data["value"]);
+        $payment->setPaymentDate($data["payment_date"]);
+        $payment->setStatus($data["status"]);
+
+        if (!$payment->update()){
+            $this->call(
+                500,
+                "internal_server_error",
+                $payment->getErrorMessage(),
+                "error",
+            )->back();
+            return;
+        }
+
+        $response = [
+            "id_payment" => $payment->getIdPayment(),
+            "id_contract" => $payment->getIdContract(),
+            "pix" => $payment->getPix(),
+            "receipt" => $payment->getReceipt(),
+            "value" => $payment->getValue(),
+            "paymentDate" => $payment->getPaymentDate(),
+            "status" => $payment->getStatus(),
+        ];
+
+        $this->call(
+            200,
+            "success",
+            "Pagamento atualizado com sucesso!",
+            "success",
+        )->back($response);
     }
 
     public function validate(array $data): bool

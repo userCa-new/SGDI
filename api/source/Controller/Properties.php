@@ -72,6 +72,15 @@ class Properties extends Api
     }
     public function delete(array $data): void
     {
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,
@@ -141,6 +150,15 @@ class Properties extends Api
 
     public function update(array $data): void
     {
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
         if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,

@@ -95,7 +95,7 @@ class Contracts extends Api
         }
 
         $response = [
-            "id" => $contract->getId(),
+            "id" => $contract->getIdContract(),
             "id_property" => $contract->getIdProperty(),
             "id_user" => $contract->getIdUser(),
             "rent_value" => $contract->getRentValue(),
@@ -119,6 +119,7 @@ class Contracts extends Api
 
     public function update(array $data): void
     {
+    
         if (!$this->authToken(2)) {
             $this->call(
                 401,
@@ -128,7 +129,6 @@ class Contracts extends Api
             )->back();
             return;
         }
-
         if (
             !isset($data["id"]) ||
             !filter_var($data["id"], FILTER_VALIDATE_INT)
@@ -153,7 +153,7 @@ class Contracts extends Api
         }
 
         $contract = new Contract();
-        $contract->setId($data["id"]);
+        $contract->setIdContract($data["id"]);
         $contract->setIdProperty($data["id_property"]);
         $contract->setRentValue($data["rent_value"]);
         $contract->setStartDate($data["start_date"]);

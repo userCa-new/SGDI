@@ -83,7 +83,7 @@ $route->group("/contract");
 $route->post("/register", "Contracts:register"); //funcionando
 $route->get("/listAll", "Contracts:listAll"); //funcionando
 $route->get("/list/{id}", "Contracts:listById"); //funcionando
-$route->put("/update/{id}", "Contracts:update");
+$route->put("/update/{id}", "Contracts:update"); //fucionando
 $route->delete("/delete/{id}", "Contracts:delete"); //funcionando
 $route->group(null);
 

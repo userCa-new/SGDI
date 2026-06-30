@@ -44,12 +44,12 @@ class Contract extends Model
         ];
     }
 
-    public function getId(): ?int
+    public function getIdContract(): ?int
     {
         return $this->id;
     }
 
-    public function setId(?int $id): void
+    public function setIdContract(?int $id): void
     {
         $this->id = $id;
     }
