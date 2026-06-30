@@ -84,7 +84,7 @@ git clone https://github.com/userCa-new/SGDI.git
 /users/login
 ```
 
-### Corpo
+### Corpo da requisição
 
 ```json
 {
@@ -113,8 +113,9 @@ git clone https://github.com/userCa-new/SGDI.git
 
 |Código|Descrição|
 |------|---------|
-|200|Login realizado|
-|401|Credenciais inválidas|
+|200|Usuário logado com sucesso|
+|400|bad_request|
+|401|unauthorized|
 
 ---
 
@@ -167,13 +168,13 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 
 ```json
-[
+
     {
         "id":1,
         "question":"Pergunta",
         "answer":"Resposta"
     }
-]
+
 ```
 
 ---
@@ -194,11 +195,82 @@ git clone https://github.com/userCa-new/SGDI.git
 /appointment/register
 ```
 
+## Corpo da requisição
+```json
+
+  {
+    "id_property": 2,
+    "date": 2025-10-10,
+    "observation": "texto",
+    "completed": 1
+  }
+
+```
+
+
+## Resposta
+```json
+
+ {
+    "code": 201,
+    "type": "success",
+    "status": "success",
+    "message": "Atendimento cadastrado com sucesso!",
+    "data": {
+        "id": 3,
+        "id_property": 2,
+        "date": "2025-10-10",
+        "observation": "texto",
+        "completed": 1
+    }
+ }
+
+```
+
+
+
 ## Listar todos
 **GET**
 ```
 /appointment/listAll
 ```
+
+## Resposta
+```json
+
+ {
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Lista de atendimentos",
+    "data": [
+        {
+            "id_appointment": 1,
+            "id_property": 1,
+            "date": "2025-06-10",
+            "observation": "Lock replacement",
+            "completed": 1
+        },
+        {
+            "id_appointment": 2,
+            "id_property": 2,
+            "date": "2025-06-15",
+            "observation": "Bedroom painting",
+            "completed": 0
+        },
+        {
+            "id_appointment": 3,
+            "id_property": 2,
+            "date": "2025-10-10",
+            "observation": "texto",
+            "completed": 1
+        }
+    ]
+}
+
+```
+
+
 
 ## Buscar por ID
 **GET**
