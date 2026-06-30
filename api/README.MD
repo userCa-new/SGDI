@@ -2,7 +2,6 @@
 
 ## Descrição
 
-Esta API foi desenvolvida em PHP utilizando o framework CoffeeCode Router para gerenciamento das rotas.
 
 Ela permite o gerenciamento de:
 
@@ -25,6 +24,7 @@ http://localhost/SGDI/api
 
 ---
 
+## HTTPS (Clone)
 ```bash
 git clone https://github.com/userCa-new/SGDI.git
 ```
@@ -137,7 +137,6 @@ git clone https://github.com/userCa-new/SGDI.git
 /users/register-admin
 ```
 
-> Ainda não implementado.
 
 ---
 
@@ -195,7 +194,7 @@ git clone https://github.com/userCa-new/SGDI.git
 /appointment/register
 ```
 
-## Corpo da requisição
+### Corpo da requisição
 ```json
 
   {
@@ -208,7 +207,7 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 
 
-## Resposta
+### Resposta
 ```json
 
  {
@@ -235,7 +234,7 @@ git clone https://github.com/userCa-new/SGDI.git
 /appointment/listAll
 ```
 
-## Resposta
+### Resposta
 ```json
 
  {
@@ -257,14 +256,7 @@ git clone https://github.com/userCa-new/SGDI.git
             "date": "2025-06-15",
             "observation": "Bedroom painting",
             "completed": 0
-        },
-        {
-            "id_appointment": 3,
-            "id_property": 2,
-            "date": "2025-10-10",
-            "observation": "texto",
-            "completed": 1
-        }
+        } 
     ]
 }
 
@@ -278,10 +270,27 @@ git clone https://github.com/userCa-new/SGDI.git
 /appointment/list/{id}
 ```
 
-Exemplo
-
+### Corpo da requisição
+```json
+/appointment/list/1
 ```
-GET /appointment/list/5
+
+
+### Resposta
+```json
+{
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Atendimento encontrado",
+    "data": {
+        "id": "1",
+        "idProperty": 1,
+        "date": "2025-06-10",
+        "observation": "Lock replacement",
+        "completed": 1
+    }
+}
 ```
 
 ## Atualizar
@@ -296,6 +305,21 @@ GET /appointment/list/5
 /appointment/delete/{id}
 ```
 
+### Corpo da requisição
+```json
+/appointment/delete/1
+```
+
+### Resposta
+```json
+{
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Atendimento excluido com sucesso"
+}
+```
+
 ---
 
 # Imóveis
@@ -305,6 +329,17 @@ GET /appointment/list/5
 ```
 /propertie/insert
 ```
+
+### Corpo da requisição
+```json
+
+```
+
+### Resposta
+```json
+
+```
+
 
 ## Listar
 **GET**
