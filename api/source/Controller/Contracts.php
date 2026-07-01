@@ -95,7 +95,7 @@ class Contracts extends Api
         }
 
         $response = [
-            "id" => $contract->getIdContract(),
+            "id" => $contract->getId(),
             "id_property" => $contract->getIdProperty(),
             "id_user" => $contract->getIdUser(),
             "rent_value" => $contract->getRentValue(),
@@ -153,7 +153,7 @@ class Contracts extends Api
         }
 
         $contract = new Contract();
-        $contract->setIdContract($data["id"]);
+        $contract->setId($data["id"]);
         $contract->setIdProperty($data["id_property"]);
         $contract->setRentValue($data["rent_value"]);
         $contract->setStartDate($data["start_date"]);

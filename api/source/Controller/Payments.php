@@ -181,7 +181,7 @@ class Payments extends Api
         $payment->setPaymentDate($data["payment_date"]);
         $payment->setStatus($data["status"]);
 
-        if (!$payment->update()){
+        if (!$payment->updateById()){
             $this->call(
                 500,
                 "internal_server_error",

@@ -6,22 +6,22 @@ use Source\Core\Model;
 
 class Payment extends Model
 {
-    private $idPayment;
-    private $idContract;
-    private $pix;
-    private $receipt;
-    private $value;
-    private $paymentDate;
-    private $status;
+    private ?int $idPayment;
+    private ?int $idContract;
+    private ?string $pix;
+    private ?string $receipt;
+    private ?float $value;
+    private ?string $paymentDate;
+    private ?string $status;
 
     public function __construct(
-        $idPayment = null,
-        $idContract = null,
-        $pix = null,
-        $receipt = null,
-        $value = null,
-        $paymentDate = null,
-        $status = null,
+        ?int $idPayment = null,
+        ?int $idContract = null,
+        ?string $pix = null,
+        ?string $receipt = null,
+        ?float $value = null,
+        ?string $paymentDate = null,
+        ?string $status = null,
     ) {
         $this->idPayment = $idPayment;
         $this->idContract = $idContract;
@@ -43,65 +43,70 @@ class Payment extends Model
         ];
     }
 
-    public function getIdContract()
+    public function getIdPayment(): ?int
+    {
+        return $this->idPayment;
+    }
+
+    public function setIdPayment(?int $idPayment): void
+    {
+        $this->idPayment = $idPayment;
+    }
+
+    public function getIdContract(): ?int
     {
         return $this->idContract;
     }
 
-    public function setIdContract($idContract)
+    public function setIdContract(?int $idContract): void
     {
         $this->idContract = $idContract;
     }
 
-    public function getPix()
+    public function getPix(): ?string
     {
         return $this->pix;
     }
 
-    public function setPix($pix)
+    public function setPix(?string $pix): void
     {
         $this->pix = $pix;
     }
-    public function getReceipt()
+    public function getReceipt(): ?string
     {
         return $this->receipt;
     }
 
-    public function setReceipt($receipt)
+    public function setReceipt(?string $receipt): void
     {
         $this->receipt = $receipt;
     }
 
-    public function getStatus()
-    {
-        return $this->status;
-    }
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-    public function getIdPayment()
-    {
-        return $this->idPayment;
-    }
-    public function setIdPayment($idPayment)
-    {
-        $this->idPayment = $idPayment;
-    }
-    public function getValue()
+    public function getValue(): ?float
     {
         return $this->value;
     }
-    public function setValue($value)
+
+    public function setValue(?float $value): void
     {
         $this->value = $value;
     }
-    public function getPaymentDate()
+
+    public function getPaymentDate(): ?string
     {
         return $this->paymentDate;
     }
-    public function setPaymentDate($paymentDate)
+    public function setPaymentDate(?string $paymentDate): void
     {
         $this->paymentDate = $paymentDate;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
     }
 }

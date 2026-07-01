@@ -193,7 +193,7 @@ class Appointments extends Api
             )->back();
             return;
         }
-        var_dump($data["id"]);
+        //var_dump($data["id"]);
         $atendimento = new Appointment();
 
         if (!$atendimento->deleteById($data["id"])) {
