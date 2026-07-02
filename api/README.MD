@@ -145,6 +145,13 @@ git clone https://github.com/userCa-new/SGDI.git
 }
 ```
 
+### Resposta
+```json
+{
+
+}
+```
+
 
 #### Status HTTP
 
@@ -174,6 +181,15 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 
 
+### Resposta
+```json
+{
+  
+}
+```
+
+
+
 ---
 
 ### Login administrador
@@ -188,6 +204,14 @@ git clone https://github.com/userCa-new/SGDI.git
 {
     "email":"user12@email.com",
     "password":"123"
+}
+```
+
+
+### Resposta
+```json
+{
+  
 }
 ```
 
@@ -216,6 +240,15 @@ git clone https://github.com/userCa-new/SGDI.git
     "password":"123"
 }
 ```
+
+
+### Resposta
+```json
+{
+  
+}
+```
+
 
 #### Status HTTP
 
@@ -291,6 +324,7 @@ git clone https://github.com/userCa-new/SGDI.git
     }
 
 ```
+
 
 
 #### Status HTTP
