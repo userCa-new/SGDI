@@ -39,12 +39,15 @@ $route->group(null);
 // FAQs
 $route->namespace("Source\Controller\Faqs");
 $route->group("/faqs");
-$route->get("/list", "Faqs:listAll");
-$route->post("/", "Faqs:insert");
+$route->get("/list", "faqs\Faqs:listAll");
+$route->get("/list/{faqId}", "faqs\Faqs:listById");
+$route->post("/", "faqs\Faqs:insert");
+$route->put("/{faqId}", "faqs\Faqs:update");
 $route->group(null);
 
-// Categorias de FAQs
 $route->group("/faqs-categories");
+$route->get("/list", "faqs\FaqsCategories:listAll");
+$route->get("/list/{categoryId}", "faqs\FaqsCategories:listById");
 $route->group(null);
 // Fim - Exercícios - Desafios
 
@@ -64,7 +67,7 @@ $route->group("/propertie");
 $route->post("/insert", "Properties:insert"); //funcionando
 $route->get("/listAll", "Properties:listAll"); //funcionando
 $route->get("/list/{id}", "Properties:listById"); //funcionando
-$route->put("/update/{id}", "Properties:update"); //funcionando?
+$route->put("/update/{id}", "Properties:update"); //funcionando
 $route->delete("/delete/{id}", "Properties:delete"); //funcionando
 $route->group(null);
 
@@ -74,7 +77,7 @@ $route->group("/payments");
 $route->post("/insert", "Payments:register"); //funcionando
 $route->get("/listAll", "Payments:listAll"); //funcionando
 $route->get("/list/{id}", "Payments:listById"); //funcionando
-$route->put("/update/{id}", "Payments:update");
+$route->put("/update/{id}", "Payments:update"); //funcionando
 $route->delete("/delete/{id}", "Payments:delete"); //funcionando
 $route->group(null);
 
@@ -94,7 +97,7 @@ $route->group("/message");
 $route->post("/register", "Messages:register"); //funcionando
 $route->get("/listAll", "Messages:listAll"); //funcionando
 $route->get("/list/{id}", "Messages:listById"); //funcionando
-$route->put("/update/{id}", "Messages:update");
+$route->put("/update/{id}", "Messages:update"); 
 $route->delete("/delete/{id}", "Messages:delete"); //funcionando
 $route->group(null);
 

@@ -14,13 +14,13 @@ class Appointment extends Model
     protected ?int $completed;
 
     public function __construct(
-        ?int $id = null,
+        ?int $idAppointment = null,
         ?int $idProperty = null,
         ?string $date = null,
         ?string $observation = null,
         ?int $completed = null,
     ) {
-        $this->id = $id;
+        $this->idAppointment = $idAppointment;
         $this->idProperty = $idProperty;
         $this->date = $date;
         $this->observation = $observation;
@@ -31,13 +31,13 @@ class Appointment extends Model
         $this->fillable = ["idProperty", "date", "observation", "completed"];
     }
 
-    public function getId(): ?int
+    public function getIdAppointment(): ?int
     {
-        return $this->id;
+        return $this->idAppointment;
     }
-    public function setId(?int $id): void
+    public function setIdAppointment(?int $idAppointment): void
     {
-        $this->id = $id;
+        $this->idAppointment = $idAppointment;
     }
 
     public function getIdProperty(): ?int

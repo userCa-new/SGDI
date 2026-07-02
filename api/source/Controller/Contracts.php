@@ -50,7 +50,7 @@ class Contracts extends Api
         }
 
         $response = [
-            "id" => $contract->getId(),
+            "id_contract" => $contract->getIdContract(),
             "id_property" => $contract->getIdProperty(),
             "id_user" => $contract->getIdUser(),
             "rent_value" => $contract->getRentValue(),

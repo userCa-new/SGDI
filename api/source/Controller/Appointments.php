@@ -9,7 +9,6 @@ class Appointments extends Api
 {
     public function register(array $data): void
     {
-        //$data = json_decode(file_get_contents("php://input"), true);
         if (!$this->authToken(1)) {
             $this->call(
                 401,
@@ -83,7 +82,6 @@ class Appointments extends Api
             return;
         }
         if (
-            !$this->validate($data) ||
             !isset($data["id"]) ||
             !filter_var($data["id"], FILTER_VALIDATE_INT)
         ) {
@@ -119,7 +117,7 @@ class Appointments extends Api
         }
 
         $response = [
-            "id" => $atendimento->getId(),
+            "id_appointment" => $atendimento->getIdAppointment(),
             "id_property" => $atendimento->getIdProperty(),
             "date" => $atendimento->getDate(),
             "observation" => $atendimento->getObservation(),

@@ -6,17 +6,17 @@ use Source\Core\Model;
 
 class Chat extends Model
 {
-    private ?int $id;
-    private ?int $idContract;
+    private ?int $idChat;
+    private ?int $idProperty;
     private ?string $creationDate;
 
     public function __construct(
-        ?int $id = null,
-        ?int $idContract = null,
+        ?int $idChat = null,
+        ?int $idProperty = null,
         ?string $creationDate = null,
     ) {
-        $this->id = $id;
-        $this->idContract = $idContract;
+        $this->idChat = $idChat;
+        $this->idProperty = $idProperty;
         $this->creationDate = $creationDate;
 
         $this->table = "chat";
@@ -25,24 +25,24 @@ class Chat extends Model
         $this->fillable = ["idContract", "creationDate"];
     }
 
-    public function getId(): ?int
+    public function getIdChat(): ?int
     {
-        return $this->id;
+        return $this->idChat;
     }
 
-    public function setId(?int $id): void
+    public function setIdChat(?int $idChat): void
     {
-        $this->id = $id;
+        $this->idChat = $idChat;
     }
 
-    public function getIdContract(): ?int
+    public function getIdProperty(): ?int
     {
-        return $this->idContract;
+        return $this->idProperty;
     }
 
-    public function setIdContract(?int $idContract): void
+    public function setIdProperty(?int $idProperty): void
     {
-        $this->idContract = $idContract;
+        $this->idProperty = $idProperty;
     }
 
     public function getCreationDate(): ?string

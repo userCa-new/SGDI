@@ -1,3 +1,4 @@
+```sql
 DROP DATABASE IF EXISTS imobiliaria;
 
 CREATE DATABASE imobiliaria;
@@ -22,14 +23,21 @@ CREATE TABLE users (
 
 CREATE TABLE properties (
     id_property INT AUTO_INCREMENT PRIMARY KEY,
+    id_owner INT NOT NULL,
+
     location VARCHAR(150) NOT NULL,
     number_of_rooms INT NOT NULL,
     availability BOOLEAN DEFAULT TRUE,
-    late_payment BOOLEAN DEFAULT FALSE
+    late_payment BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (id_owner)
+        REFERENCES users(id_user)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE contracts (
     id_contract INT AUTO_INCREMENT PRIMARY KEY,
+
     id_property INT NOT NULL,
     id_user INT NOT NULL,
 
@@ -82,7 +90,6 @@ CREATE TABLE appointments (
 
     date DATE NOT NULL,
     observation VARCHAR(200),
-
     completed BOOLEAN DEFAULT FALSE,
 
     FOREIGN KEY (id_property)
@@ -103,7 +110,6 @@ CREATE TABLE faqs (
 
     question VARCHAR(255) NOT NULL,
     answer VARCHAR(255) NOT NULL,
-
     active BOOLEAN DEFAULT TRUE,
 
     FOREIGN KEY (id_category)
@@ -114,12 +120,12 @@ CREATE TABLE faqs (
 CREATE TABLE chat (
     id_chat INT AUTO_INCREMENT PRIMARY KEY,
 
-    id_contract INT,
+    id_property INT NOT NULL,
 
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (id_contract)
-        REFERENCES contracts(id_contract)
+    FOREIGN KEY (id_property)
+        REFERENCES properties(id_property)
         ON DELETE CASCADE
 );
 
@@ -161,15 +167,16 @@ VALUES
 (3, 'Administrator', 'admin@email.com', 'admin123');
 
 INSERT INTO properties (
+    id_owner,
     location,
     number_of_rooms,
     availability,
     late_payment
 )
 VALUES
-('Rua das Flores, 100', 2, TRUE, FALSE),
-('Av. Brasil, 250', 3, TRUE, FALSE),
-('Rua Independência, 45', 1, FALSE, FALSE);
+(3, 'Rua das Flores, 100', 2, TRUE, FALSE),
+(3, 'Av. Brasil, 250', 3, TRUE, FALSE),
+(4, 'Rua Independência, 45', 1, FALSE, FALSE);
 
 INSERT INTO contracts (
     id_property,
@@ -203,8 +210,8 @@ INSERT INTO appointments (
     completed
 )
 VALUES
-(1, '2025-06-10', 'Lock replacement', TRUE),
-(2, '2025-06-15', 'Bedroom painting', FALSE);
+(1, '2025-06-10', 'Troca de fechadura', TRUE),
+(2, '2025-06-15', 'Pintura do quarto', FALSE);
 
 INSERT INTO faq_categories (
     name,
@@ -228,12 +235,12 @@ VALUES
 (3, 'Can I visit a property before renting?', 'Yes, you can schedule a visit.', TRUE);
 
 INSERT INTO chat (
-    id_contract,
+    id_property,
     creation_date
 )
 VALUES
-(1, '2025-05-25'),
-(2, '2025-05-25');
+(1, '2025-05-25 10:00:00'),
+(3, '2025-05-25 11:00:00');
 
 INSERT INTO messages (
     id_chat,
@@ -242,7 +249,8 @@ INSERT INTO messages (
     date_time
 )
 VALUES
-(1, 1, 'Hello, I have a question about the rent.', '2026-10-10'),
-(1, 3, 'Sure, how can I help you?', '2025-09-01'),
-(2, 2, 'When is the next payment due?', '2025-07-11'),
-(2, 4, 'The due date is the 10th of each month.', '2023-12-30');
+(1, 1, 'Olá, este imóvel ainda está disponível?', '2025-05-26 10:00:00'),
+(1, 3, 'Sim, continua disponível.', '2025-05-26 10:15:00'),
+(2, 2, 'Gostaria de agendar uma visita.', '2025-05-27 14:00:00'),
+(2, 4, 'Claro, podemos marcar para amanhã.', '2025-05-27 14:20:00');
+```

@@ -5,20 +5,20 @@ use Source\Core\Model;
 
 class Message extends Model
 {
-    private ?int $id = null;
+    private ?int $idMessage = null;
     private ?int $idChat = null;
     private ?int $idSender = null;
     private ?string $message = null;
     private ?string $dateTime = null;
 
     public function __construct(
-        ?int $id = null,
+        ?int $idMessage = null,
         ?int $idChat = null,
         ?int $idSender = null,
         ?string $message = null,
         ?string $dateTime = null,
     ) {
-        $this->id = $id;
+        $this->idMessage = $idMessage;
         $this->idChat = $idChat;
         $this->idSender = $idSender;
         $this->message = $message;
@@ -30,9 +30,9 @@ class Message extends Model
         $this->fillable = ["idChat", "idSender", "message", "dateTime"];
     }
 
-    public function getId(): ?int
+    public function getIdMessage(): ?int
     {
-        return $this->id;
+        return $this->idMessage;
     }
 
     public function getIdChat(): ?int

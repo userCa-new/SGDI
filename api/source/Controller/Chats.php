@@ -9,6 +9,7 @@ class Chats extends Api
 {
     public function register(array $data): void
     {
+        
         if (!$this->validate($data)) {
             $this->call(
                 400,
@@ -19,7 +20,7 @@ class Chats extends Api
             return;
         }
 
-        $chat = new Chat(null, $data["idContract"], $data["creationDate"]);
+        $chat = new Chat(null, $data["id_property"], $data["creationDate"]);
 
         if (!$chat->insert()) {
             $this->call(
@@ -32,8 +33,8 @@ class Chats extends Api
         }
 
         $response = [
-            "id" => $chat->getId(),
-            "idContract" => $chat->getIdContract(),
+            "id_chat" => $chat->getIdChat(),
+            "id_property" => $chat->getIdProperty(),
             "creationDate" => $chat->getCreationDate(),
         ];
 
@@ -76,9 +77,9 @@ class Chats extends Api
             return;
         }
         $response = [
-            "id" => $chat->getId(),
-            "idContract" => $chat->getIdContract(),
-            "creationDate" => $chat->getCreationDate(),
+            "id_chat" => $chat->getIdChat(),
+            "id_property" => $chat->getIdProperty(),
+            "creation_date" => $chat->getCreationDate(),
         ];
 
         $this->call(
@@ -89,7 +90,9 @@ class Chats extends Api
         )->back($response);
     }
 
-    public function update(array $data): void {}
+    public function update(array $data): void {
+        
+    }
 
     public function delete(array $data): void
     {
@@ -126,10 +129,10 @@ class Chats extends Api
     public function validate(array $data): bool
     {
         if (
-            !isset($data["idContract"]) ||
-            empty($data["idContract"]) ||
-            !isset($data["creationDate"]) ||
-            empty($data["creationDate"])
+            !isset($data["id_property"]) ||
+            empty($data["id_property"]) ||
+            !isset($data["creation_date"]) ||
+            empty($data["creation_date"])
         ) {
             return false;
         }

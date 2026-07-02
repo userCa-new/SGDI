@@ -21,10 +21,10 @@ class Messages extends Api
 
         $message = new Message(
             null,
-            $data["idChat"],
-            $data["idSender"],
+            $data["id_chat"],
+            $data["id_sender"],
             $data["message"],
-            $data["dateTime"],
+            $data["date_time"],
         );
         if (!$message->insert()) {
             $this->call(
@@ -37,11 +37,11 @@ class Messages extends Api
         }
 
         $response = [
-            "id" => $message->getId(),
-            "idChat" => $message->getIdChat(),
-            "idSender" => $message->getIdSender(),
+            "id_message" => $message->getIdMessage(),
+            "id_chat" => $message->getIdChat(),
+            "id_sender" => $message->getIdSender(),
             "message" => $message->getMessage(),
-            "dateTime" => $message->getDateTime(),
+            "date_time" => $message->getDateTime(),
         ];
         $this->call(
             200,
@@ -82,11 +82,11 @@ class Messages extends Api
             return;
         }
         $response = [
-            "id" => $message->getId(),
-            "idChat" => $message->getIdChat(),
-            "idSender" => $message->getIdSender(),
+            "id_message" => $message->getIdMessage(),
+            "id_chat" => $message->getIdChat(),
+            "id_sender" => $message->getIdSender(),
             "message" => $message->getMessage(),
-            "dateTime" => $message->getDateTime(),
+            "date_time" => $message->getDateTime(),
         ];
 
         $this->call(
@@ -97,7 +97,9 @@ class Messages extends Api
         )->back($response);
     }
 
-    public function update(array $data): void {}
+    public function update(array $data): void {
+        
+    }
 
     public function delete(array $data): void
     {
@@ -134,14 +136,14 @@ class Messages extends Api
     public function validate(array $data): bool
     {
         if (
-            !isset($data["idChat"]) ||
-            empty($data["idChat"]) ||
-            !isset($data["idSender"]) ||
-            empty($data["idSender"]) ||
+            !isset($data["id_chat"]) ||
+            empty($data["id_chat"]) ||
+            !isset($data["id_sender"]) ||
+            empty($data["id_sender"]) ||
             !isset($data["message"]) ||
             empty($data["message"]) ||
-            !isset($data["dateTime"]) ||
-            empty($data["dateTime"])
+            !isset($data["date_time"]) ||
+            empty($data["date_time"])
         ) {
             return false;
         }

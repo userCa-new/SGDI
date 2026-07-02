@@ -152,7 +152,7 @@ class Payments extends Api
                 "error",
             )->back();
             return;
-        }
+        }   
         if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,
@@ -181,7 +181,7 @@ class Payments extends Api
         $payment->setPaymentDate($data["payment_date"]);
         $payment->setStatus($data["status"]);
 
-        if (!$payment->update()){
+        if (!$payment->updateById($data["id"])){
             $this->call(
                 500,
                 "internal_server_error",
@@ -212,17 +212,17 @@ class Payments extends Api
     public function validate(array $data): bool
     {
         if (
-            !isset($data["idContract"]) ||
+            !isset($data["id_contract"]) ||
             !isset($data["pix"]) ||
             !isset($data["receipt"]) ||
             !isset($data["value"]) ||
-            !isset($data["paymentDate"]) ||
+            !isset($data["payment_date"]) ||
             !isset($data["status"]) ||
-            empty($data["idContract"]) ||
+            empty($data["id_contract"]) ||
             empty($data["pix"]) ||
             empty($data["receipt"]) ||
             empty($data["value"]) ||
-            empty($data["paymentDate"]) ||
+            empty($data["payment_date"]) ||
             empty($data["status"])
         ) {
             return false;
