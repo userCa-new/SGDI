@@ -31,6 +31,7 @@ class Payments extends Api
             null,
             $data["id_contract"],
             $data["pix"],
+            $data["qr_code"],
             $data["receipt"],
             $data["value"],
             $data["paymentDate"],
@@ -51,6 +52,7 @@ class Payments extends Api
             "id_payment" => $payment->getIdPayment(),
             "id_contract" => $payment->getIdContract(),
             "pix" => $payment->getPix(),
+            "qr_code" => $payment->getQrCode(),
             "receipt" => $payment->getReceipt(),
             "value" => $payment->getValue(),
             "payment_date" => $payment->getPaymentDate(),
@@ -94,6 +96,7 @@ class Payments extends Api
             "id_payment" => $pagamento->getIdPayment(),
             "id_contract" => $pagamento->getIdContract(),
             "pix" => $pagamento->getPix(),
+            "qr_code" => $payment->getQrCode(),
             "receipt" => $pagamento->getReceipt(),
             "value" => $pagamento->getValue(),
             "payment_date" => $pagamento->getPaymentDate(),
@@ -176,6 +179,7 @@ class Payments extends Api
         $payment->setIdPayment($data["id"]);
         $payment->setIdContract($data["id_contract"]);
         $payment->setPix($data["pix"]);
+        $payment->setQrCode($data["qr_code"]);
         $payment->setReceipt($data["receipt"]);
         $payment->setValue($data["value"]);
         $payment->setPaymentDate($data["payment_date"]);

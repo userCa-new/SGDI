@@ -29,6 +29,12 @@ http://localhost/SGDI/api
 git clone https://github.com/userCa-new/SGDI.git
 ```
 
+## Token
+```
+(1: Inquilino, 2: Propriétario, 3: Administrador)
+```
+
+
 # Usuários
 
 ## Registrar usuário
@@ -43,7 +49,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-    "type_user": 2, <- (1: Inquilino, 2: Propriétario, 3: Administrador)
+    "type_user": 2,
     "name":"user",
     "email":"user@email.com",
     "password":"123"
@@ -129,6 +135,17 @@ git clone https://github.com/userCa-new/SGDI.git
 /users/update
 ```
 
+### Corpo da requisição
+
+```json
+{
+    "name": "user12", 
+    "email":"user12@email.com",
+    "password":"123"
+}
+```
+
+
 #### Status HTTP
 
 | Código | type | status | Significado |
@@ -145,6 +162,16 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 /users/register-admin
 ```
+### Corpo da requisição
+
+```json
+{
+    
+    
+    "email":"user@email.com",
+    "password":"123"
+}
+```
 
 
 ---
@@ -154,6 +181,16 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 /users/login-admin
 ```
+
+### Corpo da requisição
+
+```json
+{
+    "email":"user12@email.com",
+    "password":"123"
+}
+```
+
 
 #### Status HTTP
 
@@ -169,6 +206,15 @@ git clone https://github.com/userCa-new/SGDI.git
 **PUT**
 ```
 /users/update-admin
+```
+
+### Corpo da requisição
+
+```json
+{
+    "email":"user@email.com",
+    "password":"123"
+}
 ```
 
 #### Status HTTP
@@ -191,12 +237,18 @@ git clone https://github.com/userCa-new/SGDI.git
 
 #### Corpo da requisição
 ```json
-
+{
+  "faqs_category_id": "1",
+  "question": "Pergunta",
+  "answer": "Resposta"
+}
 ```
 
 #### Resposta
 ```json
-
+{
+  
+}
 ```
 
 
@@ -215,13 +267,12 @@ git clone https://github.com/userCa-new/SGDI.git
 /faqs/listAll
 ```
 
-
 #### Resposta
 
 ```json
 
     {
-        "id":1,
+        "faqs_category_id":1,
         "question":"Pergunta",
         "answer":"Resposta"
     }
@@ -248,7 +299,9 @@ git clone https://github.com/userCa-new/SGDI.git
 
 #### Resposta
 ```json
+{
 
+}
 ```
 
 
@@ -271,10 +324,11 @@ git clone https://github.com/userCa-new/SGDI.git
 /faqs/update/1
 ```
 
-
 #### Resposta
 ```json
+{
 
+}
 ```
 
 #### Status HTTP
@@ -297,11 +351,12 @@ git clone https://github.com/userCa-new/SGDI.git
 /faqs-categories/listAll
 ```
 
-
 #### Resposta
 
 ```json
+{
 
+}
 ```
 
 
@@ -324,7 +379,9 @@ git clone https://github.com/userCa-new/SGDI.git
 
 #### Resposta
 ```json
+{
 
+}
 ```
 
 
@@ -355,7 +412,7 @@ git clone https://github.com/userCa-new/SGDI.git
   "id_property": 2,
   "date": "2025-10-10",
   "observation": "Troca de fechadura",
-  "completed": false
+  "completed": 0
 }
 ```
 
@@ -481,6 +538,13 @@ git clone https://github.com/userCa-new/SGDI.git
 /appointment/update/{id}
 ```
 
+
+### Exemplo
+
+```
+/appointment/update/1
+```
+
 #### Corpo da requisição
 
 ```json
@@ -488,7 +552,7 @@ git clone https://github.com/userCa-new/SGDI.git
   "id_property": 2,
   "date": "2025-10-10",
   "observation": "Troca de fechadura",
-  "completed": true
+  "completed": 1
 }
 ```
 
@@ -707,6 +771,12 @@ git clone https://github.com/userCa-new/SGDI.git
 /propertie/update/{id}
 ```
 
+### Exemplo
+
+```
+/propertie/update/1
+```
+
 ### Corpo da requisição
 
 ```json
@@ -791,6 +861,7 @@ git clone https://github.com/userCa-new/SGDI.git
 {
   "idContract": 2,
   "pix": "codigo_pix",
+  "qr_code": "codigo_qr",
   "receipt": "comprovante.pdf",
   "value": 1200.00,
   "paymentDate": "2025-10-10",
@@ -810,6 +881,7 @@ git clone https://github.com/userCa-new/SGDI.git
     "id_payment": 3,
     "id_contract": 2,
     "pix": "codigo_pix",
+    "qr_code": "codigo_qr",
     "receipt": "comprovante.pdf",
     "value": 1200,
     "paymentDate": "2025-10-10",
@@ -929,6 +1001,13 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 /payments/update/{id}
 ```
+
+### Exemplo
+
+```
+/payments/update/1
+```
+
 
 ### Corpo da requisição
 
@@ -1160,6 +1239,14 @@ git clone https://github.com/userCa-new/SGDI.git
 /contract/update/{id}
 ```
 
+
+### Exemplo
+
+```
+/contract/update/1
+```
+
+
 ### Corpo da requisição
 
 ```json
@@ -1237,9 +1324,23 @@ git clone https://github.com/userCa-new/SGDI.git
 /message/register
 ```
 
+### Corpo da requisição
 ```json
-
+  {
+    "id_chat": 2,
+    "id_sender": 1,
+    "message": "mensagem",
+    "date_time": "2025-05-27 14:00:00"
+  }
 ```
+
+### Resposta
+```json
+{
+
+}
+```
+
 
 | Código | type | status | Significado |
 |--------|------|--------|-------------|
@@ -1254,8 +1355,11 @@ git clone https://github.com/userCa-new/SGDI.git
 /message/listAll
 ```
 
+### Resposta
 ```json
+ {
 
+ }
 ```
 
 ### Status HTTP
@@ -1271,8 +1375,17 @@ git clone https://github.com/userCa-new/SGDI.git
 /message/list/{id}
 ```
 
-```json
+### Exemplo
 
+```
+/message/list/1
+```
+
+### Resposta
+```json
+{
+
+}
 ```
 
 ### Status HTTP
@@ -1284,33 +1397,24 @@ git clone https://github.com/userCa-new/SGDI.git
 |404|error|not_found|Mensagem não encontrada.|
 
 
-## Atualizar
-**PUT**
-```
-/message/update/{id}
-```
-
-```json
-
-```
-
-### Status HTTP
-
-| Código | type | status | Significado |
-|--------|------|--------|-------------|
-|200|success|success|Mensagem atualizada com sucesso.|
-|400|error|bad_request|ID da mensagem inválido ou dados obrigatórios ausentes.|
-|500|error|internal_server_error|Erro ao atualizar a mensagem.|
-
-
 ## Excluir
 **DELETE**
 ```
 /message/delete/{id}
 ```
 
-```json
+### Exemplo
 
+```
+/message/delete/1
+```
+
+
+### Resposta
+```json
+{
+
+}
 ```
 
 ### Status HTTP
@@ -1330,9 +1434,13 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 /chat/register
 ```
-
+ 
+ ### Corpo da requisição
 ```json
-
+{
+  "id_property": 2,
+  "creation_date": "2026-10-10 12:00:00"
+}
 ```
 
 | Código | type | status | Significado |
@@ -1348,8 +1456,11 @@ git clone https://github.com/userCa-new/SGDI.git
 /chat/listAll
 ```
 
+### Resposta
 ```json
+{
 
+}
 ```
 
 ### Status HTTP
@@ -1365,8 +1476,17 @@ git clone https://github.com/userCa-new/SGDI.git
 /chat/list/{id}
 ```
 
-```json
+### Exemplo
 
+```
+/chat/list/1
+```
+
+### Resposta
+```json
+{
+
+}
 ```
 
 ### Status HTTP
@@ -1377,23 +1497,6 @@ git clone https://github.com/userCa-new/SGDI.git
 |400|error|bad_request|ID do chat é obrigatório e deve ser um número inteiro.|
 |404|error|not_found|Chat não encontrado.|
 
-## Atualizar
-**PUT**
-```
-/chat/update/{id}
-```
-
-```json
-
-```
-
-### Status HTTP
-
-| Código | type | status | Significado |
-|--------|------|--------|-------------|
-|200|success|success|Chat atualizada com sucesso.|
-|400|error|bad_request|ID do chat inválido ou dados obrigatórios ausentes.|
-|500|error|internal_server_error|Erro ao atualizar o chat.|
 
 ## Excluir
 **DELETE**
@@ -1401,8 +1504,18 @@ git clone https://github.com/userCa-new/SGDI.git
 /chat/delete/{id}
 ```
 
-```json
 
+### Exemplo
+
+```
+/chat/delete/1
+```
+
+### Resposta
+```json
+{
+
+}
 ```
 
 ### Status HTTP
@@ -1412,5 +1525,4 @@ git clone https://github.com/userCa-new/SGDI.git
 |200|success|success|Chat excluído com sucesso.|
 |400|error|bad_request|ID do chat é obrigatório e deve ser um número inteiro.|
 |500|error|internal_server_error|Erro ao excluir o chat.|
-
 ---

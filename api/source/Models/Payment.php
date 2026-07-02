@@ -9,6 +9,7 @@ class Payment extends Model
     private ?int $idPayment;
     private ?int $idContract;
     private ?string $pix;
+    private ?string $qr_code;
     private ?string $receipt;
     private ?float $value;
     private ?string $paymentDate;
@@ -18,6 +19,7 @@ class Payment extends Model
         ?int $idPayment = null,
         ?int $idContract = null,
         ?string $pix = null,
+        ?string $qr_code = null,
         ?string $receipt = null,
         ?float $value = null,
         ?string $paymentDate = null,
@@ -26,6 +28,7 @@ class Payment extends Model
         $this->idPayment = $idPayment;
         $this->idContract = $idContract;
         $this->pix = $pix;
+        $this->qr_code = $qr_code;
         $this->receipt = $receipt;
         $this->value = $value;
         $this->paymentDate = $paymentDate;
@@ -36,6 +39,7 @@ class Payment extends Model
         $this->fillable = [
             "idContract",
             "pix",
+            "qr_code",
             "receipt",
             "value",
             "paymentDate",
@@ -72,6 +76,17 @@ class Payment extends Model
     {
         $this->pix = $pix;
     }
+
+    public function getQrCode(): ?string
+    {
+        return $this->qr_code;
+    }
+
+    public function setQrCode(?string $qr_code): void 
+    {
+        $this->qr_code = $qr_code;
+    }
+
     public function getReceipt(): ?string
     {
         return $this->receipt;
