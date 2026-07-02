@@ -47,7 +47,7 @@ class Appointments extends Api
         }
 
         $response = [
-            "id" => $atendimento->getId(),
+            "id" => $atendimento->getIdAppointment(),
             "id_property" => $atendimento->getIdProperty(),
             "date" => $atendimento->getDate(),
             "observation" => $atendimento->getObservation(),

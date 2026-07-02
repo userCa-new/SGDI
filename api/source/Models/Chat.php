@@ -22,7 +22,7 @@ class Chat extends Model
         $this->table = "chat";
         $this->primaryKey = "id_chat";
 
-        $this->fillable = ["idContract", "creationDate"];
+        $this->fillable = ["idProperty", "creationDate"];
     }
 
     public function getIdChat(): ?int

@@ -20,7 +20,7 @@ class Chats extends Api
             return;
         }
 
-        $chat = new Chat(null, $data["id_property"], $data["creationDate"]);
+        $chat = new Chat(null, $data["id_property"], $data["creation_date"]);
 
         if (!$chat->insert()) {
             $this->call(

@@ -64,6 +64,17 @@ public function registerAdmin(array $data): void
 
 public function update(array $data): void
 {
+    if (!$this->authToken(2)) {
+        if (!$this->authToken(1)){
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
+    }
     if (
         !$this->validateNameEmail($data) ||
         !isset($data["password"]) ||
