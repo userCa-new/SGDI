@@ -207,7 +207,7 @@ git clone https://github.com/userCa-new/SGDI.git
 |201|success|success|FAQ inserido com sucesso.|
 |400|error|bad_request|Os campos question, answer e faqs_category_id são obrigatórios.|
 |401|error|unauthorized|Token de autenticação inválido ou expirado.|
-|500|error|internal_server_error|Erro ao cadastrar o faq.|
+|500|error|internal_server_error|Erro ao cadastrar o FAQ.|
 
 ### Listar FAQs
 **GET**
