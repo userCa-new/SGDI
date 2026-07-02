@@ -344,7 +344,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **POST**
 
-```http
+```
 /appointment/register
 ```
 
@@ -392,7 +392,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /appointment/listAll
 ```
 
@@ -435,7 +435,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /appointment/list/{id}
 ```
 
@@ -477,7 +477,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **PUT**
 
-```http
+```
 /appointment/update/{id}
 ```
 
@@ -526,13 +526,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **DELETE**
 
-```http
+```
 /appointment/delete/{id}
 ```
 
 #### Exemplo
 
-```http
+```
 /appointment/delete/1
 ```
 
@@ -563,7 +563,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **POST**
 
-```http
+```
 /propertie/insert
 ```
 
@@ -611,7 +611,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /propertie/listAll
 ```
 
@@ -661,13 +661,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /propertie/list/{id}
 ```
 
 ### Exemplo
 
-```http
+```
 /propertie/list/1
 ```
 
@@ -703,7 +703,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **PUT**
 
-```http
+```
 /propertie/update/{id}
 ```
 
@@ -744,13 +744,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **DELETE**
 
-```http
+```
 /propertie/delete/{id}
 ```
 
 ### Exemplo
 
-```http
+```
 /propertie/delete/1
 ```
 
@@ -781,7 +781,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **POST**
 
-```http
+```
 /payments/register
 ```
 
@@ -833,7 +833,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /payments/listAll
 ```
 
@@ -882,13 +882,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /payments/list/{id}
 ```
 
 ### Exemplo
 
-```http
+```
 /payments/list/1
 ```
 
@@ -926,7 +926,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **PUT**
 
-```http
+```
 /payments/update/{id}
 ```
 
@@ -978,13 +978,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **DELETE**
 
-```http
+```
 /payments/delete/{id}
 ```
 
 ### Exemplo
 
-```http
+```
 /payments/delete/1
 ```
 
@@ -1014,7 +1014,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **POST**
 
-```http
+```
 /contract/register
 ```
 
@@ -1065,7 +1065,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /contract/listAll
 ```
 
@@ -1112,13 +1112,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **GET**
 
-```http
+```
 /contract/list/{id}
 ```
 
 ### Exemplo
 
-```http
+```
 /contract/list/1
 ```
 
@@ -1156,7 +1156,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **PUT**
 
-```http
+```
 /contract/update/{id}
 ```
 
@@ -1198,13 +1198,13 @@ git clone https://github.com/userCa-new/SGDI.git
 
 **DELETE**
 
-```http
+```
 /contract/delete/{id}
 ```
 
 ### Exemplo
 
-```http
+```
 /contract/delete/1
 ```
 
