@@ -1,150 +1,251 @@
 <?php
 
-namespace source\Controller\Faqs;
+namespace Source\Controller\Faqs;
 
 use Source\Controller\Api;
 use Source\Models\Faq\Faq;
 
 class Faqs extends Api
 {
-
-    public function listAll (array $data): void
+    public function listAll(array $data): void
     {
         $faq = new Faq();
-        $this->call(200,"success","Lista de FAQs","success")->back($faq->selectAll());
+
+        $this->call(
+            200,
+            "success",
+            "Lista de FAQs",
+            "success"
+        )->back($faq->selectAll());
     }
 
-   public function listById(array $data): void
+    public function listById(array $data): void
     {
-
-        if(!isset($data["faqId"]) || empty($data["faqId"]) || !filter_var($data["faqId"], FILTER_VALIDATE_INT)) {
+        if (
+            !isset($data["id"]) ||
+            !filter_var($data["id"], FILTER_VALIDATE_INT)
+        ) {
             $this->call(
                 400,
                 "bad_request",
-                "ID da FAQ é obrigatório e deve ser um número inteiro",
+                "ID da FAQ inválido",
                 "error"
-            )->back(null);
+            )->back();
+
             return;
         }
 
         $faq = new Faq();
-        if(!$faq->selectById($data["faqId"])) {
+
+        if (!$faq->selectById($data["id"])) {
             $this->call(
                 404,
                 "not_found",
                 "FAQ não encontrada",
                 "error"
-            )->back(null);
+            )->back();
+
             return;
         }
 
-        $response = [
-            "id" => $faq->getId(),
-            "faqs_category_id" => $faq->getFaqsCategoryId(),
+        $this->call(
+            200,
+            "success",
+            "FAQ encontrada",
+            "success"
+        )->back([
+            "id_faq" => $faq->getIdFaq(),
+            "id_category" => $faq->getIdCategory(),
             "question" => $faq->getQuestion(),
             "answer" => $faq->getAnswer(),
             "active" => $faq->getActive()
-        ];
-
-        $this->call(200,"success","FAQ encontrada","success")->back($response);
+        ]);
     }
 
-    public function insert (array $data): void
+    public function insert(array $data): void
     {
         if (!$this->authToken(3)) {
             $this->call(
                 401,
                 "unauthorized",
-                "Token de autenticação inválido ou expirado.",
-                "error",
+                "Apenas administradores podem cadastrar FAQs",
+                "error"
             )->back();
+
             return;
         }
-        if(!$this->validate($data)){
+
+        if (!$this->validate($data)) {
             $this->call(
                 400,
                 "bad_request",
-                "Os campos question, answer e faqs_category_id são obrigatórios",
+                "Dados inválidos",
                 "error"
             )->back();
+
             return;
         }
 
         $faq = new Faq(
             null,
-            $data["faqs_category_id"],
+            $data["id_category"],
             $data["question"],
-            $data["answer"]
+            $data["answer"],
+            true
         );
 
-        if(!$faq->insert()){
-            $this->call(500, "internal_server_error", $faq->getErrorMessage(), "error")->back();
+        if (!$faq->insert()) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $faq->getErrorMessage(),
+                "error"
+            )->back();
+
             return;
         }
-        $response = [
-            "id" => $faq->getId(),
-            "faqs_category_id" => $faq->getFaqsCategoryId(),
+
+        $this->call(
+            201,
+            "success",
+            "FAQ cadastrada com sucesso",
+            "success"
+        )->back([
+            "id_faq" => $faq->getIdFaq(),
+            "id_category" => $faq->getIdCategory(),
             "question" => $faq->getQuestion(),
             "answer" => $faq->getAnswer(),
             "active" => $faq->getActive()
-        ];
-
-        $this->call(201,"success","FAQ inserido com sucesso","success")->back($response);
-
+        ]);
     }
 
-    public function update (array $data): void
+    public function update(array $data): void
     {
-       
-        if(!filter_var($data["faqId"], FILTER_VALIDATE_INT)) {
+        if (!$this->authToken(3)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Apenas administradores podem atualizar FAQs",
+                "error"
+            )->back();
+
+            return;
+        }
+
+        if (
+            !isset($data["id"]) ||
+            !filter_var($data["id"], FILTER_VALIDATE_INT) ||
+            !$this->validate($data)
+        ) {
             $this->call(
                 400,
                 "bad_request",
-                "ID do FAQ é obrigatório e deve ser um número inteiro",
+                "Dados inválidos",
                 "error"
             )->back();
+
             return;
         }
 
-        if(!$this->validate($data)){
+        $faq = new Faq();
+
+        if (!$faq->selectById((int)$data["id"])) {
             $this->call(
-                400,
-                "bad_request",
-                "ID inválido ou campos obrigatórios ausentes",
+                404,
+                "not_found",
+                "FAQ não encontrada",
                 "error"
             )->back();
+
             return;
         }
 
-        $faq = new Faq(
-            null,
-            $data["faqs_category_id"],
-            $data["question"],
-            $data["answer"]
-        );
+        $faq->setIdCategory($data["id_category"]);
+        $faq->setQuestion($data["question"]);
+        $faq->setAnswer($data["answer"]);
 
-        if(!$faq->updateById($data["faqId"])){
-            $this->call(500, "internal_server_error", $faq->getErrorMessage(), "error")->back();
+        if (!$faq->updateById((int)$data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $faq->getErrorMessage(),
+                "error"
+            )->back();
+
             return;
         }
-        $response = [
-            "id" => $faq->getId(),
-            "faqs_category_id" => $faq->getFaqsCategoryId(),
+
+        $this->call(
+            200,
+            "success",
+            "FAQ atualizada com sucesso",
+            "success"
+        )->back([
+            "id_faq" => $data["id"],
+            "id_category" => $faq->getIdCategory(),
             "question" => $faq->getQuestion(),
-            "answer" => $faq->getAnswer(),
-            "active" => $faq->getActive()
-        ];
-
-        $this->call(200,"success","Faq atualizado com sucesso","success")->back($response);
+            "answer" => $faq->getAnswer()
+        ]);
     }
 
-    public function validate (array $data): bool
+    public function delete(array $data): void
     {
-        if(!isset($data["faqs_category_id"]) || !isset($data["question"]) || !isset($data["answer"]) ||
-            empty($data["faqs_category_id"]) || empty($data["question"]) || empty($data["answer"]) ||
-           !filter_var($data["faqs_category_id"], FILTER_VALIDATE_INT)) {
-            return false;
+        if (!$this->authToken(3)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Apenas administradores podem remover FAQs",
+                "error"
+            )->back();
+
+            return;
         }
-        return true;
+
+        if (
+            !isset($data["id"]) ||
+            !filter_var($data["id"], FILTER_VALIDATE_INT)
+        ) {
+            $this->call(
+                400,
+                "bad_request",
+                "ID inválido",
+                "error"
+            )->back();
+
+            return;
+        }
+
+        $faq = new Faq();
+
+        if (!$faq->deleteById((int)$data["id"])) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $faq->getErrorMessage(),
+                "error"
+            )->back();
+
+            return;
+        }
+
+        $this->call(
+            200,
+            "success",
+            "FAQ removida com sucesso",
+            "success"
+        )->back();
+    }
+
+    private function validate(array $data): bool
+    {
+        return
+            isset(
+                $data["id_category"],
+                $data["question"],
+                $data["answer"]
+            ) &&
+            filter_var($data["id_category"], FILTER_VALIDATE_INT) &&
+            !empty($data["question"]) &&
+            !empty($data["answer"]);
     }
 }

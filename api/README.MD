@@ -232,7 +232,7 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Inserir FAQ
 **POST**
 ```
-/faqs/register
+/faqs/insert
 ```
 
 #### Corpo da requisição
@@ -246,9 +246,22 @@ git clone https://github.com/userCa-new/SGDI.git
 
 #### Resposta
 ```json
-{
 
+{
+    "code": 201,
+    "type": "success",
+    "status": "success",
+    "message": "FAQ cadastrada com sucesso",
+    "data": {
+        "id_faq": 6,
+        "id_category": 1,
+        "question": "Pergunta",
+        "answer": "Resposta",
+        "active": 1
+    }
 }
+
+
 ```
 
 
@@ -300,7 +313,17 @@ git clone https://github.com/userCa-new/SGDI.git
 #### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "FAQ encontrada",
+    "data": {
+        "id_faq": 1,
+        "id_category": 2,
+        "question": "question?",
+        "answer": "answer",
+        "active": 1
+    }
 }
 ```
 
@@ -323,12 +346,30 @@ git clone https://github.com/userCa-new/SGDI.git
 ```
 /faqs/update/1
 ```
-
-#### Resposta
+#### Corpo da requisição
 ```json
 {
-
+  "faqs_category_id": "2",
+  "question": "question?",
+  "answer": "answer"
 }
+```
+#### Resposta
+```json
+
+{
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "FAQ atualizada com sucesso",
+    "data": {
+        "id_faq": "1",
+        "id_category": 2,
+        "question": "question?",
+        "answer": "answer"
+    }
+}
+
 ```
 
 #### Status HTTP
@@ -344,7 +385,35 @@ git clone https://github.com/userCa-new/SGDI.git
 ---
 
 # Categorias de FAQs
+### Inserir Categoria de FAQ
+**POST**
+```
+/faqs-categories/insert
+```
 
+#### Corpo da requisição
+```json
+{
+  "name": "Frequente"
+}
+```
+
+#### Resposta
+```json
+
+{
+    "code": 201,
+    "type": "success",
+    "status": "success",
+    "message": "Categoria criada com sucesso",
+    "data": {
+        "id_category": 5,
+        "name": "frequente"
+    }
+}
+
+
+```
 ### Listar categorias das FAQs
 **GET**
 ```
@@ -355,7 +424,37 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Lista de categorias",
+    "data": [
+        {
+            "id_category": 1,
+            "name": "Payments",
+            "active": 1
+        },
+        {
+            "id_category": 2,
+            "name": "Contracts",
+            "active": 1
+        },
+        {
+            "id_category": 3,
+            "name": "Properties",
+            "active": 1
+        },
+        {
+            "id_category": 4,
+            "name": "frequente",
+            "active": 1
+        },
+        {
+            "id_category": 5,
+            "name": "frequente",
+            "active": 1
+        }
+    ]
 }
 ```
 
@@ -380,7 +479,17 @@ git clone https://github.com/userCa-new/SGDI.git
 #### Resposta
 ```json
 {
-
+{
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Categoria encontrada",
+    "data": {
+        "id_category": 1,
+        "name": "Payments",
+        "active": 1
+    }
+}
 }
 ```
 
@@ -1337,7 +1446,17 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "mensagem cadastrada com sucesso!",
+    "data": {
+        "id_message": 6,
+        "id_chat": 2,
+        "id_sender": 1,
+        "message": "mensagem",
+        "date_time": "2025-05-27 14:00:00"
+    }
 }
 ```
 
@@ -1357,9 +1476,42 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ### Resposta
 ```json
- {
-
- }
+{
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Lista de messagens",
+    "data": [
+        {
+            "id_message": 3,
+            "id_chat": 2,
+            "id_sender": 2,
+            "message": "Gostaria de agendar uma visita.",
+            "date_time": "2025-05-27 14:00:00"
+        },
+        {
+            "id_message": 4,
+            "id_chat": 2,
+            "id_sender": 4,
+            "message": "Claro, podemos marcar para amanhã.",
+            "date_time": "2025-05-27 14:20:00"
+        },
+        {
+            "id_message": 5,
+            "id_chat": 2,
+            "id_sender": 1,
+            "message": "ALA",
+            "date_time": "2025-05-27 14:00:00"
+        },
+        {
+            "id_message": 6,
+            "id_chat": 2,
+            "id_sender": 1,
+            "message": "mensagem",
+            "date_time": "2025-05-27 14:00:00"
+        }
+    ]
+}
 ```
 
 ### Status HTTP
@@ -1378,13 +1530,23 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Exemplo
 
 ```
-/message/list/1
+/message/list/3
 ```
 
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Mensagem encontrada com sucesso",
+    "data": {
+        "id_message": 3,
+        "id_chat": 2,
+        "id_sender": 2,
+        "message": "Gostaria de agendar uma visita.",
+        "date_time": "2025-05-27 14:00:00"
+    }
 }
 ```
 
@@ -1406,14 +1568,17 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Exemplo
 
 ```
-/message/delete/1
+/message/delete/3
 ```
 
 
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Messagem excluida com sucesso"
 }
 ```
 
@@ -1443,6 +1608,21 @@ git clone https://github.com/userCa-new/SGDI.git
 }
 ```
 
+### Resposta
+```json
+{
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Chat registrado com sucesso",
+    "data": {
+        "id_chat": 4,
+        "id_property": 2,
+        "creationDate": "2026-10-10 12:00:00"
+    }
+}
+```
+
 | Código | type | status | Significado |
 |--------|------|--------|-------------|
 |201|success|success|Chat cadastrado com sucesso.|
@@ -1459,7 +1639,27 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Lista de chats",
+    "data": [
+        {
+            "id_chat": 2,
+            "id_property": 3,
+            "creation_date": "2025-05-25 11:00:00"
+        },
+        {
+            "id_chat": 3,
+            "id_property": 1,
+            "creation_date": "2025-05-25 11:00:00"
+        },
+        {
+            "id_chat": 4,
+            "id_property": 2,
+            "creation_date": "2026-10-10 12:00:00"
+        }
+    ]
 }
 ```
 
@@ -1479,13 +1679,21 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Exemplo
 
 ```
-/chat/list/1
+/chat/list/2
 ```
 
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Chat encontrado com sucesso",
+    "data": {
+        "id_chat": 2,
+        "id_property": 3,
+        "creation_date": "2025-05-25 11:00:00"
+    }
 }
 ```
 
@@ -1508,13 +1716,16 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Exemplo
 
 ```
-/chat/delete/1
+/chat/delete/2
 ```
 
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Chat excluido com sucesso"
 }
 ```
 

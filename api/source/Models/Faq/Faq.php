@@ -6,20 +6,20 @@ use Source\Core\Model;
 
 class Faq extends Model
 {
-    private ?int $id;
+    private ?int $idFaq;
     private ?int $idCategory;
     private ?string $question;
     private ?string $answer;
     private ?int $active;
 
     public function __construct(
-        ?int $id = null,
+        ?int $idFaq = null,
         ?int $idCategory = null,
         ?string $question = null,
         ?string $answer = null,
         ?int $active = 1,
     ) {
-        $this->id = $id;
+        $this->idFaq = $idFaq;
         $this->idCategory = $idCategory;
         $this->question = $question;
         $this->answer = $answer;
@@ -30,14 +30,14 @@ class Faq extends Model
         $this->fillable = ["idCategory", "question", "answer", "active"];
     }
 
-    public function getId(): ?int
+    public function getIdFaq(): ?int
     {
-        return $this->id;
+        return $this->idFaq;
     }
 
-    public function setId(?int $id): void
+    public function setIdFaq(?int $idFaq): void
     {
-        $this->id = $id;
+        $this->idFaq = $idFaq;
     }
 
     public function getIdCategory(): ?int

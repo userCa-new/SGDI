@@ -41,18 +41,22 @@ $route->group(null);
 // FAQs
 $route->namespace("Source\Controller\Faqs");
 $route->group("/faqs");
+
 $route->get("/list", "Faqs:listAll");
 $route->get("/list/{id}", "Faqs:listById");
 $route->post("/insert", "Faqs:insert");
 $route->put("/update/{id}", "Faqs:update");
+$route->delete("/delete/{id}", "Faqs:delete");
+
 $route->group(null);
 
 $route->group("/faqs-categories");
-$route->get("/list", "FaqsCategories:listAll");
-$route->get("/list/{id}", "FaqsCategories:listById");
-$route->group(null);
-// Fim - Exercícios - Desafios
 
+$route->get("/listAll", "FaqsCategories:listAll");
+$route->get("/list/{id}", "FaqsCategories:listById");
+$route->post("/insert", "FaqsCategories:insert");
+
+$route->group(null);
 //Appointment
 $route->namespace("Source\Controller");
 $route->group("/appointments");

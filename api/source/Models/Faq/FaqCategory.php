@@ -7,32 +7,32 @@ use Source\Core\Connect;
 
 class FaqCategory extends Model
 {
-    private ?int $id;
+    private ?int $idCategory;
     private ?string $name;
     private ?int $active;
 
     public function __construct(
-        ?int $id = null,
+        ?int $idCategory = null,
         ?string $name = null,
         ?int $active = 1,
     ) {
-        $this->id = $id;
+        $this->idCategory = $idCategory;
         $this->name = $name;
         $this->active = $active;
 
-        $this->table = "faqs_categories";
-        $this->primaryKey = "id";
+        $this->table = "faq_categories";
+        $this->primaryKey = "id_category";
         $this->fillable = ["name", "active"];
     }
 
-    public function getId(): ?int
+    public function getIdCategory(): ?int
     {
-        return $this->id;
+        return $this->idCategory;
     }
 
-    public function setId(?int $id): void
+    public function setIdCategory(?int $idCategory): void
     {
-        $this->id = $id;
+        $this->idCategory = $idCategory;
     }
 
     public function getName(): ?string

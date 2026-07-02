@@ -9,57 +9,109 @@ class FaqsCategories extends Api
 {
     public function listAll(array $data): void
     {
-        $faqCategory = new FaqCategory();
+        $category = new FaqCategory();
+
         $this->call(
             200,
             "success",
-            "Lista de categorias de FAQ",
-            "success",
-        )->back($faqCategory->selectAll());
+            "Lista de categorias",
+            "success"
+        )->back($category->selectAll());
     }
 
     public function listById(array $data): void
     {
         if (
-            !isset($data["categoryId"]) ||
-            empty($data["categoryId"]) ||
-            !filter_var($data["categoryId"], FILTER_VALIDATE_INT)
+            !isset($data["id"]) ||
+            !filter_var($data["id"], FILTER_VALIDATE_INT)
         ) {
             $this->call(
                 400,
                 "bad_request",
-                "ID da categoria é obrigatório e deve ser um número inteiro",
-                "error",
-            )->back(null);
+                "ID inválido",
+                "error"
+            )->back();
+
             return;
         }
 
-        $faqCategory = new FaqCategory();
-        if (!$faqCategory->selectById($data["categoryId"])) {
+        $category = new FaqCategory();
+
+        if (!$category->selectById($data["id"])) {
             $this->call(
                 404,
                 "not_found",
                 "Categoria não encontrada",
-                "error",
-            )->back(null);
+                "error"
+            )->back();
+
             return;
         }
 
-        $response = [
-            "id" => $faqCategory->getId(),
-            "name" => $faqCategory->getName(),
-        ];
-
-        $this->call(200, "success", "Categoria encontrada", "success")->back(
-            $response,
-        );
+        $this->call(
+            200,
+            "success",
+            "Categoria encontrada",
+            "success"
+        )->back([
+            "id_category" => $category->getIdCategory(),
+            "name" => $category->getName(),
+            "active" => $category->getActive()
+        ]);
     }
 
-    public function validate(array $data): bool
+    public function insert(array $data): void
     {
-        if (!isset($data["name"]) || empty($data["name"])) {
-            return false;
+        if (!$this->authToken(3)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Apenas administradores podem criar categorias",
+                "error"
+            )->back();
+
+            return;
         }
-        return true;
+
+        if (
+            !isset($data["name"]) ||
+            empty($data["name"])
+        ) {
+            $this->call(
+                400,
+                "bad_request",
+                "Nome da categoria é obrigatório",
+                "error"
+            )->back();
+
+            return;
+        }
+
+        $category = new FaqCategory(
+            null,
+            $data["name"],
+            true
+        );
+
+        if (!$category->insert()) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $category->getErrorMessage(),
+                "error"
+            )->back();
+
+            return;
+        }
+
+        $this->call(
+            201,
+            "success",
+            "Categoria criada com sucesso",
+            "success"
+        )->back([
+            "id_category" => $category->getIdCategory(),
+            "name" => $category->getName()
+        ]);
     }
 }
