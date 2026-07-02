@@ -29,7 +29,7 @@ class Payments extends Api
 
         $payment = new Payment(
             null,
-            $data["idContract"],
+            $data["id_contract"],
             $data["pix"],
             $data["receipt"],
             $data["value"],
@@ -53,7 +53,7 @@ class Payments extends Api
             "pix" => $payment->getPix(),
             "receipt" => $payment->getReceipt(),
             "value" => $payment->getValue(),
-            "paymentDate" => $payment->getPaymentDate(),
+            "payment_date" => $payment->getPaymentDate(),
             "status" => $payment->getStatus(),
         ];
 
@@ -96,7 +96,7 @@ class Payments extends Api
             "pix" => $pagamento->getPix(),
             "receipt" => $pagamento->getReceipt(),
             "value" => $pagamento->getValue(),
-            "paymentDate" => $pagamento->getPaymentDate(),
+            "payment_date" => $pagamento->getPaymentDate(),
             "status" => $pagamento->getStatus(),
         ];
 
@@ -197,7 +197,7 @@ class Payments extends Api
             "pix" => $payment->getPix(),
             "receipt" => $payment->getReceipt(),
             "value" => $payment->getValue(),
-            "paymentDate" => $payment->getPaymentDate(),
+            "payment_date" => $payment->getPaymentDate(),
             "status" => $payment->getStatus(),
         ];
 

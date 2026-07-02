@@ -48,7 +48,7 @@ public function register(array $data): void
         "Usuário cadastrado com sucesso.",
         "success"
     )->back([
-        "id" => $user->getId(),
+        "id_user" => $user->getIdUser(),
         "name" => $user->getName(),
         "email" => $user->getEmail(),
         "type_user" => $user->getIdUserType()
@@ -64,16 +64,6 @@ public function registerAdmin(array $data): void
 
 public function update(array $data): void
 {
-    if (!$this->authToken(1)) {
-        $this->call(
-            401,
-            "unauthorized",
-            "Token inválido.",
-            "error"
-        )->back();
-        return;
-    }
-
     if (
         !$this->validateNameEmail($data) ||
         !isset($data["password"]) ||
@@ -89,7 +79,7 @@ public function update(array $data): void
     }
 
     $user = new User();
-
+    var_dump($this->userAuthId);
     if (!$user->selectById($this->userAuthId)) {
         $this->call(
             404,
@@ -120,7 +110,7 @@ public function update(array $data): void
         "Usuário atualizado com sucesso.",
         "success"
     )->back([
-        "id" => $this->userAuthId,
+        "id_user" => $this->userAuthId,
         "name" => $user->getName(),
         "email" => $user->getEmail()
     ]);
@@ -184,7 +174,7 @@ public function updateAdmin(array $data): void
         "Administrador atualizado com sucesso.",
         "success"
     )->back([
-        "id" => $this->userAuthId,
+        "id_user" => $this->userAuthId,
         "name" => $user->getName(),
         "email" => $user->getEmail()
     ]);
@@ -220,7 +210,7 @@ public function updateAdmin(array $data): void
         }
 
         $response = [
-            "id" => $user->getId(),
+            "id_user" => $user->getIdUser(),
             "name" => $user->getName(),
             "token" => $user->getToken(),
         ];
@@ -264,7 +254,7 @@ public function updateAdmin(array $data): void
         }
 
         $response = [
-            "id" => $user->getId(),
+            "id_user" => $user->getIdUser(),
             "name" => $user->getName(),
             "token" => $user->getToken(),
         ];

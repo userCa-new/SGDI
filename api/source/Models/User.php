@@ -9,7 +9,7 @@ use Source\Core\JWTToken;
 
 class User extends Model
 {
-    private ?int $id;
+    private ?int $idUser;
     private ?int $idUserType;
     private ?string $name;
     private ?string $email;
@@ -19,13 +19,13 @@ class User extends Model
     private ?string $token = null;
 
     public function __construct(
-        ?int $id = null,
+        ?int $idUser = null,
         ?int $idUserType = null,
         ?string $name = null,
         ?string $email = null,
         ?string $password = null,
     ) {
-        $this->id = $id;
+        $this->idUser = $idUser;
         $this->idUserType = $idUserType;
         $this->name = $name;
         $this->email = $email;
@@ -36,14 +36,14 @@ class User extends Model
         $this->fillable = ["idUserType", "name", "email", "password"]; // camelCase
     }
 
-    public function getId(): ?int
+    public function getIdUser(): ?int
     {
-        return $this->id;
+        return $this->idUser;
     }
 
-    public function setId(?int $id): void
+    public function setIdUser(?int $idUser): void
     {
-        $this->id = $id;
+        $this->idUser = $idUser;
     }
 
     public function getIdUserType(): ?int

@@ -96,10 +96,6 @@ class Messages extends Api
         )->back($response);
     }
 
-    public function update(array $data): void {
-        
-    }
-
     public function delete(array $data): void
     {
         if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {

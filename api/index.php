@@ -30,6 +30,8 @@ $route->namespace("Source\Controller");
 $route->group("/users");
 $route->post("/register", "Users:register"); // Registrar usuário comum
 $route->post("/login", "Users:auth"); // login de usuário comum
+$route->post("/login-admin", "Users:authAdmin"); // login de usuário admin
+$route->put("/update-admin", "Users:updateAdmin"); // update de usuário comum
 $route->put("/update", "Users:update"); // update de usuário comum
 $route->post("/register-admin", "Users:registerAdmin"); // Registrar usuário admin NÃO IMPLEMENTADO
 $route->post("/login-admin", "Users:authAdmin"); // login de usuário admin
@@ -39,22 +41,22 @@ $route->group(null);
 // FAQs
 $route->namespace("Source\Controller\Faqs");
 $route->group("/faqs");
-$route->get("/list", "faqs\Faqs:listAll");
-$route->get("/list/{faqId}", "faqs\Faqs:listById");
-$route->post("/", "faqs\Faqs:insert");
-$route->put("/{faqId}", "faqs\Faqs:update");
+$route->get("/list", "Faqs:listAll");
+$route->get("/list/{id}", "Faqs:listById");
+$route->post("/insert", "Faqs:insert");
+$route->put("/update/{id}", "Faqs:update");
 $route->group(null);
 
 $route->group("/faqs-categories");
-$route->get("/list", "faqs\FaqsCategories:listAll");
-$route->get("/list/{categoryId}", "faqs\FaqsCategories:listById");
+$route->get("/list", "FaqsCategories:listAll");
+$route->get("/list/{id}", "FaqsCategories:listById");
 $route->group(null);
 // Fim - Exercícios - Desafios
 
 //Appointment
 $route->namespace("Source\Controller");
-$route->group("/appointment");
-$route->post("/register", "Appointments:register"); //funcionando
+$route->group("/appointments");
+$route->post("/insert", "Appointments:register"); //funcionando
 $route->get("/listAll", "Appointments:listAll"); //funcionando
 $route->get("/list/{id}", "Appointments:listById"); //funcionando
 $route->put("/update/{id}", "Appointments:update");
@@ -63,7 +65,7 @@ $route->group(null);
 
 //Properties
 $route->namespace("Source\Controller");
-$route->group("/propertie");
+$route->group("/properties");
 $route->post("/insert", "Properties:insert"); //funcionando
 $route->get("/listAll", "Properties:listAll"); //funcionando
 $route->get("/list/{id}", "Properties:listById"); //funcionando
@@ -83,8 +85,8 @@ $route->group(null);
 
 //Contracts
 $route->namespace("Source\Controller");
-$route->group("/contract");
-$route->post("/register", "Contracts:register"); //funcionando
+$route->group("/contracts");
+$route->post("/insert", "Contracts:register"); //funcionando
 $route->get("/listAll", "Contracts:listAll"); //funcionando
 $route->get("/list/{id}", "Contracts:listById"); //funcionando
 $route->put("/update/{id}", "Contracts:update"); //fucionando
@@ -93,8 +95,8 @@ $route->group(null);
 
 //Messages
 $route->namespace("Source\Controller");
-$route->group("/message");
-$route->post("/register", "Messages:register"); //funcionando
+$route->group("/messages");
+$route->post("/insert", "Messages:register"); //funcionando
 $route->get("/listAll", "Messages:listAll"); //funcionando
 $route->get("/list/{id}", "Messages:listById"); //funcionando
 $route->put("/update/{id}", "Messages:update"); 
@@ -103,8 +105,8 @@ $route->group(null);
 
 //Chats
 $route->namespace("Source\Controller");
-$route->group("chat");
-$route->post("/register", "Chats:register"); //funcionando
+$route->group("/chats");
+$route->post("/insert", "Chats:register"); //funcionando
 $route->get("/listAll", "Chats:listAll"); //funcionando
 $route->get("/list/{id}", "Chats:listById"); //funcionando
 $route->put("/update/{id}", "Chats:update");

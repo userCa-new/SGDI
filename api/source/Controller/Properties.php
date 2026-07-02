@@ -33,9 +33,9 @@ class Properties extends Api
             null,
             $this->userAuthId,
             $data["location"],
-            $data["numberOfRooms"],
+            $data["number_of_rooms"],
             $data["availability"] ? 1 : 0,
-            $data["latePayment"] ? 1 : 0,
+            $data["late_payment"] ? 1 : 0,
         );
 
         if (!$propriedade->insert()) {
@@ -49,11 +49,11 @@ class Properties extends Api
         }
 
         $response = [
-            "id" => $propriedade->getId(),
+            "id_property" => $propriedade->getIdProperty(),
             "location" => $propriedade->getLocation(),
-            "numberOfRooms" => $propriedade->getNumberOfRooms(),
+            "number_of_rooms" => $propriedade->getNumberOfRooms(),
             "availability" => $propriedade->getAvailability(),
-            "latePayment" => $propriedade->getLatePayment(),
+            "late_payment" => $propriedade->getLatePayment(),
         ];
 
         $this->call(
@@ -133,11 +133,11 @@ class Properties extends Api
             return;
         }
         $response = [
-            "id" => $propriedade->getId(),
+            "id_property" => $propriedade->getIdProperty(),
             "location" => $propriedade->getLocation(),
-            "numberOfRooms" => $propriedade->getNumberOfRooms(),
+            "number_of_rooms" => $propriedade->getNumberOfRooms(),
             "availability" => $propriedade->getAvailability(),
-            "latePayment" => $propriedade->getLatePayment(),
+            "late_payment" => $propriedade->getLatePayment(),
         ];
 
         $this->call(
@@ -170,12 +170,11 @@ class Properties extends Api
         }
 
         $propriedade = new Propertie();
-        $propriedade->setId($data["id"]);
+        $propriedade->setIdProperty($data["id_property"]);
         $propriedade->setLocation($data["location"]);
-        $propriedade->setNumberOfRooms($data["numberOfRooms"]);
+        $propriedade->setNumberOfRooms($data["number_of_rooms"]);
         $propriedade->setAvailability($data["availability"] ? 1 : 0);
-        $propriedade->setLatePayment($data["latePayment"] ? 1 : 0);
-
+        $propriedade->setLatePayment($data["late_payment"] ? 1 : 0);
         if (!$propriedade->updateById($data["id"])) {
             $this->call(
                 500,
@@ -197,11 +196,11 @@ class Properties extends Api
     {
         return isset(
             $data["location"],
-            $data["numberOfRooms"],
+            $data["number_of_rooms"],
             $data["availability"],
-            $data["latePayment"],
+            $data["late_payment"],
         ) &&
             trim($data["location"]) !== "" &&
-            filter_var($data["numberOfRooms"], FILTER_VALIDATE_INT) !== false;
+            filter_var($data["number_of_rooms"], FILTER_VALIDATE_INT) !== false;
     }
 }

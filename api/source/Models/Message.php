@@ -55,9 +55,9 @@ class Message extends Model
         return $this->dateTime;
     }
 
-    public function setId(?int $id): void
+    public function setIdMessage(?int $idMessage): void
     {
-        $this->id = $id;
+        $this->idMessage = $idMessage;
     }
 
     public function setIdChat(?int $idChat): void

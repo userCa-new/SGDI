@@ -7,7 +7,7 @@ use Source\Core\Connect;
 
 class Propertie extends Model
 {
-    protected ?int $id;
+    protected ?int $idProperty;
     protected ?int $idUser;
     protected ?string $location;
     protected ?int $numberOfRooms;
@@ -15,14 +15,14 @@ class Propertie extends Model
     protected ?int $latePayment;
 
     public function __construct(
-        ?int $id = null,
+        ?int $idProperty = null,
         ?int $idUser = null,
         ?string $location = null,
         ?int $numberOfRooms = null,
         ?int $availability = null,
         ?int $latePayment = null,
     ) {
-        $this->id = $id;
+        $this->idProperty = $idProperty;
         $this->idUser = $idUser;
         $this->location = $location;
         $this->numberOfRooms = $numberOfRooms;
@@ -40,14 +40,14 @@ class Propertie extends Model
         ];
     }
 
-    public function getId(): ?int
+    public function getIdProperty(): ?int
     {
-        return $this->id;
+        return $this->idProperty;
     }
 
-    public function setId(?int $id): void
+    public function setIdProperty(?int $idProperty): void
     {
-        $this->id = $id;
+        $this->idProperty = $idProperty;
     }
 
     public function getIdUser(): ?int
