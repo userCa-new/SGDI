@@ -43,9 +43,9 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-    "type_user": 2,
-    "name":"caca",
-    "email":"caca@email.com",
+    "type_user": 2, <- (1: Inquilino, 2: Propriétario, 3: Administrador)
+    "name":"user",
+    "email":"user@email.com",
     "password":"123"
 }
 ```
@@ -60,8 +60,8 @@ git clone https://github.com/userCa-new/SGDI.git
   "message": "Usuário inserido com sucesso",
   "data": {
     "id": 2,
-    "name": "caca",
-    "email": "caca@gmail.com"
+    "name": "user",
+    "email": "user@gmail.com"
   }
 }
 ```
@@ -89,7 +89,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-    "email":"caca@email.com",
+    "email":"user@email.com",
     "password":"123"
 }
 ```
@@ -104,7 +104,7 @@ git clone https://github.com/userCa-new/SGDI.git
   "message": "Usuário logado com sucesso",
   "data": {
     "id": 2,
-    "name": "caca",
+    "name": "user",
     "token": "xxx"
   }
 }
@@ -140,7 +140,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 # Administrador
 
-## Registrar administrador
+### Registrar administrador
 **POST**
 ```
 /users/register-admin
@@ -149,7 +149,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ---
 
-## Login administrador
+### Login administrador
 **POST**
 ```
 /users/login-admin
@@ -165,7 +165,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ---
 
-## Atualizar administrador
+### Atualizar administrador
 **PUT**
 ```
 /users/update-admin
@@ -183,13 +183,40 @@ git clone https://github.com/userCa-new/SGDI.git
 
 # FAQs
 
-## Listar FAQs
-**GET**
+### Inserir FAQ
+**POST**
 ```
-/faqs/list
+/faqs/register
 ```
 
-### Resposta
+#### Corpo da requisição
+```json
+
+```
+
+#### Resposta
+```json
+
+```
+
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|201|success|success|FAQ inserido com sucesso.|
+|400|error|bad_request|Os campos question, answer e faqs_category_id são obrigatórios.|
+|401|error|unauthorized|Token de autenticação inválido ou expirado.|
+|500|error|internal_server_error|Erro ao cadastrar o faq.|
+
+### Listar FAQs
+**GET**
+```
+/faqs/listAll
+```
+
+
+#### Resposta
 
 ```json
 
@@ -201,18 +228,117 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```
 
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|Lista de Faqs.|
+
+### Buscar FAQ por ID
+**GET**
+```
+/faqs/list/{id}
+```
+
+#### Exemplo
+```
+/faqs/list/1
+```
+
+#### Resposta
+```json
+
+```
+
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|FAQ encontrada.|
+|400|error|bad_request|ID da FAQ é obrigatório e deve ser um número inteiro.|
+|404|error|not_found|FAQ não encontrada.|
+
+### Atualizar FAQ
+**PUT**
+```
+/faqs/update/{id}
+```
+
+#### Exemplo
+```
+/faqs/update/1
+```
+
+
+#### Resposta
+```json
+
+```
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|FAQ atualizado com sucesso.|
+|400|error|bad_request|ID do FAQ é obrigatório e deve ser um número inteiro.|
+|400|error|bad_request|ID inválido ou campos obrigatórios ausentes|
+|401|error|unauthorized|Token de autenticação inválido ou expirado.|
+|500|error|internal_server_error|Erro ao atualizar a faq.|
+
 ---
 
-## Inserir FAQ
-**POST**
+# Categorias de FAQs
+
+### Listar categorias das FAQs
+**GET**
 ```
-/faqs/
+/faqs-categories/listAll
 ```
+
+
+#### Resposta
+
+```json
+
+```
+
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|Lista de categorias de Faq.|
+
+### Buscar categoria da FAQ por ID
+**GET**
+```
+/faqs-categories/list/{id}
+```
+
+#### Exemplo
+```
+/faqs/list/1
+```
+
+#### Resposta
+```json
+
+```
+
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|Categoria encontrada.|
+|400|error|bad_request|ID da categoria é obrigatório e deve ser um número inteiro.|
+|404|error|not_found|Categoria não encontrada.|
 
 ---
 
 # Atendimentos
-
 
 ### Cadastrar Atendimento
 
