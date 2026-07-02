@@ -247,7 +247,7 @@ git clone https://github.com/userCa-new/SGDI.git
 #### Resposta
 ```json
 {
-  
+
 }
 ```
 
@@ -498,7 +498,7 @@ git clone https://github.com/userCa-new/SGDI.git
 
 #### Exemplo
 
-```http
+```
 /appointment/list/1
 ```
 
