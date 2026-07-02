@@ -148,7 +148,15 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 ```json
 {
-
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Usuário atualizado com sucesso.",
+    "data": {
+        "id_user": 11,
+        "name": "user12",
+        "email": "user12@gmail.com"
+    }
 }
 ```
 
@@ -173,10 +181,9 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-    
-    
-    "email":"user@email.com",
-    "password":"123"
+    "name": "adm2",
+    "email": "adm2@email.com",
+    "password":"adm2"
 }
 ```
 
@@ -184,7 +191,16 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 ```json
 {
-  
+    "code": 201,
+    "type": "success",
+    "status": "success",
+    "message": "Usuário cadastrado com sucesso.",
+    "data": {
+        "id_user": 12,
+        "name": "adm2",
+        "email": "adm2@gmail.com",
+        "type_user": 3
+    }
 }
 ```
 
@@ -202,8 +218,8 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-    "email":"user12@email.com",
-    "password":"123"
+    "email":"adm2@email.com",
+    "password":"adm2"
 }
 ```
 
@@ -211,7 +227,15 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 ```json
 {
-  
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Usuário logado com sucesso",
+    "data": {
+        "id_user": 12,
+        "name": "adm2",
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3ODMwMjM1MTYsImp0aSI6IkVQU3dGM2VPZ3lHUURDa29wWlRGcHc9PSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QvU0dESS9hcGkiLCJuYmYiOjE3ODMwMjM1MTYsImV4cCI6MTc4MzAyODkxNiwiZGF0YSI6eyJpZCI6MTIsIm5hbWUiOiJhZG0yIiwiZW1haWwiOiJhZG0yQGdtYWlsLmNvbSJ9fQ.15wcQnzX-qc-pDs3LW2C4ZeNqiSvCNYHFA3FuX0JrilPUdLJixGzua8MiTi5JYjGENl_0z7dvhT5ZkPcRaeBPg"
+    }
 }
 ```
 
@@ -236,8 +260,9 @@ git clone https://github.com/userCa-new/SGDI.git
 
 ```json
 {
-    "email":"user@email.com",
-    "password":"123"
+    "name": "adm3",
+    "email": "adm3@email.com",
+    "password": "adm3"
 }
 ```
 
@@ -245,7 +270,15 @@ git clone https://github.com/userCa-new/SGDI.git
 ### Resposta
 ```json
 {
-  
+    "code": 200,
+    "type": "success",
+    "status": "success",
+    "message": "Administrador atualizado com sucesso.",
+    "data": {
+        "id_user": 12,
+        "name": "adm3",
+        "email": "adm3@gmail.com"
+    }
 }
 ```
 
