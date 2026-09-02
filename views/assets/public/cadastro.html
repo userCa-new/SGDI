@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - SGDI</title>
     <link rel="stylesheet" href="styles/auth.css">
+    <script src="scripts/cadastro.js" defer></script>
 </head>
 <body>
     <header class="navbar-simple">
@@ -22,7 +23,7 @@
 
             <form id="signup-form" class="auth-form" action="#" method="post" autocomplete="off">
                 <label for="nome">Nome Completo
-                    <input id="nome" type="text" name="nome" placeholder="Seu nome" required>
+                    <input id="nome" type="text" name="name" placeholder="Seu nome" required>
                 </label>
 
                 <label for="email-signup">Email
@@ -30,7 +31,7 @@
                 </label>
 
                 <label for="tipo">Tipo de Usuário
-                    <select id="tipo" name="tipo" required>
+                    <select id="tipo" name="type_user" required>
                         <option value="">Selecione...</option>
                         <option value="proprietario">Proprietário</option>
                         <option value="inquilino">Inquilino</option>
@@ -38,16 +39,16 @@
                 </label>
 
                 <label for="senha-signup">Senha
-                    <input id="senha-signup" type="password" name="senha" placeholder="••••••••" required>
+                    <input id="senha-signup" type="password" name="password" placeholder="••••••••" required>
                 </label>
-
+            <!--- 
                 <label for="confirmacao">Confirmar Senha
                     <input id="confirmacao" type="password" name="confirmacao" placeholder="••••••••" required>
                 </label>
-
+                <span class="error"></span>
+                --->
                 <button type="submit">Criar Conta</button>
             </form>
-
             <p class="auth-note">Já tem conta? <a href="login.html">Faça login aqui</a></p>
         </section>
     </main>
