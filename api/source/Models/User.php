@@ -110,52 +110,52 @@ class User extends Model
         return true;
     }
 
-    public function login(
-        string $email,
-        string $password
-    ): bool {
+    public function login(string $email, string $password): bool
+    {
         $query = "SELECT * FROM {$this->table} WHERE email = :email";
         $stmt = Connect::getInstance()->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();
+
         if ($stmt->rowCount() == 0) {
             $this->errorMessage = "Email não cadastrado";
             return false;
         }
+
         $user = $stmt->fetch();
+
         if (!password_verify($password, $user->password)) {
             $this->errorMessage = "Senha incorreta";
             return false;
         }
-        $this->id = $user->id_user;
+
+        $this->idUser = $user->id_user;
         $this->idUserType = $user->id_user_type;
         $this->name = $user->name;
         $this->email = $user->email;
-        var_dump("cheguei aqui");
+
         $jwt = new JWTToken();
-        var_dump("cheguei aquiaa");
-        // definir quais informações irão par o payload do token
         $this->token = $jwt->encode([
             "id" => $user->id_user,
             "name" => $user->name,
             "email" => $user->email,
         ]);
-        var_dump("token criado");
+
         return true;
     }
 
-   public function permissionVerify(string $email, int $typeId): bool
-{
-    $query = "SELECT *
+    public function permissionVerify(string $email, int $typeId): bool
+    {
+        $query = "SELECT *
               FROM users
               WHERE email = :email
               AND id_user_type = :typeId";
 
-    $stmt = Connect::getInstance()->prepare($query);
-    $stmt->bindParam(":email", $email);
-    $stmt->bindParam(":typeId", $typeId);
-    $stmt->execute();
+        $stmt = Connect::getInstance()->prepare($query);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":typeId", $typeId);
+        $stmt->execute();
 
-    return $stmt->rowCount() > 0;
-}
+        return $stmt->rowCount() > 0;
+    }
 }

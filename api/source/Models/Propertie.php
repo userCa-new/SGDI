@@ -4,6 +4,7 @@ namespace Source\Models;
 
 use Source\Core\Model;
 use Source\Core\Connect;
+use PDOException;
 
 class Propertie extends Model
 {
