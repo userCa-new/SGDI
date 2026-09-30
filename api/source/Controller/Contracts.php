@@ -141,7 +141,6 @@ class Contracts extends Api
             )->back();
             return;
         }
-        var_dump($data);
         if (!$this->validate($data)) {
             $this->call(
                 400,

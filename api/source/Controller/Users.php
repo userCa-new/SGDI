@@ -89,7 +89,6 @@ class Users extends Api
         }
 
         $user = new User();
-        var_dump($this->userAuthId);
         if (!$user->selectById($this->userAuthId)) {
             $this->call(
                 404,
