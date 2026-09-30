@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SGDI — Gestão (CRUD integrado à API)</title>
+        <link rel="stylesheet" href="styles/manage.css" />
+    </head>
+    <body>
+        <header class="app-header">
+            <nav class="breadcrumbs" aria-label="Navegação principal">
+                <a href="index.html">Área do usuário</a>
+                <a href="owner.html">Proprietário</a>
+                <a href="tenant.html">Inquilino</a>
+                <a href="manage.html" aria-current="page">Gestão</a>
+                <a href="#" id="btn-logout" class="nav-logout">Sair</a>
+            </nav>
+            <p class="whoami">Logado como <strong id="user-display-name">—</strong></p>
+        </header>
+
+        <main class="manage">
+            <h1>Gestão integrada à API</h1>
+            <p id="role-hint" class="hint"></p>
+
+            <section id="profile-section" class="panel" aria-labelledby="profile-title">
+                <h2 id="profile-title">Meu perfil</h2>
+                <form id="profile-form" novalidate>
+                    <label>Nome <input name="name" type="text" required maxlength="100" /></label>
+                    <label>E-mail <input name="email" type="email" required maxlength="150" /></label>
+                    <label>Senha (obrigatória pela API) <input name="password" type="password" required minlength="6" autocomplete="new-password" /></label>
+                    <button type="submit">Atualizar perfil</button>
+                </form>
+            </section>
+
+            <section class="panel" aria-labelledby="property-title">
+                <h2 id="property-title">Imóveis <small>(entidade principal · /api/properties)</small></h2>
+                <form id="property-form" novalidate>
+                    <label>Localização <input name="location" type="text" required maxlength="150" /></label>
+                    <label>Quartos <input name="numberOfRooms" type="number" min="0" step="1" required value="1" /></label>
+                    <label class="check"><input name="availability" type="checkbox" checked /> Disponível</label>
+                    <label class="check"><input name="latePayment" type="checkbox" /> Pagamento em atraso</label>
+                    <div class="actions">
+                        <button type="submit">Salvar imóvel</button>
+                        <button type="button" data-action="cancel" class="secondary">Cancelar edição</button>
+                    </div>
+                </form>
+                <div id="property-list" class="list"></div>
+            </section>
+
+            <section class="panel" aria-labelledby="contract-title">
+                <h2 id="contract-title">Contratos <small>(/api/contracts)</small></h2>
+                <form id="contract-form" novalidate>
+                    <label>ID do imóvel <input name="idProperty" type="number" min="1" step="1" required /></label>
+                    <label>Valor do aluguel (R$) <input name="rentValue" type="number" min="0" step="0.01" required /></label>
+                    <label>Início <input name="startDate" type="date" required /></label>
+                    <label>Fim <input name="endDate" type="date" required /></label>
+                    <label>Status
+                        <select name="status" required>
+                            <option value="PENDING">Pendente</option>
+                            <option value="ACTIVE">Ativo</option>
+                            <option value="CLOSED">Encerrado</option>
+                        </select>
+                    </label>
+                    <div class="actions">
+                        <button type="submit">Salvar contrato</button>
+                        <button type="button" data-action="cancel" class="secondary">Cancelar edição</button>
+                    </div>
+                </form>
+                <div id="contract-list" class="list"></div>
+            </section>
+
+            <section class="panel" aria-labelledby="appointment-title">
+                <h2 id="appointment-title">Atendimentos <small>(/api/appointments)</small></h2>
+                <form id="appointment-form" novalidate>
+                    <label>ID do imóvel <input name="idProperty" type="number" min="1" step="1" required /></label>
+                    <label>Data <input name="date" type="date" required /></label>
+                    <label>Observação <input name="observation" type="text" required maxlength="200" /></label>
+                    <label class="check"><input name="completed" type="checkbox" /> Concluído</label>
+                    <div class="actions">
+                        <button type="submit">Agendar atendimento</button>
+                    </div>
+                </form>
+                <div id="appointment-list" class="list"></div>
+            </section>
+
+            <details class="panel">
+                <summary>Evidência: objetos criados a partir do mesmo protótipo</summary>
+                <pre id="proto-proof" aria-live="polite"></pre>
+            </details>
+        </main>
+
+        <script type="module" src="scripts/auth-guard.js"></script>
+        <script type="module" src="scripts/manage.js"></script>
+    </body>
+</html>

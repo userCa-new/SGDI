@@ -1,71 +1,74 @@
-
+import FaqService from "../../_common/classes/services/FaqService.js";
+import { createToast } from "../../_common/prototypes/Toast.js";
 
 /**
- * faq.js - Funcionalidade de perguntas frequentes
- * Permite expandir/retrair respostas ao clicar nas perguntas
+ * faq.js — lista as FAQs da API e expande/retrai as respostas.
+ * Eventos por delegação (sem onclick); textos via textContent (sem injeção de HTML).
  */
-
+const CONTAINER_BY_CATEGORY = {
+    1: ".faq-category-con",
+    2: ".faq-category-prop",
+    3: ".faq-category-inq",
+    4: ".faq-category-pag",
+};
 
 function toggleAnswer(button) {
     const answer = button.nextElementSibling;
-    
-    // Remove a classe active de todos os botões
-    document.querySelectorAll('.faq-question').forEach(btn => {
-        if (btn !== button) {
-            btn.classList.remove('active');
-            btn.nextElementSibling.classList.remove('show');
+    document.querySelectorAll(".faq-question").forEach((other) => {
+        if (other !== button) {
+            other.classList.remove("active");
+            other.nextElementSibling.classList.remove("show");
         }
     });
-    
-    // Alterna o estado do botão e resposta atual
-    button.classList.toggle('active');
-    answer.classList.toggle('show');
+    button.classList.toggle("active");
+    answer.classList.toggle("show");
 }
 
+function buildItem(faq) {
+    const item = document.createElement("article");
+    item.className = "faq-item";
 
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "faq-question";
+    const question = document.createElement("span");
+    question.textContent = faq.question;
+    const icon = document.createElement("span");
+    icon.className = "icon";
+    icon.textContent = "+";
+    button.append(question, icon);
 
-async function fetchFAQs()
-{
-    const response = await fetch("http://localhost/SGDI/api/faqs/list");
-    const faqs = await response.json();
-    console.log(faqs.data);
-    const faqCategoryCon = document.querySelector(".faq-category-con");
-    const faqCategoryProp = document.querySelector(".faq-category-prop");
-    const faqCategoryInq = document.querySelector(".faq-category-inq");
-    const faqCategoryPag = document.querySelector(".faq-category-pag");
+    const answer = document.createElement("div");
+    answer.className = "faq-answer";
+    const text = document.createElement("p");
+    text.textContent = faq.answer;
+    answer.appendChild(text);
 
-    faqs.data.forEach(faq => {
-        console.log(faq.question, faq.answer);
-        const faqItem = document.createElement("article");
-        faqItem.classList.add("faq-item");
-        faqItem.innerHTML = 
-        `
-         <button class="faq-question" onclick="toggleAnswer(this)">
-                        <span>${faq.question}</span>
-                        <span class="icon">+</span>
-                    </button>
-                <div class="faq-answer">
-                        <p>${faq.answer}</p>
-         </div>
-        `;
-        switch(faq.id_faq){
-            case 1:
-                faqCategoryCon.appendChild(faqItem);
-            break;
+    item.append(button, answer);
+    return item;
+}
 
-            case 2:
-                faqCategoryProp.appendChild(faqItem);
-            break;
-
-            case 3:
-                faqCategoryInq.appendChild(faqItem);
-            break;
-            case 4:
-                faqCategoryPag.appendChild(faqItem);
-            break;
+async function loadFaqs() {
+    const toast = createToast();
+    try {
+        const response = await new FaqService().list();
+        if (response.type !== "success") {
+            toast.fromResponse(response);
+            return;
         }
-    });
+        for (const faq of response.data) {
+            // a FAQ é agrupada pela sua categoria (id_category)
+            const container = document.querySelector(CONTAINER_BY_CATEGORY[faq.idCategory]);
+            container?.appendChild(buildItem(faq));
+        }
+    } catch (error) {
+        toast.fromError(error);
+    }
 }
 
-fetchFAQs();
+document.querySelector(".faq-content")?.addEventListener("click", (event) => {
+    const button = event.target.closest(".faq-question");
+    if (button) toggleAnswer(button);
+});
 
+loadFaqs();

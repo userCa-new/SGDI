@@ -1,164 +1,63 @@
-async function Login () {
-  const URL_LOGIN = "http://localhost/SGDI/api/users/login";
-  const form = document.getElementById("login-form");
+import SessionStorage from "../../_common/scripts/storage.js";
+import User from "../../_common/classes/entities/User.js";
+import UserService from "../../_common/classes/services/UserService.js";
+import { createToast } from "../../_common/prototypes/Toast.js";
+import { createFormController } from "../../_common/prototypes/FormController.js";
 
-  if (!form) return;
+const REDIRECT_DELAY_MS = 5000; // mesmo atraso da Etapa 05
 
-  const TOKEN_KEY = "token";
-  const USER_KEY = "sgdi_user";
+const formElement = document.getElementById("login-form");
 
-  function showFeedback(message, type = "error") 
-  {
-    const old = form.querySelector(".feedback");
-    if (old) old.remove();
+if (formElement) {
+    const storage = new SessionStorage();
+    const service = new UserService({ storage });
+    const toast = createToast({ container: formElement, inline: true, duration: 0 });
+    const form = createFormController(formElement);
 
-    const el = document.createElement("p");
-    el.className = `feedback feedback-${type}`;
-    el.textContent = message;
-    el.setAttribute("role", "alert");
-    form.appendChild(el);
-  }
-
-  function setLoading(isLoading) 
-  {
-    const btn = form.querySelector('button[type="submit"]');
-    if (!btn) return;
-    btn.disabled = isLoading;
-    btn.textContent = isLoading ? "Entrando..." : "Entrar";
-  }
-
-  function saveSession(token, user) 
-  {
-    localStorage.setItem(TOKEN_KEY, token);
-    if (user) {
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
-    }
-  }
-
-  function getStoredUser() 
-  {
-    try {
-      return JSON.parse(localStorage.getItem(USER_KEY) || "null");
-    } catch {
-      return null;
-    }
-  }
-
-  function redirectByType(typeUser) 
-  {
-    const type = Number(typeUser);
-    if (type === 1) {
-      window.location.href = "../app/tenant.html";
-    } else if (type === 2) {
-      window.location.href = "../app/owner.html";
-    } else {
-      window.location.href = "../app/index.html";
-    }
-  }
-
-  form.addEventListener("submit", async (e) => 
-  {
-    e.preventDefault();
-
-    const email = form.querySelector("#email").value;
-    const password = form.querySelector("#senha").value;
-
-    if (!email || !password) {
-      showFeedback("Preencha e-mail e senha.");
-      return;
+    // já autenticado: segue para a tela do perfil, como antes
+    const stored = User.fromSession(storage.getUser());
+    if (storage.isAuthenticated() && stored?.userType) {
+        window.location.href = stored.homePath();
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showFeedback("Informe um e-mail válido.");
-      return;
-    }
+    form.onSubmit(async (values) => {
+        let credentials;
+        try {
+            credentials = new User({ email: values.email, password: values.senha });
+        } catch (error) {
+            toast.show(error.message.includes("senha") ? "Preencha e-mail e senha." : error.message, "warning");
+            return;
+        }
 
-    setLoading(true);
+        form.setLoading(true, "Entrando...");
+        try {
+            const response = await service.login(credentials);
+            if (response.type !== "success") {
+                toast.show(response.message || "Credenciais inválidas ou serviço indisponível.", "error");
+                return;
+            }
 
-    try {
-      const body = new URLSearchParams({ email, password });
+            const user = response.data; // User devolvido pelo serviço
+            if (!user?.token) {
+                toast.show("O servidor não retornou uma sessão válida.", "error");
+                return;
+            }
 
-      const response = await fetch(URL_LOGIN, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json",
-        },
-        body,
-      });
+            // perfil pendente vindo do cadastro, se a API não informar o tipo
+            const pendingType = sessionStorage.getItem("sgdi_pending_type");
+            user.userType = user.userType ?? (pendingType ? Number(pendingType) : (storage.getUser()?.type_user ?? null));
 
-      const result = await response.json().catch(() => null);
+            // e-mail vem do formulário (a API não o devolve no login); senha nunca é salva
+            storage.saveSession(user.token, { ...user.toJSON(), email: credentials.email });
+            sessionStorage.removeItem("sgdi_pending_type");
+            sessionStorage.removeItem("sgdi_pending_user");
 
-      console.log(result);
-      if (
-        !response.ok ||
-        !result ||
-        result.type === "error" ||
-        result.status === "error" ||
-        result.status === "unauthorized" ||
-        result.status === "bad_request"
-      ) {
-        showFeedback(
-          result?.message || "Credenciais inválidas ou serviço indisponível.",
-          "error",
-        );
-        return;
-      }
-
-      const token = result.data?.token;
-      if (!token) {
-        showFeedback("O servidor não retornou uma sessão válida.", "error");
-        return;
-      }
-
-      const pendingType = sessionStorage.getItem("sgdi_pending_type");
-      const pendingUserRaw = sessionStorage.getItem("sgdi_pending_user");
-      let pendingUser = null;
-      try {
-        pendingUser = pendingUserRaw ? JSON.parse(pendingUserRaw) : null;
-      } catch {
-        pendingUser = null;
-      }
-
-      const type_user =
-        result.data?.type_user ??
-        (pendingType ? Number(pendingType) : null) ??
-        pendingUser?.type_user ??
-        getStoredUser()?.type_user ??
-        null;
-
-      const userData = {
-        id_user: result.data.id_user,
-        name: result.data.name,
-        email: email,
-        type_user: type_user,
-      };
-
-      saveSession(token, userData);
-
-      sessionStorage.removeItem("sgdi_pending_type");
-      sessionStorage.removeItem("sgdi_pending_user");
-
-      showFeedback(result.message || "Login realizado com sucesso!", "success");
-
-      setTimeout(() => {
-        redirectByType(type_user);
-      }, 5000);
-      
-    } catch (err) {
-      console.error("Erro de rede no login:", err);
-      showFeedback("Serviço indisponível. Verifique se a API está rodando.");
-    } finally {
-      setLoading(false);
-    }
-  });
-
-  if (localStorage.getItem(TOKEN_KEY)) 
-  {
-    const user = getStoredUser();
-    if (user?.type_user) {
-      redirectByType(user.type_user);
-    }
-  }
-};
-Login();
+            toast.show(response.message || "Login realizado com sucesso!", "success");
+            setTimeout(() => (window.location.href = user.homePath()), REDIRECT_DELAY_MS);
+        } catch (error) {
+            toast.fromError(error);
+        } finally {
+            form.setLoading(false);
+        }
+    });
+}

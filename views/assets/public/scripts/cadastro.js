@@ -1,139 +1,52 @@
-async function Register () {
-  const URL_REGISTER = "http://localhost/SGDI/api/users/register";
-  const form = document.getElementById("signup-form");
+import User from "../../_common/classes/entities/User.js";
+import UserService from "../../_common/classes/services/UserService.js";
+import { createToast } from "../../_common/prototypes/Toast.js";
+import { createFormController } from "../../_common/prototypes/FormController.js";
 
-  if (!form) return;
+const REDIRECT_DELAY_MS = 5000; // mesmo atraso da Etapa 05
+const TYPE_BY_OPTION = { inquilino: User.TYPES.TENANT, proprietario: User.TYPES.OWNER };
 
-  function mapTypeUser(value) 
-  {
-    const map = {
-      inquilino: "1",
-      proprietario: "2",
-    };
-    return map[value] ?? null;
-  }
+const formElement = document.getElementById("signup-form");
 
-  function showFeedback(message, type = "error") 
-  {
-    const old = form.querySelector(".feedback");
-    if (old) old.remove();
+if (formElement) {
+    const service = new UserService();
+    const toast = createToast({ container: formElement, inline: true, duration: 0 });
+    const form = createFormController(formElement);
 
-    const el = document.createElement("p");
-    el.className = `feedback feedback-${type}`;
-    el.textContent = message;
-    el.setAttribute("role", "alert");
-    form.appendChild(el);
-  }
+    form.onSubmit(async (values) => {
+        const userType = TYPE_BY_OPTION[values.type_user] ?? null;
+        if (!values.name || !values.email || !values.type_user || !values.password) {
+            toast.show("Preencha todos os campos obrigatórios.", "warning");
+            return;
+        }
 
-  function setLoading(isLoading) {
-    const btn = form.querySelector('button[type="submit"]');
-    if (!btn) return;
-    btn.disabled = isLoading;
-    btn.textContent = isLoading ? "Criando conta..." : "Criar Conta";
-  }
+        let user;
+        try {
+            // os setters da entidade validam nome, e-mail, tipo e senha (mín. 6)
+            user = new User({ name: values.name, email: values.email, password: values.password, userType });
+            if (userType === null) throw new TypeError("Selecione um tipo de usuário válido.");
+        } catch (error) {
+            toast.fromError(error);
+            return;
+        }
 
-  form.addEventListener("submit", async (e) => 
-  {
-    e.preventDefault();
+        form.setLoading(true, "Criando conta...");
+        try {
+            const response = await service.register(user);
+            if (response.type !== "success") {
+                toast.show(response.message || "Não foi possível realizar o cadastro. Tente novamente.", "error");
+                return;
+            }
 
-    const name = form.querySelector("#nome").value;
-    const email = form.querySelector("#email-signup").value.trim();
-    const typeRaw = form.querySelector("#tipo").value;
-    const password = form.querySelector("#senha-signup").value;
-
-    if (!name || !email || !typeRaw || !password) 
-    {
-      showFeedback("Preencha todos os campos obrigatórios.");
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) 
-    {
-      showFeedback("Informe um e-mail válido.");
-      return;
-    }
-
-    if (password.length < 6) 
-    {
-      showFeedback("A senha deve ter pelo menos 6 caracteres.");
-      return;
-    }
-
-    const type_user = mapTypeUser(typeRaw);
-    if (!type_user) 
-    {
-      showFeedback("Selecione um tipo de usuário válido.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const body = new URLSearchParams({
-        name,
-        email,
-        password,
-        type_user,
-      });
-
-      const response = await fetch(URL_REGISTER, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json",
-        },
-        body,
-      });
-
-      const result = await response.json().catch(() => null);
-      console.log(result);
-      if (
-        !response.ok ||
-        !result ||
-        result.type === "error" ||
-        result.status === "error" ||
-        result.status === "bad_request" ||
-        result.status === "internal_server_error"
-      ) {
-        showFeedback(
-          result?.message ||
-            "Não foi possível realizar o cadastro. Tente novamente.",
-          "error",
-        );
-        return;
-      }
-
-      showFeedback(
-        result.message || "Usuário cadastrado com sucesso!",
-        "success",
-      );
-
-      sessionStorage.setItem("sgdi_pending_type", type_user);
-      if (result.data) 
-      {
-        sessionStorage.setItem(
-          "sgdi_pending_user",
-          JSON.stringify({
-            id_user: result.data.id_user,
-            name: result.data.name,
-            email: result.data.email,
-            type_user: result.data.type_user ?? Number(type_user),
-          }),
-        );
-      }
-
-    setTimeout(() => 
-    {
-      window.location.href = "login.html";
-    }, 5000);
-    } catch (err) 
-    {
-      console.error("Erro de rede no cadastro:", err);
-      showFeedback("Serviço indisponível. Verifique se a API está rodando.");
-    } finally 
-    {
-      setLoading(false);
-    }
-  });
-};
-Register();
+            toast.show(response.message || "Usuário cadastrado com sucesso!", "success");
+            // dados não sensíveis para o login logo em seguida (nunca a senha)
+            sessionStorage.setItem("sgdi_pending_type", String(userType));
+            if (response.data) sessionStorage.setItem("sgdi_pending_user", JSON.stringify(response.data.toJSON()));
+            setTimeout(() => (window.location.href = "login.html"), REDIRECT_DELAY_MS);
+        } catch (error) {
+            toast.fromError(error);
+        } finally {
+            form.setLoading(false);
+        }
+    });
+}
