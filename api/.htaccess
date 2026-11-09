@@ -3,3 +3,15 @@ RewriteEngine On
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?route=/$1 [L,QSA]
+
+# Limites de upload (mod_php). Em PHP-FPM/CGI valem os de api/.user.ini.
+<IfModule mod_php.c>
+    php_value upload_max_filesize 5M
+    php_value post_max_size 55M
+    php_value max_file_uploads 10
+</IfModule>
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 5M
+    php_value post_max_size 55M
+    php_value max_file_uploads 10
+</IfModule>

@@ -34,8 +34,10 @@ $route->post("/login-admin", "Users:authAdmin"); // login de usuário admin
 $route->put("/update-admin", "Users:updateAdmin"); // update de usuário comum
 $route->put("/update", "Users:update"); // update de usuário comum
 $route->post("/register-admin", "Users:registerAdmin"); // Registrar usuário admin NÃO IMPLEMENTADO
-$route->post("/login-admin", "Users:authAdmin"); // login de usuário admin
-$route->put("/update-admin", "Users:updateAdmin"); // update de usuário admin
+//$route->post("/login-admin", "Users:authAdmin"); // login de usuário admin
+//$route->put("/update-admin", "Users:updateAdmin"); // update de usuário admin
+$route->post("/photo","Users:uploadPhoto"); // upload de foto do usuário autenticado (multipart, campo "photo")
+$route->get("/me", "Users:me"); // perfil do usuário autenticado (inclui a URL da foto)
 $route->group(null);
 
 // FAQs
@@ -75,6 +77,9 @@ $route->get("/listAll", "Properties:listAll"); //funcionando
 $route->get("/list/{id}", "Properties:listById"); //funcionando
 $route->put("/update/{id}", "Properties:update"); //funcionando
 $route->delete("/delete/{id}", "Properties:delete"); //funcionando
+$route->get("/{id}/images", "PropertyImages:listAll"); // galeria do imóvel
+$route->post("/{id}/images", "PropertyImages:upload"); // envia imagem(ns) (multipart: images[])
+$route->delete("/{id}/images/{image_id}", "PropertyImages:delete"); // remove uma imagem do imóvel
 $route->group(null);
 
 //Payments

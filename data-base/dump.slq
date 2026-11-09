@@ -14,6 +14,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    photo VARCHAR(255) DEFAULT NULL, -- caminho relativo gerado por Upload (ex.: uploads/users/<hash>.jpg)
 
     FOREIGN KEY (id_user_type)
         REFERENCES user_type(id_user_type)
@@ -33,6 +34,24 @@ CREATE TABLE properties (
         REFERENCES users(id_user)
         ON DELETE CASCADE
 );
+
+-- Etapa 07: galeria do imóvel (relação 1:N). Cada imagem é um registro com id_property.
+CREATE TABLE property_images (
+    id_image INT AUTO_INCREMENT PRIMARY KEY,
+    id_property INT NOT NULL,
+    image_path VARCHAR(255) NOT NULL,
+    alt_text VARCHAR(255) DEFAULT NULL,
+    position SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uq_property_images_path (image_path),
+    KEY idx_property_images_property (id_property),
+    CONSTRAINT fk_property_images_property
+        FOREIGN KEY (id_property)
+        REFERENCES properties(id_property)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE contracts (
     id_contract INT AUTO_INCREMENT PRIMARY KEY,

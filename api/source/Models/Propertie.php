@@ -9,7 +9,7 @@ use PDOException;
 class Propertie extends Model
 {
     protected ?int $idProperty;
-    protected ?int $idUser;
+    protected ?int $idOwner;
     protected ?string $location;
     protected ?int $numberOfRooms;
     protected ?int $availability;
@@ -17,14 +17,14 @@ class Propertie extends Model
 
     public function __construct(
         ?int $idProperty = null,
-        ?int $idUser = null,
+        ?int $idOwner = null,
         ?string $location = null,
         ?int $numberOfRooms = null,
         ?int $availability = null,
         ?int $latePayment = null,
     ) {
         $this->idProperty = $idProperty;
-        $this->idUser = $idUser;
+        $this->idOwner = $idOwner;
         $this->location = $location;
         $this->numberOfRooms = $numberOfRooms;
         $this->availability = $availability;
@@ -33,7 +33,7 @@ class Propertie extends Model
         $this->table = "properties";
         $this->primaryKey = "id_property";
         $this->fillable = [
-            "idUser",
+            "idOwner",
             "location",
             "numberOfRooms",
             "availability",
@@ -51,14 +51,14 @@ class Propertie extends Model
         $this->idProperty = $idProperty;
     }
 
-    public function getIdUser(): ?int
+    public function getIdOwner(): ?int
     {
-        return $this->idUser;
+        return $this->idOwner;
     }
 
-    public function setIdUser(?int $idUser): void
+    public function setIdOwner(?int $idOwner): void
     {
-        $this->idUser = $idUser;
+        $this->idOwner = $idOwner;
     }
 
     public function getLocation(): ?string

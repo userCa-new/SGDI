@@ -1,0 +1,7 @@
+*
+!.gitignore
+!.htaccess
+!users/
+!users/.gitkeep
+!properties/
+!properties/.gitkeep

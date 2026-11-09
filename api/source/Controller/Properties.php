@@ -3,6 +3,8 @@
 namespace Source\Controller;
 
 use Source\Models\Propertie;
+use Source\Models\PropertyImage;
+use Source\Support\ImageStorage;
 use Source\Controller\Api;
 
 class Properties extends Api
@@ -59,7 +61,7 @@ class Properties extends Api
         $this->call(
             201,
             "success",
-            "Atendimento cadastrado com sucesso!",
+            "Propriedade cadastrada com sucesso!",
             "success",
         )->back($response);
     }
@@ -91,6 +93,19 @@ class Properties extends Api
             return;
         }
 
+        // o ON DELETE CASCADE remove os registros de property_images, mas não os arquivos:
+        // guardamos os caminhos antes e apagamos os arquivos só depois da exclusão do imóvel
+        $imagePaths = (new PropertyImage())->pathsByProperty((int) $data["id"]);
+        if ($imagePaths === null) {
+            $this->call(
+                500,
+                "internal_server_error",
+                "Não foi possível verificar as imagens do imóvel antes de excluí-lo.",
+                "error",
+            )->back();
+            return;
+        }
+
         $propriedade = new Propertie();
 
         if (!$propriedade->deleteById($data["id"])) {
@@ -101,6 +116,10 @@ class Properties extends Api
                 "error",
             )->back();
             return;
+        }
+
+        foreach ($imagePaths as $imagePath) {
+            ImageStorage::remove($imagePath);
         }
 
         $this->call(

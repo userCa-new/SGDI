@@ -16,6 +16,7 @@ class User extends Model
     private ?string $password;
     private ?string $active;
 
+    private ?string $photo;
     private ?string $token = null;
 
     public function __construct(
@@ -24,16 +25,18 @@ class User extends Model
         ?string $name = null,
         ?string $email = null,
         ?string $password = null,
+        ?string $photo = null,
     ) {
         $this->idUser = $idUser;
         $this->idUserType = $idUserType;
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
+        $this->photo = $photo;
 
         $this->table = "users"; // nome da tabela do banco
         $this->primaryKey = "id_user"; // nome da chave primária da tabela
-        $this->fillable = ["idUserType", "name", "email", "password"]; // camelCase
+        $this->fillable = ["idUserType", "name", "email", "password", "photo"]; // camelCase
     }
 
     public function getIdUser(): ?int
@@ -90,6 +93,41 @@ class User extends Model
     {
         return $this->token;
     }
+
+    public function setPhoto(?string $photo): void 
+    {
+        $this->photo = $photo;
+    }
+
+    public function getPhoto(): ?string 
+    {
+        return $this->photo;
+    }
+
+    
+    public function updatePhoto(int $idUser, string $photo): bool
+    {
+        try {
+            $query = "UPDATE {$this->table} SET photo = :photo WHERE id_user = :idUser";
+            $stmt = Connect::getInstance()->prepare($query);
+            $stmt->bindValue(":photo", $photo);
+            $stmt->bindValue(":idUser", $idUser, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->rowCount() !== 1) {
+                $this->errorMessage = "Perfil não encontrado ou foto não alterada.";
+                return false;
+            }
+
+            $this->idUser = $idUser;
+            $this->photo = $photo;
+            return true;
+        } catch (\PDOException $exception) {
+            $this->errorMessage = "Não foi possível atualizar a foto do perfil.";
+            return false;
+        }
+    }
+
 
     public function insert(): bool
     {
