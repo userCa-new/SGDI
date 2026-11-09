@@ -1,18 +1,18 @@
-const issueForm = document.getElementById('maintenance-form');
-const issueList = document.getElementById('issue-list');
-const chatForm = document.getElementById('chat-form');
-const chatWindow = document.getElementById('chat-window');
-const receiptButton = document.getElementById('receipt-button');
-const scheduleDescription = document.getElementById('schedule-description');
-const scheduleItems = document.getElementById('schedule-items');
-const paymentStatusText = document.getElementById('payment-status-text');
+const issueForm = document.getElementById("maintenance-form");
+const issueList = document.getElementById("issue-list");
+const chatForm = document.getElementById("chat-form");
+const chatWindow = document.getElementById("chat-window");
+const receiptButton = document.getElementById("receipt-button");
+const scheduleDescription = document.getElementById("schedule-description");
+const scheduleItems = document.getElementById("schedule-items");
+const paymentStatusText = document.getElementById("payment-status-text");
 
-const savedIssues = JSON.parse(localStorage.getItem('tenantIssues') || '[]');
-const savedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+const savedIssues = JSON.parse(localStorage.getItem("tenantIssues") || "[]");
+const savedMessages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
 
 function renderIssues() {
   if (!savedIssues.length) {
-    issueList.innerHTML = '<li>Você ainda não enviou solicitações.</li>';
+    issueList.innerHTML = "<li>Você ainda não enviou solicitações.</li>";
     return;
   }
 
@@ -22,17 +22,17 @@ function renderIssues() {
             <li>
                 <strong>${issue.type}</strong>
                 <p>${issue.details}</p>
-                <time>Enviado em ${new Date(issue.createdAt).toLocaleString('pt-BR')}</time>
+                <time>Enviado em ${new Date(issue.createdAt).toLocaleString("pt-BR")}</time>
             </li>
         `;
     })
-    .join('');
+    .join("");
 }
 
 function renderMessages() {
   if (!savedMessages.length) {
     chatWindow.innerHTML =
-      '<p>Inicie uma conversa com seu proprietário usando o formulário abaixo.</p>';
+      "<p>Inicie uma conversa com seu proprietário usando o formulário abaixo.</p>";
     chatWindow.scrollTop = chatWindow.scrollHeight;
     return;
   }
@@ -42,11 +42,11 @@ function renderMessages() {
       return `
             <article class="chat-message ${message.from}">
                 <p>${message.text}</p>
-                <time>${new Date(message.createdAt).toLocaleTimeString('pt-BR')}</time>
+                <time>${new Date(message.createdAt).toLocaleTimeString("pt-BR")}</time>
             </article>
         `;
     })
-    .join('');
+    .join("");
 
   chatWindow.scrollTop = chatWindow.scrollHeight;
   adjustChatScrolling(chatWindow);
@@ -54,89 +54,88 @@ function renderMessages() {
 
 function adjustChatScrolling(container) {
   if (!container) return;
-  const messages = container.querySelectorAll('.chat-message');
+  const messages = container.querySelectorAll(".chat-message");
   if (messages.length > 3) {
-    container.style.maxHeight = '320px';
-    container.style.overflowY = 'auto';
+    container.style.maxHeight = "320px";
+    container.style.overflowY = "auto";
   } else {
-    container.style.maxHeight = '';
-    container.style.overflowY = '';
+    container.style.maxHeight = "";
+    container.style.overflowY = "";
   }
 }
 
 function renderSchedule() {
   const appointment = JSON.parse(
-    localStorage.getItem('ownerAppointment') || 'null',
+    localStorage.getItem("ownerAppointment") || "null",
   );
   if (!appointment) {
     scheduleDescription.textContent =
-      'Acompanhe o agendamento definido pelo proprietário.';
-    scheduleItems.innerHTML = '<li>Nenhum agendamento definido.</li>';
+      "Acompanhe o agendamento definido pelo proprietário.";
+    scheduleItems.innerHTML = "<li>Nenhum agendamento definido.</li>";
     return;
   }
 
-  scheduleDescription.textContent = 'Agendamento definido pelo proprietário:';
+  scheduleDescription.textContent = "Agendamento definido pelo proprietário:";
   scheduleItems.innerHTML = `
-        <li>${appointment.date} • ${appointment.time} - ${appointment.note || 'Sem observação adicional'}</li>
+        <li>${appointment.date} • ${appointment.time} - ${appointment.note || "Sem observação adicional"}</li>
     `;
 }
 
 function renderPaymentStatus() {
   const lastConfirmed = JSON.parse(
-    localStorage.getItem('lastPaymentConfirmed') || 'null',
+    localStorage.getItem("lastPaymentConfirmed") || "null",
   );
   if (!lastConfirmed) {
-    paymentStatusText.textContent = 'Nenhum pagamento confirmado recentemente.';
+    paymentStatusText.textContent = "Nenhum pagamento confirmado recentemente.";
     return;
   }
 
   paymentStatusText.textContent = `Último pagamento confirmado: ${lastConfirmed.tenant} • ${lastConfirmed.amount} • vencimento ${lastConfirmed.due}`;
 }
 
-issueForm.addEventListener('submit', (event) => {
+issueForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const issue = {
-    type: document.getElementById('issue-type').value,
-    details: document.getElementById('issue-details').value.trim(),
+    type: document.getElementById("issue-type").value,
+    details: document.getElementById("issue-details").value.trim(),
     createdAt: new Date().toISOString(),
   };
 
   savedIssues.unshift(issue);
-  localStorage.setItem('tenantIssues', JSON.stringify(savedIssues));
+  localStorage.setItem("tenantIssues", JSON.stringify(savedIssues));
   renderIssues();
   issueForm.reset();
 });
 
-chatForm.addEventListener('submit', (event) => {
+chatForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const message = {
-    from: 'customer',
-    text: document.getElementById('chat-message').value.trim(),
+    from: "customer",
+    text: document.getElementById("chat-message").value.trim(),
     createdAt: new Date().toISOString(),
   };
 
   savedMessages.push(message);
-  localStorage.setItem('chatMessages', JSON.stringify(savedMessages));
+  localStorage.setItem("chatMessages", JSON.stringify(savedMessages));
   renderMessages();
   chatForm.reset();
 });
 
-// Replace receipt button with modal to upload payment proof
 function getPaymentProofs() {
-  return JSON.parse(localStorage.getItem('paymentProofs') || '[]');
+  return JSON.parse(localStorage.getItem("paymentProofs") || "[]");
 }
 
 function savePaymentProofs(list) {
-  localStorage.setItem('paymentProofs', JSON.stringify(list));
+  localStorage.setItem("paymentProofs", JSON.stringify(list));
 }
 
 function createTenantProofModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-backdrop';
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
   modal.hidden = true;
-  modal.setAttribute('aria-hidden', 'true');
+  modal.setAttribute("aria-hidden", "true");
 
   modal.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="proof-modal-title">
@@ -171,35 +170,35 @@ function createTenantProofModal() {
     </div>
   `;
 
-  const form = modal.querySelector('#proof-form');
-  const closeBtn = modal.querySelector('#proof-modal-close');
-  const cancelBtn = modal.querySelector('#proof-cancel');
-  const fileInput = modal.querySelector('#proof-file');
-  const preview = modal.querySelector('#proof-preview');
-  const imgPreview = modal.querySelector('#proof-image-preview');
-  const refInput = modal.querySelector('#proof-ref');
-  const amountInput = modal.querySelector('#proof-amount');
+  const form = modal.querySelector("#proof-form");
+  const closeBtn = modal.querySelector("#proof-modal-close");
+  const cancelBtn = modal.querySelector("#proof-cancel");
+  const fileInput = modal.querySelector("#proof-file");
+  const preview = modal.querySelector("#proof-preview");
+  const imgPreview = modal.querySelector("#proof-image-preview");
+  const refInput = modal.querySelector("#proof-ref");
+  const amountInput = modal.querySelector("#proof-amount");
 
   function open() {
     modal.hidden = false;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
     refInput.focus();
   }
 
   function close() {
     modal.hidden = true;
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
     form.reset();
     preview.hidden = true;
-    imgPreview.src = '';
+    imgPreview.src = "";
   }
 
-  fileInput.addEventListener('change', (e) => {
+  fileInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = () => {
         imgPreview.src = reader.result;
@@ -208,18 +207,18 @@ function createTenantProofModal() {
       reader.readAsDataURL(file);
     } else {
       preview.hidden = true;
-      imgPreview.src = '';
+      imgPreview.src = "";
     }
   });
 
-  modal.addEventListener('click', (ev) => {
+  modal.addEventListener("click", (ev) => {
     if (ev.target === modal) close();
   });
 
-  closeBtn.addEventListener('click', close);
-  cancelBtn.addEventListener('click', close);
+  closeBtn.addEventListener("click", close);
+  cancelBtn.addEventListener("click", close);
 
-  form.addEventListener('submit', (ev) => {
+  form.addEventListener("submit", (ev) => {
     ev.preventDefault();
     const proofs = getPaymentProofs();
     const file = fileInput.files[0];
@@ -227,36 +226,36 @@ function createTenantProofModal() {
       reference: refInput.value.trim(),
       amount: amountInput.value.trim(),
       createdAt: new Date().toISOString(),
-      dataUrl: '',
-      fileName: file ? file.name : '',
-      fileType: file ? file.type : '',
+      dataUrl: "",
+      fileName: file ? file.name : "",
+      fileType: file ? file.type : "",
     };
 
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = () => {
         proof.dataUrl = reader.result;
         proofs.unshift(proof);
         savePaymentProofs(proofs);
         close();
-        alert('Comprovante enviado. O proprietário poderá visualizá-lo.');
+        alert("Comprovante enviado. O proprietário poderá visualizá-lo.");
       };
       reader.readAsDataURL(file);
-    } else if (file && file.type === 'application/pdf') {
+    } else if (file && file.type === "application/pdf") {
       const reader = new FileReader();
       reader.onload = () => {
         proof.dataUrl = reader.result;
         proofs.unshift(proof);
         savePaymentProofs(proofs);
         close();
-        alert('Comprovante (PDF) enviado. O proprietário poderá baixá-lo.');
+        alert("Comprovante (PDF) enviado. O proprietário poderá baixá-lo.");
       };
       reader.readAsDataURL(file);
     } else {
       proofs.unshift(proof);
       savePaymentProofs(proofs);
       close();
-      alert('Comprovante salvo sem arquivo.');
+      alert("Comprovante salvo sem arquivo.");
     }
   });
 
@@ -266,7 +265,7 @@ function createTenantProofModal() {
 const tenantProofModal = createTenantProofModal();
 document.body.appendChild(tenantProofModal.modal);
 
-receiptButton.addEventListener('click', () => {
+receiptButton.addEventListener("click", () => {
   tenantProofModal.open();
 });
 
@@ -275,8 +274,8 @@ renderMessages();
 renderSchedule();
 renderPaymentStatus();
 
-window.addEventListener('storage', (event) => {
-  if (event.key === 'lastMaintenanceCompleted' && event.newValue) {
+window.addEventListener("storage", (event) => {
+  if (event.key === "lastMaintenanceCompleted" && event.newValue) {
     try {
       const payload = JSON.parse(event.newValue);
       const removed = payload.removed;
@@ -285,9 +284,7 @@ window.addEventListener('storage', (event) => {
           `Solicitação concluída pelo proprietário:\n\nTipo: ${removed.type}\nDescrição: ${removed.details}`,
         );
       }
-    } catch (err) {
-
-    }
+    } catch (err) {}
     renderIssues();
   }
 });

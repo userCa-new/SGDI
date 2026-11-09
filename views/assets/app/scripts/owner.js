@@ -1,32 +1,32 @@
-const paymentList = document.getElementById('payment-list');
-const toast = document.getElementById('toast');
-const scheduleForm = document.getElementById('schedule-form');
-const scheduleDisplay = document.getElementById('schedule-display');
-const chatWindow = document.getElementById('owner-chat-window');
-const ownerChatForm = document.getElementById('owner-chat-form');
-const ownerChatProperty = document.getElementById('owner-chat-property');
+const paymentList = document.getElementById("payment-list");
+const toast = document.getElementById("toast");
+const scheduleForm = document.getElementById("schedule-form");
+const scheduleDisplay = document.getElementById("schedule-display");
+const chatWindow = document.getElementById("owner-chat-window");
+const ownerChatForm = document.getElementById("owner-chat-form");
+const ownerChatProperty = document.getElementById("owner-chat-property");
 
-const savedPayments = JSON.parse(localStorage.getItem('ownerPayments') || '[]');
-const chatMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+const savedPayments = JSON.parse(localStorage.getItem("ownerPayments") || "[]");
+const chatMessages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
 let lastConfirmedPayment = null;
 let toastTimeout = null;
 
-const paymentPanel = document.querySelector('.pix-panel');
-const paymentMethodsContainer = document.createElement('div');
-paymentMethodsContainer.className = 'payment-methods';
+const paymentPanel = document.querySelector(".pix-panel");
+const paymentMethodsContainer = document.createElement("div");
+paymentMethodsContainer.className = "payment-methods";
 if (paymentPanel) {
-  const pixList = paymentPanel.querySelector('.pix-list');
+  const pixList = paymentPanel.querySelector(".pix-list");
   if (pixList) {
     paymentPanel.insertBefore(paymentMethodsContainer, pixList);
   }
 }
 
 function getPaymentMethods() {
-  return JSON.parse(localStorage.getItem('ownerPaymentMethods') || '[]');
+  return JSON.parse(localStorage.getItem("ownerPaymentMethods") || "[]");
 }
 
 function savePaymentMethods(methods) {
-  localStorage.setItem('ownerPaymentMethods', JSON.stringify(methods));
+  localStorage.setItem("ownerPaymentMethods", JSON.stringify(methods));
 }
 
 function renderPaymentMethods() {
@@ -46,18 +46,18 @@ function renderPaymentMethods() {
             <article class="payment-card">
                 <p class="method-type">${method.type}</p>
                 <p class="method-value">${method.value}</p>
-                ${method.qrDataUrl ? `<img src="${method.qrDataUrl}" alt="QR Code de ${method.type}" />` : ''}
+                ${method.qrDataUrl ? `<img src="${method.qrDataUrl}" alt="QR Code de ${method.type}" />` : ""}
             </article>
         `;
     })
-    .join('');
+    .join("");
 }
 
 function createPaymentModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-backdrop';
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
   modal.hidden = true;
-  modal.setAttribute('aria-hidden', 'true');
+  modal.setAttribute("aria-hidden", "true");
 
   modal.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
@@ -98,51 +98,51 @@ function createPaymentModal() {
     </div>
   `;
 
-  const form = modal.querySelector('#payment-method-form');
-  const closeButton = modal.querySelector('#payment-modal-close');
-  const cancelButton = modal.querySelector('#payment-modal-cancel');
-  const fileGroup = modal.querySelector('.qr-input-group');
-  const fileInput = modal.querySelector('#qr-file');
-  const qrPreview = modal.querySelector('#qr-preview');
-  const qrImagePreview = modal.querySelector('#qr-image-preview');
-  const paymentType = modal.querySelector('#payment-type');
-  const paymentValue = modal.querySelector('#payment-value');
+  const form = modal.querySelector("#payment-method-form");
+  const closeButton = modal.querySelector("#payment-modal-close");
+  const cancelButton = modal.querySelector("#payment-modal-cancel");
+  const fileGroup = modal.querySelector(".qr-input-group");
+  const fileInput = modal.querySelector("#qr-file");
+  const qrPreview = modal.querySelector("#qr-preview");
+  const qrImagePreview = modal.querySelector("#qr-image-preview");
+  const paymentType = modal.querySelector("#payment-type");
+  const paymentValue = modal.querySelector("#payment-value");
 
   function closeModal() {
     modal.hidden = true;
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
     form.reset();
     fileGroup.hidden = true;
     qrPreview.hidden = true;
-    qrImagePreview.src = '';
+    qrImagePreview.src = "";
   }
 
   function openModal() {
     modal.hidden = false;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
     paymentValue.focus();
   }
 
   function toggleQrInput() {
-    const isQr = paymentType.value === 'QR Code';
+    const isQr = paymentType.value === "QR Code";
     fileGroup.hidden = !isQr;
     if (!isQr) {
-      fileInput.value = '';
+      fileInput.value = "";
       qrPreview.hidden = true;
-      qrImagePreview.src = '';
+      qrImagePreview.src = "";
     }
   }
 
-  paymentType.addEventListener('change', toggleQrInput);
+  paymentType.addEventListener("change", toggleQrInput);
   toggleQrInput();
 
-  fileInput.addEventListener('change', (event) => {
+  fileInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
-    if (!file || !file.type.startsWith('image/')) {
+    if (!file || !file.type.startsWith("image/")) {
       qrPreview.hidden = true;
-      qrImagePreview.src = '';
+      qrImagePreview.src = "";
       return;
     }
 
@@ -154,16 +154,16 @@ function createPaymentModal() {
     reader.readAsDataURL(file);
   });
 
-  modal.addEventListener('click', (event) => {
+  modal.addEventListener("click", (event) => {
     if (event.target === modal) {
       closeModal();
     }
   });
 
-  closeButton.addEventListener('click', closeModal);
-  cancelButton.addEventListener('click', closeModal);
+  closeButton.addEventListener("click", closeModal);
+  cancelButton.addEventListener("click", closeModal);
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const methods = getPaymentMethods();
@@ -171,7 +171,7 @@ function createPaymentModal() {
       type: paymentType.value,
       value: paymentValue.value.trim(),
       qrDataUrl:
-        paymentType.value === 'QR Code' ? qrImagePreview.src || '' : '',
+        paymentType.value === "QR Code" ? qrImagePreview.src || "" : "",
       createdAt: new Date().toISOString(),
     };
 
@@ -188,9 +188,9 @@ const paymentModal = createPaymentModal();
 document.body.appendChild(paymentModal.modal);
 renderPaymentMethods();
 
-const paymentMethodButton = document.getElementById('manage-payment-method');
+const paymentMethodButton = document.getElementById("manage-payment-method");
 if (paymentMethodButton) {
-  paymentMethodButton.addEventListener('click', () => {
+  paymentMethodButton.addEventListener("click", () => {
     paymentModal.openModal();
   });
 }
@@ -213,7 +213,7 @@ function renderPaymentList() {
                     </div>
                     <div style="display:flex;gap:8px;align-items:center">
                       <button class="button-secondary show-proof" data-tenant="${payment.tenant}">Comprovante</button>
-                      <button class="confirm-button" data-index="${index}">${payment.status.toLowerCase().includes('confirmado') ? 'Confirmado' : 'Confirmar'}</button>
+                      <button class="confirm-button" data-index="${index}">${payment.status.toLowerCase().includes("confirmado") ? "Confirmado" : "Confirmar"}</button>
                     </div>
                 </header>
                 <p>Valor: ${payment.amount}</p>
@@ -221,18 +221,18 @@ function renderPaymentList() {
             </article>
         `;
     })
-    .join('');
+    .join("");
 }
 
 function getPaymentProofs() {
-  return JSON.parse(localStorage.getItem('paymentProofs') || '[]');
+  return JSON.parse(localStorage.getItem("paymentProofs") || "[]");
 }
 
 function createOwnerProofModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-backdrop';
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
   modal.hidden = true;
-  modal.setAttribute('aria-hidden', 'true');
+  modal.setAttribute("aria-hidden", "true");
 
   modal.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="owner-proof-title">
@@ -251,12 +251,12 @@ function createOwnerProofModal() {
     </div>
   `;
 
-  const body = modal.querySelector('#owner-proof-body');
-  const closeBtn = modal.querySelector('#owner-proof-close');
-  const closeAction = modal.querySelector('#owner-proof-download');
+  const body = modal.querySelector("#owner-proof-body");
+  const closeBtn = modal.querySelector("#owner-proof-close");
+  const closeAction = modal.querySelector("#owner-proof-download");
 
   function openFor(tenant) {
-    body.innerHTML = '';
+    body.innerHTML = "";
     const proofs = getPaymentProofs().filter(
       (p) =>
         p.reference && p.reference.toLowerCase().includes(tenant.toLowerCase()),
@@ -270,32 +270,32 @@ function createOwnerProofModal() {
           return `
             <article class="payment-card">
               <p class="method-type">Referência: ${p.reference}</p>
-              <p class="method-value">Valor: ${p.amount || '—'}</p>
-              ${p.fileType && p.fileType.startsWith('image/') ? `<img src="${p.dataUrl}" alt="comprovante"/>` : p.fileType === 'application/pdf' ? `<p><a href="${p.dataUrl}" download="${p.fileName}">Baixar PDF</a></p>` : `<p class="hint">Comprovante recebido (sem arquivo)</p>`}
-              <p class="muted">Enviado em ${new Date(p.createdAt).toLocaleString('pt-BR')}</p>
+              <p class="method-value">Valor: ${p.amount || "—"}</p>
+              ${p.fileType && p.fileType.startsWith("image/") ? `<img src="${p.dataUrl}" alt="comprovante"/>` : p.fileType === "application/pdf" ? `<p><a href="${p.dataUrl}" download="${p.fileName}">Baixar PDF</a></p>` : `<p class="hint">Comprovante recebido (sem arquivo)</p>`}
+              <p class="muted">Enviado em ${new Date(p.createdAt).toLocaleString("pt-BR")}</p>
             </article>
           `;
         })
-        .join('');
+        .join("");
     }
 
     modal.hidden = false;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
   }
 
   function close() {
     modal.hidden = true;
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 
-  modal.addEventListener('click', (ev) => {
+  modal.addEventListener("click", (ev) => {
     if (ev.target === modal) close();
   });
 
-  closeBtn.addEventListener('click', close);
-  closeAction.addEventListener('click', close);
+  closeBtn.addEventListener("click", close);
+  closeAction.addEventListener("click", close);
 
   return { modal, openFor };
 }
@@ -304,18 +304,18 @@ const ownerProofModal = createOwnerProofModal();
 document.body.appendChild(ownerProofModal.modal);
 
 function getOwnerProperties() {
-  return JSON.parse(localStorage.getItem('ownerProperties') || '[]');
+  return JSON.parse(localStorage.getItem("ownerProperties") || "[]");
 }
 
 function saveOwnerProperties(properties) {
-  localStorage.setItem('ownerProperties', JSON.stringify(properties));
+  localStorage.setItem("ownerProperties", JSON.stringify(properties));
 }
 
 function createPropertyFormModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-backdrop';
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
   modal.hidden = true;
-  modal.setAttribute('aria-hidden', 'true');
+  modal.setAttribute("aria-hidden", "true");
 
   modal.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="property-form-title">
@@ -353,13 +353,13 @@ function createPropertyFormModal() {
     </div>
   `;
 
-  const form = modal.querySelector('#property-form');
-  const closeButton = modal.querySelector('#property-form-close');
-  const cancelButton = modal.querySelector('#property-form-cancel');
-  const locationInput = modal.querySelector('#property-location');
-  const tenantsInput = modal.querySelector('#property-tenants');
-  const overdueSelect = modal.querySelector('#property-overdue');
-  const vacantSelect = modal.querySelector('#property-vacant');
+  const form = modal.querySelector("#property-form");
+  const closeButton = modal.querySelector("#property-form-close");
+  const cancelButton = modal.querySelector("#property-form-cancel");
+  const locationInput = modal.querySelector("#property-location");
+  const tenantsInput = modal.querySelector("#property-tenants");
+  const overdueSelect = modal.querySelector("#property-overdue");
+  const vacantSelect = modal.querySelector("#property-vacant");
   let currentIndex = null;
 
   function open(property = null, index = null) {
@@ -367,32 +367,32 @@ function createPropertyFormModal() {
     if (property) {
       locationInput.value = property.location;
       tenantsInput.value = property.tenants;
-      overdueSelect.value = property.overdue ? 'true' : 'false';
-      vacantSelect.value = property.vacant ? 'true' : 'false';
+      overdueSelect.value = property.overdue ? "true" : "false";
+      vacantSelect.value = property.vacant ? "true" : "false";
     } else {
       form.reset();
     }
     modal.hidden = false;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
     locationInput.focus();
   }
 
   function close() {
     modal.hidden = true;
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
     currentIndex = null;
   }
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
     const properties = getOwnerProperties();
     const propertyData = {
       location: locationInput.value.trim(),
       tenants: Number(tenantsInput.value),
-      overdue: overdueSelect.value === 'true',
-      vacant: vacantSelect.value === 'true',
+      overdue: overdueSelect.value === "true",
+      vacant: vacantSelect.value === "true",
       updatedAt: new Date().toISOString(),
     };
 
@@ -409,22 +409,22 @@ function createPropertyFormModal() {
     renderChatPropertyOptions();
   });
 
-  modal.addEventListener('click', (event) => {
+  modal.addEventListener("click", (event) => {
     if (event.target === modal) {
       close();
     }
   });
-  closeButton.addEventListener('click', close);
-  cancelButton.addEventListener('click', close);
+  closeButton.addEventListener("click", close);
+  cancelButton.addEventListener("click", close);
 
   return { modal, open };
 }
 
 function createPropertiesModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-backdrop';
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
   modal.hidden = true;
-  modal.setAttribute('aria-hidden', 'true');
+  modal.setAttribute("aria-hidden", "true");
 
   modal.innerHTML = `
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="properties-title">
@@ -442,9 +442,9 @@ function createPropertiesModal() {
     </div>
   `;
 
-  const grid = modal.querySelector('#properties-grid');
-  const closeButton = modal.querySelector('#properties-close');
-  const addButton = modal.querySelector('#add-property-button');
+  const grid = modal.querySelector("#properties-grid");
+  const closeButton = modal.querySelector("#properties-close");
+  const addButton = modal.querySelector("#add-property-button");
 
   function renderList() {
     const properties = getOwnerProperties();
@@ -463,8 +463,8 @@ function createPropertiesModal() {
                 <p class="method-value">${property.location}</p>
               </div>
               <div class="property-badges">
-                <span class="badge ${property.overdue ? 'badge-danger' : 'badge-success'}">${property.overdue ? 'Atrasado' : 'Em dia'}</span>
-                <span class="badge ${property.vacant ? 'badge-warning' : 'badge-info'}">${property.vacant ? 'Vago' : 'Ocupado'}</span>
+                <span class="badge ${property.overdue ? "badge-danger" : "badge-success"}">${property.overdue ? "Atrasado" : "Em dia"}</span>
+                <span class="badge ${property.vacant ? "badge-warning" : "badge-info"}">${property.vacant ? "Vago" : "Ocupado"}</span>
               </div>
             </div>
             <div class="property-grid">
@@ -480,38 +480,38 @@ function createPropertiesModal() {
           </article>
         `;
       })
-      .join('');
+      .join("");
   }
 
   function open() {
     renderList();
     modal.hidden = false;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
   }
 
   function close() {
     modal.hidden = true;
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 
-  modal.addEventListener('click', (event) => {
+  modal.addEventListener("click", (event) => {
     if (event.target === modal) {
       close();
     }
   });
 
-  closeButton.addEventListener('click', close);
-  addButton.addEventListener('click', () => {
+  closeButton.addEventListener("click", close);
+  addButton.addEventListener("click", () => {
     if (propertyFormModal) {
       close();
       propertyFormModal.open();
     }
   });
 
-  grid.addEventListener('click', (event) => {
-    const updateButton = event.target.closest('.update-property');
+  grid.addEventListener("click", (event) => {
+    const updateButton = event.target.closest(".update-property");
     if (updateButton) {
       const index = Number(updateButton.dataset.index);
       if (Number.isNaN(index)) return;
@@ -524,7 +524,7 @@ function createPropertiesModal() {
       return;
     }
 
-    const removeButton = event.target.closest('.remove-property');
+    const removeButton = event.target.closest(".remove-property");
     if (removeButton) {
       const index = Number(removeButton.dataset.index);
       if (Number.isNaN(index)) return;
@@ -546,37 +546,37 @@ const propertiesModal = createPropertiesModal();
 document.body.appendChild(propertiesModal.modal);
 
 const ownerPropertiesButton = document.getElementById(
-  'owner-properties-button',
+  "owner-properties-button",
 );
 if (ownerPropertiesButton) {
-  ownerPropertiesButton.addEventListener('click', () => {
+  ownerPropertiesButton.addEventListener("click", () => {
     propertiesModal.open();
   });
 }
 
-paymentList.addEventListener('click', (ev) => {
-  const btn = ev.target.closest('.show-proof');
+paymentList.addEventListener("click", (ev) => {
+  const btn = ev.target.closest(".show-proof");
   if (!btn) return;
   const tenant = btn.dataset.tenant;
   ownerProofModal.openFor(tenant);
 });
 
 function getTenantIssues() {
-  return JSON.parse(localStorage.getItem('tenantIssues') || '[]');
+  return JSON.parse(localStorage.getItem("tenantIssues") || "[]");
 }
 
 function saveTenantIssues(issues) {
-  localStorage.setItem('tenantIssues', JSON.stringify(issues));
+  localStorage.setItem("tenantIssues", JSON.stringify(issues));
 }
 
 function renderOwnerIssues() {
-  const container = document.querySelector('.issues-panel .issue-list');
+  const container = document.querySelector(".issues-panel .issue-list");
   if (!container) return;
 
   const issues = getTenantIssues();
   if (!issues.length) {
     container.innerHTML =
-      '<li>Nenhuma solicitação de manutenção pendente.</li>';
+      "<li>Nenhuma solicitação de manutenção pendente.</li>";
     return;
   }
 
@@ -586,18 +586,18 @@ function renderOwnerIssues() {
             <li data-created="${issue.createdAt}">
                 <strong>${issue.type}</strong>
                 <p>${issue.details}</p>
-                <time>Enviado em ${new Date(issue.createdAt).toLocaleString('pt-BR')}</time>
+                <time>Enviado em ${new Date(issue.createdAt).toLocaleString("pt-BR")}</time>
                 <div style="margin-top:8px">
                   <button class="confirm-button issue-complete" data-created="${issue.createdAt}">Marcar como concluído</button>
                 </div>
             </li>
         `;
     })
-    .join('');
+    .join("");
 }
 
-document.addEventListener('click', (event) => {
-  const btn = event.target.closest('.issue-complete');
+document.addEventListener("click", (event) => {
+  const btn = event.target.closest(".issue-complete");
   if (!btn) return;
   const createdAt = btn.dataset.created;
   if (!createdAt) return;
@@ -610,33 +610,33 @@ document.addEventListener('click', (event) => {
   const removed = issues.find((i) => i.createdAt === createdAt);
   if (removed) {
     localStorage.setItem(
-      'lastMaintenanceCompleted',
+      "lastMaintenanceCompleted",
       JSON.stringify({ removed, completedAt: new Date().toISOString() }),
     );
   }
 
-  showToast('Solicitação marcada como concluída.', () => {
+  showToast("Solicitação marcada como concluída.", () => {
     if (!removed) return;
     remaining.unshift(removed);
     saveTenantIssues(remaining);
 
-    localStorage.removeItem('lastMaintenanceCompleted');
+    localStorage.removeItem("lastMaintenanceCompleted");
     renderOwnerIssues();
   });
 });
 
 function savePayments() {
-  localStorage.setItem('ownerPayments', JSON.stringify(savedPayments));
+  localStorage.setItem("ownerPayments", JSON.stringify(savedPayments));
 }
 
 function saveChatMessages() {
-  localStorage.setItem('chatMessages', JSON.stringify(chatMessages));
+  localStorage.setItem("chatMessages", JSON.stringify(chatMessages));
 }
 
 function renderChat() {
   if (!chatMessages.length) {
     chatWindow.innerHTML =
-      '<p>Inicie a conversa com o inquilino usando o formulário abaixo.</p>';
+      "<p>Inicie a conversa com o inquilino usando o formulário abaixo.</p>";
     chatWindow.scrollTop = chatWindow.scrollHeight;
     return;
   }
@@ -645,13 +645,13 @@ function renderChat() {
     .map((message) => {
       return `
             <article class="chat-message ${message.from}">
-                ${message.property ? `<p class="chat-property">Imóvel: ${message.property}</p>` : ''}
+                ${message.property ? `<p class="chat-property">Imóvel: ${message.property}</p>` : ""}
                 <p>${message.text}</p>
-                <time>${new Date(message.createdAt).toLocaleTimeString('pt-BR')}</time>
+                <time>${new Date(message.createdAt).toLocaleTimeString("pt-BR")}</time>
             </article>
         `;
     })
-    .join('');
+    .join("");
 
   chatWindow.scrollTop = chatWindow.scrollHeight;
   adjustChatScrolling(chatWindow);
@@ -659,13 +659,13 @@ function renderChat() {
 
 function adjustChatScrolling(container) {
   if (!container) return;
-  const messages = container.querySelectorAll('.chat-message');
+  const messages = container.querySelectorAll(".chat-message");
   if (messages.length > 3) {
-    container.style.maxHeight = '320px';
-    container.style.overflowY = 'auto';
+    container.style.maxHeight = "320px";
+    container.style.overflowY = "auto";
   } else {
-    container.style.maxHeight = '';
-    container.style.overflowY = '';
+    container.style.maxHeight = "";
+    container.style.overflowY = "";
   }
 }
 
@@ -688,22 +688,22 @@ function renderChatPropertyOptions() {
         (property, index) =>
           `<option value="${index}">${property.location}</option>`,
       )
-      .join('');
+      .join("");
 }
 
 function renderAppointment() {
   const appointment = JSON.parse(
-    localStorage.getItem('ownerAppointment') || 'null',
+    localStorage.getItem("ownerAppointment") || "null",
   );
 
   if (!appointment) {
-    scheduleDisplay.textContent = 'Nenhum agendamento definido.';
+    scheduleDisplay.textContent = "Nenhum agendamento definido.";
     return;
   }
 
   scheduleDisplay.textContent =
     `${appointment.date} às ${appointment.time}` +
-    (appointment.note ? ` — ${appointment.note}` : '');
+    (appointment.note ? ` — ${appointment.note}` : "");
 }
 
 function showToast(message, onUndo) {
@@ -713,18 +713,18 @@ function showToast(message, onUndo) {
         <p>${message}</p>
         <button type="button" class="toast-action">Desfazer</button>
     `;
-  toast.classList.add('show');
+  toast.classList.add("show");
 
-  const action = toast.querySelector('.toast-action');
+  const action = toast.querySelector(".toast-action");
   if (action) {
     action.addEventListener(
-      'click',
+      "click",
       () => {
         if (onUndo) {
           onUndo();
         }
-        toast.classList.remove('show');
-        toast.innerHTML = '';
+        toast.classList.remove("show");
+        toast.innerHTML = "";
         clearTimeout(toastTimeout);
       },
       { once: true },
@@ -733,13 +733,13 @@ function showToast(message, onUndo) {
 
   clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
-    toast.classList.remove('show');
-    toast.innerHTML = '';
+    toast.classList.remove("show");
+    toast.innerHTML = "";
   }, 6000);
 }
 
-paymentList.addEventListener('click', (event) => {
-  const button = event.target.closest('.confirm-button');
+paymentList.addEventListener("click", (event) => {
+  const button = event.target.closest(".confirm-button");
   if (!button) {
     return;
   }
@@ -753,7 +753,7 @@ paymentList.addEventListener('click', (event) => {
   savePayments();
 
   localStorage.setItem(
-    'lastPaymentConfirmed',
+    "lastPaymentConfirmed",
     JSON.stringify({
       tenant: confirmedPayment.tenant,
       amount: confirmedPayment.amount,
@@ -784,22 +784,22 @@ paymentList.addEventListener('click', (event) => {
 if (!savedPayments.length) {
   const samplePayments = [
     {
-      tenant: 'Apartamento 201',
-      amount: 'R$ 1.680,00',
-      due: '07/06',
-      status: 'Pendente, confirme no banco',
+      tenant: "Apartamento 201",
+      amount: "R$ 1.680,00",
+      due: "07/06",
+      status: "Pendente, confirme no banco",
     },
     {
-      tenant: 'Apartamento 110',
-      amount: 'R$ 1.320,00',
-      due: '10/06',
-      status: 'Em análise',
+      tenant: "Apartamento 110",
+      amount: "R$ 1.320,00",
+      due: "10/06",
+      status: "Em análise",
     },
     {
-      tenant: 'Apartamento 304',
-      amount: 'R$ 1.940,00',
-      due: '12/06',
-      status: 'Pendente, aguardando comprovante',
+      tenant: "Apartamento 304",
+      amount: "R$ 1.940,00",
+      due: "12/06",
+      status: "Pendente, aguardando comprovante",
     },
   ];
   savedPayments.push(...samplePayments);
@@ -807,43 +807,43 @@ if (!savedPayments.length) {
 }
 
 if (scheduleForm) {
-  scheduleForm.addEventListener('submit', (event) => {
+  scheduleForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const appointment = {
-      date: document.getElementById('schedule-date').value,
-      time: document.getElementById('schedule-time').value,
-      note: document.getElementById('schedule-note').value.trim(),
+      date: document.getElementById("schedule-date").value,
+      time: document.getElementById("schedule-time").value,
+      note: document.getElementById("schedule-note").value.trim(),
       createdAt: new Date().toISOString(),
     };
 
-    localStorage.setItem('ownerAppointment', JSON.stringify(appointment));
+    localStorage.setItem("ownerAppointment", JSON.stringify(appointment));
     renderAppointment();
-    alert('Agendamento salvo e disponível para o inquilino.');
+    alert("Agendamento salvo e disponível para o inquilino.");
     scheduleForm.reset();
   });
 }
 
 if (ownerChatForm) {
-  ownerChatForm.addEventListener('submit', (event) => {
+  ownerChatForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const messageText = document
-      .getElementById('owner-chat-message')
+      .getElementById("owner-chat-message")
       .value.trim();
     if (!messageText) {
       return;
     }
 
     let propertyValue = null;
-    if (ownerChatProperty && ownerChatProperty.value !== '') {
+    if (ownerChatProperty && ownerChatProperty.value !== "") {
       const index = Number(ownerChatProperty.value);
       const property = getOwnerProperties()[index];
       propertyValue = property ? property.location : null;
     }
 
     chatMessages.push({
-      from: 'owner',
+      from: "owner",
       text: messageText,
       property: propertyValue,
       createdAt: new Date().toISOString(),
@@ -860,8 +860,5 @@ renderAppointment();
 renderChatPropertyOptions();
 renderChat();
 renderOwnerIssues();
-
-
-
 
 //a
