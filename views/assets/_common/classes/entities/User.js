@@ -14,6 +14,7 @@ export default class User extends Entity {
   #email = "";
   #password = "";
   #token = null;
+  #photo = null;
 
   constructor({
     id = null,
@@ -70,6 +71,15 @@ export default class User extends Entity {
     if (typeof value !== "string" || value.length < 6)
       throw new RangeError("A senha deve ter pelo menos 6 caracteres.");
     this.#password = value;
+  }
+
+  /** URL pública da foto (validada pelo serviço) ou null */
+  get photo() {
+    return this.#photo;
+  }
+
+  set photo(value) {
+    this.#photo = typeof value === "string" && value !== "" ? value : null;
   }
 
   get token() {

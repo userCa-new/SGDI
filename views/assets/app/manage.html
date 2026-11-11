@@ -24,6 +24,29 @@
 
             <section id="profile-section" class="panel" aria-labelledby="profile-title">
                 <h2 id="profile-title">Meu perfil</h2>
+
+                <div class="photo-box">
+                    <div class="avatar">
+                        <img id="photo-current" alt="Foto atual do perfil" hidden />
+                        <span id="photo-fallback" class="avatar-fallback" aria-hidden="true">?</span>
+                    </div>
+                    <form id="photo-form" novalidate>
+                        <label>
+                            Foto do perfil
+                            <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" />
+                        </label>
+                        <p id="photo-rules" class="hint"></p>
+                        <figure id="photo-preview-box" class="photo-preview" hidden>
+                            <img id="photo-preview" alt="Prévia da nova foto (ainda não enviada)" />
+                            <figcaption>Prévia — ainda não enviada</figcaption>
+                        </figure>
+                        <div class="actions">
+                            <button type="submit" disabled>Enviar foto</button>
+                            <button type="button" data-action="cancel" class="secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
                 <form id="profile-form" novalidate>
                     <label>Nome <input name="name" type="text" required maxlength="100" /></label>
                     <label>E-mail <input name="email" type="email" required maxlength="150" /></label>
@@ -45,6 +68,32 @@
                     </div>
                 </form>
                 <div id="property-list" class="list"></div>
+            </section>
+
+            <section id="gallery-section" class="panel" aria-labelledby="gallery-title">
+                <h2 id="gallery-title">Galeria de imagens <small>(1 imóvel : N imagens · /api/properties/{id}/images)</small></h2>
+                <label>
+                    Imóvel
+                    <select id="gallery-property">
+                        <option value="">Selecione um imóvel…</option>
+                    </select>
+                </label>
+                <p id="gallery-rules" class="hint"></p>
+
+                <form id="gallery-form" novalidate hidden>
+                    <label>
+                        Adicionar imagens
+                        <input id="gallery-files" type="file" multiple accept="image/jpeg,image/png,image/webp" />
+                    </label>
+                    <p id="gallery-counter" class="hint" aria-live="polite"></p>
+                    <div id="gallery-pending" class="pending"></div>
+                    <div class="actions">
+                        <button type="submit" disabled>Enviar imagens</button>
+                        <button type="button" data-action="clear" class="secondary">Limpar seleção</button>
+                    </div>
+                </form>
+
+                <div id="gallery-list" class="list" aria-live="polite"></div>
             </section>
 
             <section class="panel" aria-labelledby="contract-title">

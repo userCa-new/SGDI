@@ -7,6 +7,10 @@ import PropertyService from "../../_common/classes/services/PropertyService.js";
 import ContractService from "../../_common/classes/services/ContractService.js";
 import AppointmentService from "../../_common/classes/services/AppointmentService.js";
 import UserService from "../../_common/classes/services/UserService.js";
+import PropertyImageService from "../../_common/classes/services/PropertyImageService.js";
+import { IMAGE_RULES } from "../../_common/scripts/image-rules.js";
+import { createPhotoController } from "../../_common/prototypes/PhotoController.js";
+import { createGalleryController } from "../../_common/prototypes/GalleryController.js";
 import { createToast } from "../../_common/prototypes/Toast.js";
 import { createFormController } from "../../_common/prototypes/FormController.js";
 import { createCrudController } from "../../_common/prototypes/CrudController.js";
@@ -42,6 +46,19 @@ const propertyCrud = createCrudController({
   toast: pageToast,
   listElement: $("#property-list"),
   permissions: { create: isOwner, update: isOwner, remove: isOwner },
+  rowActions: [
+    { name: "edit", label: "Editar", permission: "update" },
+    { name: "delete", label: "Excluir", permission: "remove" },
+    {
+      name: "gallery",
+      label: "Galeria",
+      run: (property) => {
+        gallery.selectProperty(property.id);
+        $("#gallery-section").scrollIntoView({ behavior: "smooth" });
+      },
+    },
+  ],
+  onLoad: (items) => gallery.setProperties(items), // a galeria usa a lista de imóveis carregada
   columns: [
     { label: "ID", value: (p) => p.id },
     { label: "Localização", value: (p) => p.location },
@@ -177,6 +194,46 @@ profileForm.onSubmit(async (values, errors) => {
   }
 });
 
+/* ---------- Foto do perfil (Parte A) ---------- */
+$("#photo-rules").textContent = IMAGE_RULES.description;
+$("#photo-fallback").textContent = (sessionUser?.name ?? "?").trim().charAt(0).toUpperCase() || "?";
+const photoController = createPhotoController({
+  form: createFormController($("#photo-form")),
+  input: $("#photo-input"),
+  preview: $("#photo-preview"),
+  previewBox: $("#photo-preview-box"),
+  current: $("#photo-current"),
+  fallback: $("#photo-fallback"),
+  service: userService,
+  toast: profileToast,
+});
+photoController.init();
+
+/* ---------- Galeria de imagens do imóvel (Parte B) ---------- */
+const gallery = createGalleryController({
+  form: createFormController($("#gallery-form")),
+  select: $("#gallery-property"),
+  fileInput: $("#gallery-files"),
+  pendingList: $("#gallery-pending"),
+  counterEl: $("#gallery-counter"),
+  list: $("#gallery-list"),
+  rules: $("#gallery-rules"),
+  service: new PropertyImageService(),
+  toast: pageToast,
+  // só o Proprietário DONO do imóvel vê o formulário de envio e o botão remover (o backend valida de verdade)
+  canEdit: (property) => isOwner && property.idOwner === sessionUser?.id,
+});
+gallery.init();
+
+try {
+  // foto atual vem do backend (GET /users/me): persiste ao atualizar a página
+  const me = await userService.me();
+  if (me.type === "success") photoController.showCurrent(me.data.photo);
+  else profileToast.fromResponse(me);
+} catch (error) {
+  profileToast.fromError(error);
+}
+
 await Promise.all([
   propertyCrud.init(),
   contractCrud.init(),
@@ -193,4 +250,5 @@ $("#proto-proof").textContent = [
   `mesmo protótipo (CrudController) ....... ${same(propertyCrud, contractCrud) && same(contractCrud, appointmentCrud)}`,
   `propertyCrud.save === contractCrud.save  ${propertyCrud.save === contractCrud.save}`,
   `mesmo protótipo (FormController) ....... ${same(propertyCrud.form, contractCrud.form) && same(contractCrud.form, profileForm)}`,
+  `upload/addFiles só existem no protótipo .. ${!Object.hasOwn(gallery, "upload") && !Object.hasOwn(gallery, "addFiles") && !Object.hasOwn(photoController, "upload")}`,
 ].join("\n");

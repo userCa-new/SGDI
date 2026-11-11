@@ -55,14 +55,17 @@ export const CrudControllerPrototype = {
           response.message || `Não foi possível carregar ${this.label}.`,
         );
         this.toast.fromResponse(response);
+        this.onLoad?.(this.items);
         return;
       }
       this.items = response.data;
       this.render();
+      this.onLoad?.(this.items); // gancho opcional: outras telas reagem à lista carregada
     } catch (error) {
       this.items = [];
       this.showState("error", error.message);
       this.toast.fromError(error);
+      this.onLoad?.(this.items);
     }
   },
 

@@ -50,7 +50,10 @@ export default class HttpClientBase {
   async request(method, path, body = null) {
     const options = { method, headers: this.headers };
 
-    if (body && method !== "GET") {
+    if (body instanceof FormData) {
+      // multipart/form-data: NÃO definimos Content-Type; o navegador o gera com o boundary.
+      options.body = body;
+    } else if (body && method !== "GET") {
       options.headers["Content-Type"] = "application/x-www-form-urlencoded";
       options.body = this.encodeBody(body);
     }
@@ -125,6 +128,14 @@ export default class HttpClientBase {
 
   post(path, body) {
     return this.request("POST", path, body);
+  }
+
+  /** POST multipart/form-data (upload). Recebe um FormData e deixa o navegador definir o Content-Type. */
+  postForm(path, formData) {
+    if (!(formData instanceof FormData)) {
+      throw new TypeError("postForm exige um FormData.");
+    }
+    return this.request("POST", path, formData);
   }
 
   put(path, body) {
