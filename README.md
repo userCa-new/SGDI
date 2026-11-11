@@ -130,3 +130,82 @@ de nenhum deles. `manage.js` monta três CRUDs diferentes trocando apenas a conf
   em `classes/entities/` são os arquivos antigos da Etapa 05 (não usados nas telas e não refatorados).
 - `HttpClientBase` foi movido de `_common/scripts/` para `_common/classes/` e `_common/class/` virou `_common/classes/entities/`,
   conforme o caminho pedido no enunciado.
+
+---
+
+# Etapa 07 — Upload de imagens (branch `upload-imagens`)
+
+Dois casos, ambos com `multipart/form-data` (sem Base64/JSON), persistidos no banco + sistema de arquivos e
+demonstráveis após atualizar a página:
+
+| Caso | Tela | Rotas (contrato completo em [`api/README.MD`](api/README.MD#upload-de-imagens-etapa-07)) |
+|---|---|---|
+| **A. Foto do usuário logado** | `app/manage.html` → *Meu perfil* | `GET /users/me` · `POST /users/photo` (campo `photo`) |
+| **B. Galeria do imóvel (1:N)** | `app/manage.html` → *Galeria de imagens* | `GET /properties/{id}/images` · `POST /properties/{id}/images` (`images[]`, `alt_text[]`) · `DELETE /properties/{id}/images/{image_id}` |
+
+> "Produto" do enunciado = **imóvel** (`properties`), a entidade principal deste projeto.
+
+## Como executar
+
+1. **Banco:** banco novo → importe `data-base/dump.slq` (já tem `users.photo` e `property_images`).
+   Banco existente → execute `data-base/migrations/2026-11-etapa07-upload-imagens.sql`.
+2. **PHP:** extensões `fileinfo`, `mbstring` e `gd` (ou equivalente para `getimagesize`) habilitadas.
+   Limites: `upload_max_filesize=5M`, `post_max_size=55M`, `max_file_uploads=10` — já definidos em `api/.htaccess`
+   (mod_php) e `api/.user.ini` (FPM/CGI). Se usar outro servidor, ajuste o `php.ini` com esses valores
+   (`post_max_size` precisa comportar 10 × 5 MiB + campos; estourar esse limite resulta em **413**).
+3. **Pasta de uploads:** `api/uploads/{users,properties}` precisa de **permissão de escrita** para o usuário do servidor web
+   (no Linux: `chmod -R u+w api/uploads` / `chown www-data`). O conteúdo gravado não vai para o Git (`api/uploads/.gitignore`);
+   `api/uploads/.htaccess` desliga a execução de scripts e a listagem.
+4. Sirva o front por HTTP (módulos ES) em `http://localhost/SGDI/views/assets/public/login.html`, entre como **Proprietário**
+   e abra **Gestão (API)**. Imagem enviada vira `http://localhost/SGDI/api/uploads/...`.
+
+## Arquitetura (resumo)
+
+```
+Backend                                         Frontend
+Controller\PropertyImages ── valida/coordena     prototypes/GalleryController  (Object.create) ─┐
+Models\PropertyImage ─────── prepared statements   prototypes/PhotoController    (Object.create) ─┤ usam
+Support\Upload ───────────── grava + valida        classes/services/PropertyImageService ─ extends HttpClientBase
+Support\ImageStorage ─────── remove arquivos       classes/services/UserService (me, uploadPhoto)
+                             gerenciados           classes/HttpClientBase.postForm(FormData) — sem Content-Type manual
+                                                   classes/entities/PropertyImage · scripts/image-rules.js
+```
+
+- **Controller × Model:** o controller autentica, autoriza (token de Proprietário **e** posse do imóvel), valida e chama
+  `Upload::image()` por arquivo; o model só persiste metadados (transação + prepared statements).
+- **Consistência arquivo × banco:** envio é tudo-ou-nada (rollback + remoção dos arquivos gravados); na remoção, o registro
+  sai primeiro e o arquivo depois; ao excluir o imóvel os arquivos da galeria também são apagados; a foto antiga só é
+  apagada depois do `UPDATE` da nova.
+- **Front:** valida tipo/extensão/tamanho **e a assinatura (magic bytes)** antes de enviar, mostra prévia (com texto
+  alternativo editável), estados de carregamento/vazio/sucesso/erro, e só aceita URLs de imagem da própria API.
+  Textos vão ao DOM com `textContent` (o E2E injeta `<img onerror>` no texto alternativo e confirma que não executa).
+  O imóvel aberto fica em `#galeria-ID`: atualizar a página recarrega a galeria **do banco**.
+
+## Correções necessárias no backend (encontradas ao integrar)
+
+| Arquivo | Problema | Correção |
+|---|---|---|
+| `Support/Upload.php`, `POST /users/photo` | o projeto não trazia a classe nem a rota/coluna | adicionados (versão do curso) |
+| `Models/User::updatePhoto` | usava a coluna inexistente `active` e só atualizava Proprietário (`id_user_type = 2`) | `WHERE id_user = :idUser` (qualquer perfil autenticado) |
+| `Users::uploadPhoto` | exigia `authToken(2)`; gravava em `<raiz>/uploads`, mas `url("uploads/...")` aponta para `api/uploads` | aceita Inquilino e Proprietário; pasta `api/uploads` (`uploads_path()`) |
+| `dump.slq` | `users.photo VARCHAR(255) NOT NULL` sem default quebraria o cadastro | `DEFAULT NULL` |
+| `Models/Propertie` | gravava `id_user`, mas a coluna de `properties` é `id_owner` | renomeado para `idOwner` (necessário para a posse do imóvel) |
+| `Controller/Properties` | mensagem "Atendimento cadastrado" ao criar imóvel; exclusão deixava arquivos órfãos | mensagem corrigida; apaga os arquivos da galeria |
+
+## Testes e evidências
+
+```bash
+node views/tests/imagens.test.mjs                  # 8 testes unitários da etapa 07
+node views/tests/poo.test.mjs                      # 13 testes da etapa 06
+node views/tests/e2e/run-e2e.mjs                   # 39 verificações (etapa 06)
+node views/tests/e2e/run-e2e-imagens.mjs           # 41 verificações da etapa 07 (Chromium headless, porta 80)
+```
+
+Evidências em [`docs/evidencias/`](docs/evidencias): `e2e-imagens-resultados.md` (tabela completa),
+`07a-foto-previa.png`, `07b-foto-apos-reload.png`, `08a-galeria-2-imagens.png` (imóvel com 2 imagens),
+`08b-galeria-apos-reload.png` (**mesma galeria após atualizar a página**), `08c-erro-backend.png`.
+
+> **Limite desta verificação:** o E2E roda contra `views/tests/e2e/mock-uploads.mjs`, um **mock em Node que reproduz o
+> contrato e as regras dos controllers PHP**; o código PHP novo **não foi executado** no ambiente em que foi escrito
+> (sem PHP/MySQL). Antes de entregar, rode o fluxo contra o Apache + MySQL da equipe e anexe as capturas reais
+> (foto do perfil, galeria com 2+ imagens, recarga da página, linhas de `property_images` no banco).

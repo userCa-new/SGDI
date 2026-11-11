@@ -90,3 +90,24 @@ mysql -u root -p < acme-tarde-dump.sql
 
 > 💡 **Dica:** Sempre que adicionar uma nova tabela ao projeto, atualize o `acme-tarde-dump.sql`
 > para que todos da equipe tenham a mesma estrutura.
+
+---
+
+### 🖼️ Etapa 07 — Upload de imagens
+
+O `dump.slq` agora cria:
+
+| Estrutura | Descrição |
+|---|---|
+| `users.photo` | `VARCHAR(255) NULL` — caminho **relativo** da foto (`uploads/users/<hash>.jpg`). O binário fica em `api/uploads/users/`. |
+| `property_images` | Tabela **filha** de `properties` (1:N). Colunas: `id_image` (PK), `id_property` (FK), `image_path`, `alt_text`, `position`, `created_at`. |
+
+```
+properties 1 ───< N property_images
+                    FK fk_property_images_property (id_property → properties.id_property)
+                    ON UPDATE CASCADE · ON DELETE CASCADE
+```
+
+- O `UNIQUE (image_path)` garante que um arquivo pertence a um único registro; o índice em `id_property` acelera a listagem.
+- A cascata remove os **registros**; os **arquivos** em disco são apagados pela API (`Properties::delete`, `PropertyImages::delete`).
+- Para bancos que já existem: `migrations/2026-11-etapa07-upload-imagens.sql`.

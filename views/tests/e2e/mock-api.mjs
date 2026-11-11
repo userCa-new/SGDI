@@ -3,15 +3,19 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import { handleUploads, parseMultipart, cascadeDeleteImages } from "./mock-uploads.mjs";
 
 const ROOT = path.resolve(new URL("../../../", import.meta.url).pathname);
 const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json" };
 
 export const db = {
-    nextId: { users: 10, properties: 10, contracts: 10, appointments: 10 },
+    nextId: { users: 10, properties: 10, contracts: 10, appointments: 10, images: 1 },
+    files: new Map(), // "disco" do mock: caminho relativo -> { data, type }
+    property_images: [],
     users: [
         { id_user: 1, id_user_type: 1, name: "Inquilino Teste", email: "inq@test.com", password: "123456" },
         { id_user: 2, id_user_type: 2, name: "Dono Teste", email: "dono@test.com", password: "123456" },
+        { id_user: 3, id_user_type: 2, name: "Outro Dono", email: "dono2@test.com", password: "123456" },
     ],
     properties: [{ id_property: 1, id_owner: 2, location: "Rua das Flores, 100", number_of_rooms: 2, availability: "1", late_payment: "0" }],
     contracts: [],
@@ -21,7 +25,7 @@ export const db = {
         { id_faq: 2, id_category: 3, question: "Como pagar?", answer: "Via Pix.", active: "1" },
     ],
 };
-export const flags = { garbageOn: null };
+export const flags = { garbageOn: null, failImageInsert: false, failPhotoUpdate: false };
 
 const send = (res, code, type, message, data) => {
     const body = { code, type, status: type === "success" ? "success" : "error", message };
@@ -35,7 +39,8 @@ const authUser = (req, types) => {
     return user && types.includes(user.id_user_type) ? user : null;
 };
 
-function api(req, res, url, form) {
+function api(req, res, url, form, files = []) {
+    if (handleUploads({ req, res, url, files, form, db, flags, send, authUser })) return;
     const [, resource, action, id] = url.pathname.replace("/SGDI/api", "").split("/");
     const route = `${req.method} /${resource}/${action}`;
     if (flags.garbageOn === route) { res.writeHead(200); return res.end("Warning: Undefined array key<br>{\"code\":200}"); }
@@ -96,6 +101,7 @@ function api(req, res, url, form) {
         const i = db[resource].findIndex((r) => r[table] === +id);
         if (i < 0) return send(res, 404, "error", "Registro não encontrado.");
         db[resource].splice(i, 1);
+        if (resource === "properties") cascadeDeleteImages(db, +id); // ON DELETE CASCADE + arquivos
         return send(res, 200, "success", "Excluído com sucesso");
     }
     res.writeHead(200, { "Content-Type": "application/json" });
@@ -109,12 +115,24 @@ export function start(port = 8099) {
         res.setHeader("Access-Control-Allow-Headers", "*, Authorization");
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         if (req.method === "OPTIONS") { res.writeHead(200); return res.end(); }
+        if (url.pathname.startsWith("/SGDI/api/uploads/")) {
+            const stored = db.files.get(url.pathname.replace("/SGDI/api/", ""));
+            if (!stored) { res.writeHead(404); return res.end("not found"); }
+            res.writeHead(200, { "Content-Type": stored.type });
+            return res.end(stored.data);
+        }
         if (url.pathname.startsWith("/SGDI/api/")) {
-            let raw = "";
-            req.on("data", (c) => (raw += c));
+            const chunks = [];
+            req.on("data", (c) => chunks.push(c));
             req.on("end", () => {
-                if (raw && !/x-www-form-urlencoded/.test(req.headers["content-type"] ?? "")) return send(res, 400, "error", "Corpo não é form-urlencoded (o router PHP não leria)");
-                api(req, res, url, Object.fromEntries(new URLSearchParams(raw)));
+                const raw = Buffer.concat(chunks);
+                const type = req.headers["content-type"] ?? "";
+                if (raw.length && /^multipart\/form-data; boundary=/.test(type)) {
+                    const parsed = parseMultipart(raw, type);
+                    return api(req, res, url, parsed.fields, parsed.files);
+                }
+                if (raw.length && !/x-www-form-urlencoded/.test(type)) return send(res, 400, "error", "Corpo não é form-urlencoded nem multipart (o router PHP não leria)");
+                api(req, res, url, Object.fromEntries(new URLSearchParams(raw.toString("utf8"))));
             });
             return;
         }

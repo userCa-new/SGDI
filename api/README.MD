@@ -1804,3 +1804,218 @@ git clone https://github.com/userCa-new/SGDI.git
 |400|error|bad_request|ID do chat é obrigatório e deve ser um número inteiro.|
 |500|error|internal_server_error|Erro ao excluir o chat.|
 ---
+
+
+# Upload de imagens (Etapa 07)
+
+Imagens são enviadas como **`multipart/form-data`** (nunca Base64 nem JSON). O navegador gera o
+`Content-Type` com o *boundary*; o cliente **não** o define. O backend grava o arquivo com
+`Source\Support\Upload` (valida tamanho, tipo real via `finfo` e conteúdo via `getimagesize`; nome gerado
+`<32 hex>.<jpg|png|webp>`), guarda no banco só o **caminho relativo** (`uploads/{users|properties}/<hash>.<ext>`) e o
+binário fica em `api/uploads/`. As respostas trazem `url` pública (`http://localhost/SGDI/api/uploads/...`); caminhos
+absolutos do servidor nunca são expostos.
+
+| Regra | Valor |
+|---|---|
+| Formatos | JPG, PNG, WebP (decidido pelo **conteúdo**, não pelo nome/MIME do navegador) |
+| Tamanho | até **5 MiB** por imagem (`Upload::$maxImageSize`) |
+| Por requisição | até **10** imagens |
+| Por imóvel | até **20** imagens |
+| `upload_max_filesize` / `post_max_size` / `max_file_uploads` | `5M` / `55M` / `10` (ver `api/.htaccess` e `api/.user.ini`) |
+
+Se o corpo ultrapassar `post_max_size`, o PHP descarta `$_FILES`; a API detecta isso e responde **413**.
+
+---
+
+## Foto do usuário autenticado
+
+### Obter o perfil (com a foto atual)
+
+**GET**
+
+```
+/users/me
+```
+
+Header: `Authorization: Bearer <token>` (Inquilino ou Proprietário). A identidade vem do token.
+
+```json
+{
+  "code": 200,
+  "type": "success",
+  "status": "success",
+  "message": "Perfil do usuário autenticado",
+  "data": {
+    "id_user": 2,
+    "name": "Dono Teste",
+    "email": "dono@test.com",
+    "type_user": 2,
+    "photo": "http://localhost/SGDI/api/uploads/users/3f2a...e1.png"
+  }
+}
+```
+
+`photo` é `null` quando o usuário ainda não enviou foto.
+
+### Enviar/atualizar a foto
+
+**POST**
+
+```
+/users/photo
+```
+
+Header: `Authorization: Bearer <token>` (Inquilino ou Proprietário).
+Corpo `multipart/form-data`: campo **`photo`** (um arquivo). **Não existe campo de id de usuário**: o perfil alterado é sempre o do token.
+
+```json
+{
+  "code": 200,
+  "type": "success",
+  "status": "success",
+  "message": "Foto atualizada com sucesso.",
+  "data": { "photo": "http://localhost/SGDI/api/uploads/users/9a0c...77.png" }
+}
+```
+
+O arquivo anterior só é apagado **depois** do `UPDATE` bem-sucedido; se o banco falhar, o arquivo novo é removido.
+
+#### Status HTTP
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|Foto atualizada.|
+|400|error|bad_request|Sem arquivo, arquivo inválido, tipo não permitido, conteúdo que não é imagem ou tamanho excedido (mensagem vem de `Upload`).|
+|401|error|unauthorized|Token ausente, inválido ou expirado.|
+|404|error|not_found|Perfil do token não existe.|
+|413|error|payload_too_large|Corpo maior que `post_max_size`.|
+|500|error|internal_server_error|Falha ao gravar o arquivo ou ao atualizar o perfil.|
+
+---
+
+## Galeria de imagens do imóvel (1:N)
+
+Tabela `property_images` (`id_property` → `properties.id_property`, `ON DELETE CASCADE`). Cada imagem é um registro.
+Permissões seguem as regras do sistema: **ler é público** (como `/properties/list`); **enviar e remover exigem token de
+Proprietário (2) e que o imóvel seja dele** (`properties.id_owner = id do token`).
+
+### Listar a galeria
+
+**GET**
+
+```
+/properties/{id}/images
+```
+
+```json
+{
+  "code": 200,
+  "type": "success",
+  "status": "success",
+  "message": "Galeria do imóvel",
+  "data": {
+    "id_property": 1,
+    "total": 2,
+    "images": [
+      {
+        "id_image": 4,
+        "id_property": 1,
+        "path": "uploads/properties/c1d2...9f.png",
+        "url": "http://localhost/SGDI/api/uploads/properties/c1d2...9f.png",
+        "alt_text": "Sala de estar",
+        "position": 0,
+        "created_at": "2026-11-11 10:00:00"
+      }
+    ]
+  }
+}
+```
+
+Imóvel sem imagens devolve `total: 0` e `images: []`. Só aparecem imagens **do imóvel pedido**.
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|Galeria listada.|
+|400|error|bad_request|`id` inválido.|
+|404|error|not_found|Imóvel não encontrado.|
+|500|error|internal_server_error|Falha ao consultar o banco.|
+
+### Enviar imagem(ns)
+
+**POST**
+
+```
+/properties/{id}/images
+```
+
+Header: `Authorization: Bearer <token>` (Proprietário do imóvel).
+Corpo `multipart/form-data`:
+
+| Campo | Obrigatório | Descrição |
+|---|---|---|
+| `images[]` (ou `image`) | sim | uma ou mais imagens (até 10) |
+| `alt_text[]` | não | texto alternativo de cada imagem, **na mesma ordem** dos arquivos (até 255 caracteres) |
+
+O envio é **tudo ou nada**: se qualquer arquivo for rejeitado ou o banco falhar, os registros são desfeitos
+(transação) e os arquivos já gravados nessa requisição são apagados.
+
+```json
+{
+  "code": 201,
+  "type": "success",
+  "status": "success",
+  "message": "2 imagens enviadas com sucesso.",
+  "data": {
+    "id_property": 1,
+    "total": 2,
+    "images": [ { "id_image": 4, "id_property": 1, "path": "uploads/properties/...", "url": "http://localhost/SGDI/api/uploads/properties/...", "alt_text": "Sala", "position": 0, "created_at": "2026-11-11 10:00:00" } ]
+  }
+}
+```
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|201|success|success|Imagem(ns) enviada(s).|
+|400|error|bad_request|Nenhuma imagem; mais de 10 por requisição; imóvel com mais de 20; `alt_text` acima de 255; arquivo rejeitado por `Upload` (a mensagem indica `Imagem N (nome)`).|
+|401|error|unauthorized|Token ausente/inválido ou de outro perfil.|
+|403|error|forbidden|O imóvel pertence a outro Proprietário.|
+|404|error|not_found|Imóvel não encontrado.|
+|413|error|payload_too_large|Corpo maior que `post_max_size`.|
+|500|error|internal_server_error|Falha ao gravar no banco (nada é salvo).|
+
+### Remover uma imagem
+
+**DELETE**
+
+```
+/properties/{id}/images/{image_id}
+```
+
+Header: `Authorization: Bearer <token>` (Proprietário do imóvel). Remove **só** a imagem informada. A busca filtra por
+imóvel: uma `image_id` que pertença a outro imóvel responde **404**. O registro é removido primeiro; o arquivo, depois.
+
+```json
+{
+  "code": 200,
+  "type": "success",
+  "status": "success",
+  "message": "Imagem removida com sucesso.",
+  "data": { "id_image": 4, "id_property": 1 }
+}
+```
+
+| Código | type | status | Significado |
+|--------|------|--------|-------------|
+|200|success|success|Imagem removida (as demais permanecem).|
+|400|error|bad_request|`id`/`image_id` inválidos.|
+|401|error|unauthorized|Token ausente/inválido ou de outro perfil.|
+|403|error|forbidden|O imóvel pertence a outro Proprietário.|
+|404|error|not_found|Imóvel ou imagem (neste imóvel) não encontrados.|
+|500|error|internal_server_error|Falha ao remover o registro.|
+
+### Excluir imóvel
+
+`DELETE /properties/delete/{id}` agora também apaga os **arquivos** da galeria (a chave estrangeira remove só os
+registros). Os caminhos são lidos antes da exclusão e os arquivos são removidos depois que ela dá certo.
+
+---
