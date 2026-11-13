@@ -5,14 +5,8 @@ Aplicação MVC para administração de imóveis alugados, contratos e atendimen
 ## Como executar
 
 1. Importe `data-base/dump.sql` no MySQL Workbench e configure a conexão em `api/source/Config/Config.php`. **Atenção:** o script apaga e recria o banco `imobiliaria`, removendo todos os dados atuais.
-2. Sirva o repositório por Apache com `mod_rewrite`; instale as dependências em `api/` com Composer.
-3. Abra `http://localhost/SGDI/views/assets/public/login.html`. As páginas usam módulos ES e precisam ser servidas por HTTP.
-4. Configure os diretórios de upload para escrita pelo usuário do servidor web. No Arch Linux/Apache, o usuário costuma ser `http`; a partir da raiz do projeto:
-   ```bash
-   sudo setfacl -m u:http:rwx,d:u:http:rwx,d:m:rwx \
-     api/uploads api/uploads/users api/uploads/properties
-   ```
-   Se o Apache usar outro usuário, substitua `http`. As ACLs de acesso permitem gravar e remover uploads; as ACLs padrão são herdadas por novos diretórios. Imagens e fotos são armazenadas em `api/uploads`.
+2. Abra `http://localhost/SGDI/views/assets/public/login.html`. As páginas usam módulos ES e precisam ser servidas por HTTP.
+
 
 ## Módulos e permissões
 
@@ -44,14 +38,3 @@ As permissões são verificadas no backend pelo token e pela relação entre usu
 | Inquilinos | `/users/tenants`, disponível apenas ao proprietário |
 
 O acesso a imóveis e galerias de imagens é limitado ao proprietário responsável ou ao inquilino com contrato ativo associado. O envio de imagens valida tipo e tamanho, e a remoção limpa os arquivos da galeria após excluir os registros.
-
-## Testes
-
-```bash
-node views/tests/poo.test.mjs
-node views/tests/imagens.test.mjs
-node views/tests/e2e/run-e2e.mjs
-node views/tests/e2e/run-e2e-imagens.mjs
-```
-
-Os testes E2E usam Chromium headless e `views/tests/e2e/mock-api.mjs`, que simula o contrato dos controllers. Eles não substituem a validação contra PHP e MySQL reais.
