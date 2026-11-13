@@ -3,7 +3,7 @@ import UserService from "../../_common/classes/services/UserService.js";
 import { createToast } from "../../_common/prototypes/Toast.js";
 import { createFormController } from "../../_common/prototypes/FormController.js";
 
-const REDIRECT_DELAY_MS = 5000; // mesmo atraso da Etapa 05
+const REDIRECT_DELAY_MS = 5000; 
 const TYPE_BY_OPTION = {
   inquilino: User.TYPES.TENANT,
   proprietario: User.TYPES.OWNER,
