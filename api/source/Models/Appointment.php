@@ -2,6 +2,8 @@
 
 namespace Source\Models;
 
+use PDO;
+use PDOException;
 use Source\Core\Connect;
 use Source\Core\Model;
 
@@ -76,6 +78,103 @@ class Appointment extends Model
         $this->completed = $completed;
     }
 
+    public function listForOwner(int $ownerId): ?array
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT a.*
+                 FROM {$this->table} a
+                 INNER JOIN properties p ON p.id_property = a.id_property
+                 WHERE p.id_owner = :owner_id
+                 ORDER BY a.date DESC, a.id_appointment DESC"
+            );
+            $stmt->bindValue(":owner_id", $ownerId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (PDOException $exception) {
+            error_log($exception->getMessage());
+            $this->errorMessage = "Não foi possível carregar os atendimentos do proprietário.";
+            return null;
+        }
+    }
+
+    public function listForTenant(int $tenantId): ?array
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT DISTINCT a.*
+                 FROM {$this->table} a
+                 INNER JOIN contracts c ON c.id_property = a.id_property
+                 WHERE c.id_user = :tenant_id AND c.status = 'ACTIVE'
+                 ORDER BY a.date DESC, a.id_appointment DESC"
+            );
+            $stmt->bindValue(":tenant_id", $tenantId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (PDOException $exception) {
+            error_log($exception->getMessage());
+            $this->errorMessage = "Não foi possível carregar os atendimentos do inquilino.";
+            return null;
+        }
+    }
+
+    public function belongsToOwner(int $appointmentId, int $ownerId): bool
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT 1 FROM {$this->table} a
+                 INNER JOIN properties p ON p.id_property = a.id_property
+                 WHERE a.id_appointment = :appointment_id AND p.id_owner = :owner_id
+                 LIMIT 1"
+            );
+            $stmt->bindValue(":appointment_id", $appointmentId, PDO::PARAM_INT);
+            $stmt->bindValue(":owner_id", $ownerId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (bool) $stmt->fetchColumn();
+        } catch (PDOException $exception) {
+            error_log($exception->getMessage());
+            return false;
+        }
+    }
+
+    public function belongsToTenant(int $appointmentId, int $tenantId): bool
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT 1 FROM {$this->table} a
+                 INNER JOIN contracts c ON c.id_property = a.id_property
+                 WHERE a.id_appointment = :appointment_id
+                   AND c.id_user = :tenant_id AND c.status = 'ACTIVE'
+                 LIMIT 1"
+            );
+            $stmt->bindValue(":appointment_id", $appointmentId, PDO::PARAM_INT);
+            $stmt->bindValue(":tenant_id", $tenantId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (bool) $stmt->fetchColumn();
+        } catch (PDOException $exception) {
+            error_log($exception->getMessage());
+            return false;
+        }
+    }
+
+    public function hasRecordsForProperty(int $propertyId): ?bool
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT 1 FROM {$this->table}
+                 WHERE id_property = :property_id
+                 LIMIT 1"
+            );
+            $stmt->bindValue(":property_id", $propertyId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (bool) $stmt->fetchColumn();
+        } catch (PDOException $exception) {
+            error_log($exception->getMessage());
+            $this->errorMessage = "Não foi possível verificar os atendimentos vinculados ao imóvel.";
+            return null;
+        }
+    }
+
     public function insert(): bool
     {
         $query = "SELECT * FROM {$this->table} WHERE date = :date";
@@ -88,10 +187,6 @@ class Appointment extends Model
             return false;
         }
 
-        if (!parent::insert()) {
-            return false;
-        }
-
-        return true;
+        return parent::insert();
     }
 }

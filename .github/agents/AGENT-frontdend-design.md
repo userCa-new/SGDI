@@ -65,15 +65,20 @@ Use este documento para orientar o planejamento visual e estrutural do frontend 
 - Elementos semânticos esperados: `[header]`, `[nav]`, `[main]`, `[section]`, `[article]`, `[aside]`, `[footer]`
 
 ## Identidade visual
-- Paleta principal: `
-[.color1 { #582d3e };
-.color2 { #4a222f };
-.color3 { #3c171f };
-.color4 { #2e0b10 };
-.color5 { #200000 }]`
-- Tipografia: `[família tipográfica ou estilo desejado]`
-- Referências visuais: `[sites, sistemas ou estilos de inspiração]`
-- Sensação que a interface deve transmitir: `[seriedade, confiança, rapidez, simplicidade...]`
+- Paleta principal: verde profundo `#176b60`, tinta `#1b302c`, fundo `#f4f6f2`,
+  superfície `#ffffff` e acento `#d9ef8a`; estados semânticos usam cores
+  próprias e não dependem apenas de texto ou cor.
+- Tipografia: pilha de fontes do sistema, com títulos compactos e corpo legível.
+- Referências: [Material Design 3](https://m3.material.io/),
+  [Ant Design](https://ant.design/docs/spec/colors) e padrões de organização de
+  tarefas de [Zillow Rentals](https://www.zillow.com/rent/renter-search-center/)
+  e [AppFolio](https://www.appfolio.com/).
+- Sensação: acolhedora, confiável, clara e prática para tarefas recorrentes.
+- Tokens: `views/assets/_common/styles/design-system.css`; estilos de layout
+  específicos ficam em `public/styles/redesign.css` e `app/styles/redesign.css`.
+- Os fluxos de imóveis, contratos e atendimentos pertencem aos painéis de
+  proprietário e inquilino; preserve suas permissões e use os estilos
+  compartilhados de `app/styles/management.css`.
 
 ## Organização de arquivos esperada
 - Estilos compartilhados: `views/assets/_common/styles/[arquivo.css]`
@@ -92,4 +97,3 @@ Use este documento para orientar o planejamento visual e estrutural do frontend 
 
 ## Instrução final para estudantes e IA
 Antes de implementar qualquer tela, preencha este arquivo com o máximo de clareza possível. Se uma informação ainda não estiver decidida, registre como `[a definir]` em vez de inventar requisitos.
-

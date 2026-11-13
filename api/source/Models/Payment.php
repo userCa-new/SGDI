@@ -1,6 +1,7 @@
 <?php
 
 namespace Source\Models;
+
 use Source\Core\Connect;
 use Source\Core\Model;
 
@@ -124,4 +125,5 @@ class Payment extends Model
     {
         $this->status = $status;
     }
+
 }

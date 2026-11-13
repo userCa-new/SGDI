@@ -1,14 +1,5 @@
 import { IMAGE_RULES, validateImageFileDeep } from "../scripts/image-rules.js";
 
-/**
- * PhotoController — seletor, prévia e envio da foto do perfil (POO prototípica).
- *
- * COMPARTILHADO no protótipo: init, select, clearSelection, showCurrent, upload.
- * PRÓPRIO de cada objeto: elementos, serviço, toast, arquivo escolhido e URL da prévia.
- *
- * O envio usa service.uploadPhoto(file) (FormData, campo "photo"); a identidade
- * do usuário vem do token no backend — nenhum id é enviado.
- */
 export const PhotoControllerPrototype = {
   init() {
     this.input.accept = IMAGE_RULES.accept;
@@ -21,7 +12,6 @@ export const PhotoControllerPrototype = {
     this.clearSelection();
   },
 
-  /** Valida o arquivo escolhido e mostra a prévia ANTES do envio. */
   async select(file) {
     if (!file) {
       this.clearSelection();
@@ -55,7 +45,6 @@ export const PhotoControllerPrototype = {
     this.submitButton.disabled = true;
   },
 
-  /** Mostra a foto atual (URL já verificada pelo serviço) ou o ícone de reserva. */
   showCurrent(url) {
     const has = typeof url === "string" && url !== "";
     if (has) this.current.src = url;

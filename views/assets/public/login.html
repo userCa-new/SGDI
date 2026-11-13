@@ -1,40 +1,49 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SGDI</title>
-    <link rel="stylesheet" href="styles/auth.css">
-</head>
-<body>
-    <header class="navbar-simple">
-        <nav>
-            <a href="index.html" class="logo">SGDI</a>
-        </nav>
-    </header>
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Entrar — SGDI</title>
+        <link rel="stylesheet" href="styles/auth.css" />
+        <link rel="stylesheet" href="../_common/styles/design-system.css" />
+        <link rel="stylesheet" href="styles/redesign.css" />
+        <script type="module" src="scripts/login.js"></script>
+    </head>
+    <body class="public-shell">
+        <header class="navbar-simple">
+            <nav aria-label="Início">
+                <a href="index.html" class="logo">SGDI</a>
+                <a href="index.html" class="nav-link">Voltar ao início</a>
+            </nav>
+        </header>
 
-    <main class="auth-page">
-        <section class="auth-card">
-            <header class="auth-header">
-                <h1>Acesso SGDI</h1>
-                <p>Entre com seu email e senha para continuar.</p>
-            </header>
+        <main class="auth-page">
+            <section class="auth-card" aria-labelledby="login-title">
+                <header class="auth-header">
+                    <p class="eyebrow">Bem-vindo de volta</p>
+                    <h1 id="login-title">Acesse sua conta</h1>
+                    <p>Entre para continuar na área do seu perfil.</p>
+                </header>
 
-            <form id="login-form" class="auth-form" action="#" method="post" autocomplete="off">
-                <label for="email">Email
-                    <input id="email" type="email" name="email" placeholder="usuario@provedor.com" required>
-                </label>
+                <form id="login-form" class="auth-form" action="#" method="post">
+                    <label for="email">E-mail
+                        <input id="email" type="email" name="email" autocomplete="username" placeholder="voce@exemplo.com" required />
+                    </label>
 
-                <label for="senha">Senha
-                    <input id="senha" type="password" name="senha" placeholder="••••••••" required>
-                </label>
+                    <label for="senha">Senha
+                        <input id="senha" type="password" name="senha" autocomplete="current-password" placeholder="Sua senha" required />
+                    </label>
 
-                <button type="submit">Entrar</button>
-            </form>
+                    <button type="submit">Entrar</button>
+                </form>
 
-            <p class="auth-note">Não tem conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
-        </section>
-    </main>
-    <script type="module" src="scripts/login.js"></script>
-</body>
+                <p class="auth-note">Ainda não tem conta? <a href="cadastro.html">Criar cadastro</a></p>
+            </section>
+
+            <aside class="auth-aside">
+                <h2>Uma locação mais organizada começa por aqui.</h2>
+                <p>Encontre as informações do imóvel, os pagamentos e as conversas no espaço do seu perfil.</p>
+            </aside>
+        </main>
+    </body>
 </html>

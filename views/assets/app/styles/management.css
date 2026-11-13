@@ -1,0 +1,436 @@
+.management-panel {
+    display: grid;
+    gap: 1.15rem;
+    min-width: 0;
+    padding: clamp(1.2rem, 2.7vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.management-heading h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    letter-spacing: -0.035em;
+}
+
+.management-heading > p:last-child {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+}
+
+.management-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    align-items: end;
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #f7f9f6;
+}
+
+.management-form label {
+    display: grid;
+    gap: 0.4rem;
+    color: var(--ink);
+    font-size: 0.86rem;
+    font-weight: 650;
+}
+
+.management-form input,
+.management-form select {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.8rem;
+    padding: 0.65rem 0.75rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid #cbd8d0;
+    border-radius: var(--radius-sm);
+    font: inherit;
+}
+
+.management-form input:focus-visible,
+.management-form select:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+}
+
+.management-form .management-wide {
+    grid-column: span 2;
+}
+
+.management-actions {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.management-actions button,
+.management-list button,
+.owner-property-list button {
+    min-height: 2.55rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--brand);
+    border-radius: 999px;
+    color: #fff;
+    background: var(--brand);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.management-actions button:hover,
+.management-list button:hover,
+.owner-property-list button:hover {
+    background: var(--brand-hover);
+}
+
+.management-actions .button-secondary,
+.management-list .button-secondary,
+.owner-property-list .button-secondary {
+    color: var(--brand);
+    background: #fff;
+    border-color: #b7cfc3;
+}
+
+.management-actions .button-danger,
+.management-list .button-danger,
+.owner-property-list .button-danger {
+    color: #8f302b;
+    background: #fff0ee;
+    border-color: #f0c7c2;
+}
+
+.management-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.management-card,
+.management-state,
+.owner-property-list > li {
+    min-width: 0;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #fff;
+    list-style: none;
+}
+
+.management-card h3,
+.owner-property-list h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.management-card p,
+.owner-property-list p {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    overflow-wrap: anywhere;
+}
+
+.management-card .management-actions,
+.owner-property-list .management-actions {
+    margin-top: 0.8rem;
+}
+
+.management-state {
+    grid-column: 1 / -1;
+    color: var(--muted);
+}
+
+.management-state--error {
+    border-color: #f0c7c2;
+    background: #fff0ee;
+    color: #842e29;
+}
+
+.owner-properties-modal {
+    z-index: 80;
+}
+
+.owner-properties-dialog {
+    display: grid;
+    width: min(100%, 1120px);
+    max-height: min(92vh, 900px);
+    gap: 1rem;
+    overflow: auto;
+    padding: clamp(1rem, 3vw, 1.7rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    box-shadow: var(--shadow-lg);
+}
+
+.owner-properties-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.owner-properties-heading h2,
+.owner-properties-heading p {
+    margin: 0;
+    color: var(--ink);
+}
+
+.owner-properties-heading p {
+    margin-top: 0.3rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.owner-properties-layout {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
+    gap: 1rem;
+}
+
+.owner-property-section {
+    display: grid;
+    min-width: 0;
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #f7f9f6;
+}
+
+.owner-property-section h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.1rem;
+}
+
+.owner-property-section > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.owner-property-form,
+.owner-gallery-form {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.owner-property-form label,
+.owner-gallery-form label,
+.owner-gallery-section > label {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--ink);
+    font-size: 0.86rem;
+    font-weight: 650;
+}
+
+.owner-property-form input,
+.owner-gallery-section select,
+.owner-gallery-form input {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.7rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #cbd8d0;
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+}
+
+.owner-property-form .owner-property-check {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.owner-property-check input {
+    width: 1.1rem;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    accent-color: var(--brand);
+}
+
+.owner-property-list {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.owner-property-list > li {
+    padding: 0.8rem;
+}
+
+.owner-property-list .management-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.owner-property-list button {
+    min-height: 2.3rem;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.78rem;
+}
+
+.owner-gallery-section select {
+    margin-top: 0.3rem;
+}
+
+.owner-gallery-section .hint,
+.owner-gallery-section [aria-live] {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.83rem;
+}
+
+.owner-gallery-location {
+    padding: 0.75rem;
+    border: 1px solid #cfe2d7;
+    border-radius: var(--radius-sm);
+    background: var(--brand-soft);
+}
+
+.owner-gallery-location p,
+.owner-gallery-location h4 {
+    margin: 0;
+    color: var(--ink);
+}
+
+.owner-gallery-location p {
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.owner-gallery-pending {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+    gap: 0.6rem;
+}
+
+.owner-gallery-form[hidden] {
+    display: none;
+}
+
+.owner-gallery-pending .pending-item,
+.owner-gallery-list .gallery-item {
+    display: grid;
+    min-width: 0;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.65rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+}
+
+.owner-gallery-pending .pending-item img,
+.owner-gallery-list .gallery-item img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: calc(var(--radius-sm) - 0.2rem);
+    background: #eef2ef;
+}
+
+.owner-gallery-pending .pending-name,
+.owner-gallery-list .gallery-item figcaption {
+    min-width: 0;
+    color: var(--ink);
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+}
+
+.owner-gallery-pending .pending-item input {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.4rem;
+    padding: 0.5rem;
+    border: 1px solid #cbd8d0;
+    border-radius: var(--radius-sm);
+    font: inherit;
+}
+
+.owner-gallery-pending .pending-item button,
+.owner-gallery-list .gallery-item button {
+    min-height: 2.35rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid #b7cfc3;
+    border-radius: 999px;
+    color: var(--brand);
+    background: #fff;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.owner-gallery-list .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.owner-gallery-list .gallery-item {
+    min-width: 0;
+}
+
+.owner-gallery-list .gallery-item figure {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+}
+
+.owner-gallery-list .crud-state,
+.owner-gallery-list .gallery-missing {
+    margin: 0;
+    color: var(--muted);
+}
+
+.owner-gallery-list .crud-state--error {
+    color: #842e29;
+}
+
+.owner-properties-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 720px) {
+    .owner-properties-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .management-form .management-wide {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 520px) {
+    .management-actions > button {
+        flex: 1 1 100%;
+    }
+}

@@ -102,7 +102,17 @@ export function handleUploads({ req, res, url, files, form, db, flags, send, aut
 
     if (req.method === "GET" && m[2] === undefined) {
         if (propertyId === null) return send(res, 400, "error", "O id do imóvel é obrigatório e deve ser um número inteiro positivo."), true;
-        if (!db.properties.some((p) => p.id_property === propertyId)) return send(res, 404, "error", "Imóvel não encontrado."), true;
+        const user = authUser(req, [1, 2]);
+        if (!user) return send(res, 401, "error", "Token de autenticação inválido ou expirado."), true;
+        const property = db.properties.find((p) => p.id_property === propertyId);
+        if (!property) return send(res, 404, "error", "Imóvel não encontrado."), true;
+        const allowed = user.id_user_type === 2
+            ? property.id_owner === user.id_user
+            : db.contracts.some((contract) =>
+                contract.id_property === propertyId &&
+                contract.id_user === user.id_user &&
+                contract.status === "ACTIVE");
+        if (!allowed) return send(res, 404, "error", "Imóvel não encontrado para este usuário."), true;
         const rows = db.property_images.filter((i) => i.id_property === propertyId).sort((a, b) => a.position - b.position || a.id_image - b.id_image);
         send(res, 200, "success", "Galeria do imóvel", { id_property: propertyId, total: rows.length, images: rows.map(present) });
         return true;

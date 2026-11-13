@@ -9,7 +9,6 @@ class Chats extends Api
 {
     public function register(array $data): void
     {
-        
         if (!$this->validate($data)) {
             $this->call(
                 400,

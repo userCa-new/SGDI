@@ -67,39 +67,96 @@ function api(req, res, url, form, files = []) {
             Object.assign(u, { name: form.name, email: form.email });
             return send(res, 200, "success", "Usuário atualizado com sucesso.", { id_user: u.id_user, name: u.name, email: u.email });
         }
+        case "GET /users/tenants": {
+            if (!needs([2])) return;
+            return send(res, 200, "success", "Lista de inquilinos", db.users
+                .filter((user) => user.id_user_type === 1)
+                .map(({ id_user, name }) => ({ id_user, name })));
+        }
         case "GET /faqs/list": return send(res, 200, "success", "Lista de FAQs", db.faqs);
     }
-    if (table && action === "listAll") return send(res, 200, "success", `Lista de ${resource}`, db[resource]);
+    if (table && ["listAll", "mine"].includes(action)) {
+        const user = authUser(req, [1, 2]);
+        if (!user) return send(res, 401, "error", "Token de autenticação inválido ou expirado.");
+        let rows = db[resource];
+        if (resource === "properties") {
+            rows = user.id_user_type === 2
+                ? rows.filter((property) => property.id_owner === user.id_user)
+                : rows.filter((property) => db.contracts.some((contract) =>
+                    contract.id_property === property.id_property &&
+                    contract.id_user === user.id_user &&
+                    contract.status === "ACTIVE"));
+        } else if (resource === "contracts") {
+            rows = user.id_user_type === 2
+                ? rows.filter((contract) => db.properties.some((property) =>
+                    property.id_property === contract.id_property &&
+                    property.id_owner === user.id_user))
+                : rows.filter((contract) => contract.id_user === user.id_user);
+        } else {
+            rows = user.id_user_type === 2
+                ? rows.filter((appointment) => db.properties.some((property) =>
+                    property.id_property === appointment.id_property &&
+                    property.id_owner === user.id_user))
+                : rows.filter((appointment) => db.contracts.some((contract) =>
+                    contract.id_property === appointment.id_property &&
+                    contract.id_user === user.id_user &&
+                    contract.status === "ACTIVE"));
+        }
+        return send(res, 200, "success", `Lista de ${resource}`, rows);
+    }
     if (table && action === "insert") {
         const roles = resource === "appointments" ? [1] : [2];
         if (!needs(roles)) return;
+        const user = authUser(req, roles);
         const row = { [table]: db.nextId[resource]++ };
         if (resource === "properties") {
             if (!form.location?.trim() || !/^-?\d+$/.test(form.number_of_rooms ?? "")) return send(res, 400, "error", "Dados incorretos ou campos obrigatórios ausentes.");
-            Object.assign(row, { id_owner: authUser(req, roles).id_user, location: form.location, number_of_rooms: +form.number_of_rooms, availability: form.availability === "1" ? "1" : "0", late_payment: form.late_payment === "1" ? "1" : "0" });
+            Object.assign(row, { id_owner: user.id_user, location: form.location, number_of_rooms: +form.number_of_rooms, availability: form.availability === "1" ? "1" : "0", late_payment: form.late_payment === "1" ? "1" : "0" });
         } else if (resource === "contracts") {
-            if (!form.id_property || !form.rent_value || !form.start_date || form.end_date === undefined || !form.status) return send(res, 400, "error", "Dados incorretos ou campos obrigatórios ausentes.");
-            Object.assign(row, { id_property: +form.id_property, id_user: authUser(req, roles).id_user, rent_value: form.rent_value, start_date: form.start_date, end_date: form.end_date, status: form.status });
+            if (!form.id_property || !form.id_user || !form.rent_value || !form.start_date || form.end_date === undefined || !form.status) return send(res, 400, "error", "Dados incorretos ou campos obrigatórios ausentes.");
+            const property = db.properties.find((item) => item.id_property === +form.id_property && item.id_owner === user.id_user);
+            const tenant = db.users.find((item) => item.id_user === +form.id_user && item.id_user_type === 1);
+            if (!property || !tenant) return send(res, 404, "error", "Imóvel ou inquilino não encontrado.");
+            Object.assign(row, { id_property: +form.id_property, id_user: +form.id_user, rent_value: form.rent_value, start_date: form.start_date, end_date: form.end_date, status: form.status });
         } else {
             if (!form.id_property || !form.date || !form.observation || form.completed === undefined) return send(res, 400, "error", "Dados incorretos ou campos obrigatórios ausentes.");
+            const allowed = db.contracts.some((contract) => contract.id_property === +form.id_property && contract.id_user === user.id_user && contract.status === "ACTIVE");
+            if (!allowed) return send(res, 404, "error", "O imóvel não está vinculado a uma locação ativa deste inquilino.");
             Object.assign(row, { id_property: +form.id_property, date: form.date, observation: form.observation, completed: form.completed === "1" ? "1" : "0" });
         }
         db[resource].push(row);
         return send(res, 201, "success", "Cadastrado com sucesso!", row);
     }
     if (table && action === "update") {
-        if (!needs(resource === "appointments" ? [2] : [2])) return;
+        if (!needs([2])) return;
+        const owner = authUser(req, [2]);
         const row = db[resource].find((r) => r[table] === +id);
         if (!row) return send(res, 404, "error", "Registro não encontrado.");
+        const propertyId = resource === "properties" ? row.id_property : row.id_property;
+        if (!db.properties.some((property) => property.id_property === propertyId && property.id_owner === owner.id_user)) return send(res, 404, "error", "Registro não encontrado.");
         if (resource === "properties") { if (form.id_property !== id) return send(res, 400, "error", "id_property ausente"); Object.assign(row, { location: form.location, number_of_rooms: +form.number_of_rooms, availability: form.availability === "1" ? "1" : "0", late_payment: form.late_payment === "1" ? "1" : "0" }); }
-        else if (resource === "contracts") Object.assign(row, { id_property: +form.id_property, rent_value: form.rent_value, start_date: form.start_date, end_date: form.end_date, status: form.status });
-        else { if (Object.keys(form).join() !== "completed") return send(res, 400, "error", "Somente completed é aceito"); row.completed = form.completed === "1" ? "1" : "0"; }
+        else if (resource === "contracts") {
+            const tenant = db.users.find((item) => item.id_user === +form.id_user && item.id_user_type === 1);
+            if (!tenant) return send(res, 404, "error", "Inquilino não encontrado.");
+            Object.assign(row, { id_property: +form.id_property, id_user: +form.id_user, rent_value: form.rent_value, start_date: form.start_date, end_date: form.end_date, status: form.status });
+        } else { if (Object.keys(form).join() !== "completed") return send(res, 400, "error", "Somente completed é aceito"); row.completed = form.completed === "1" ? "1" : "0"; }
         return send(res, 200, "success", "Atualizado com sucesso");
     }
     if (table && action === "delete") {
         if (!needs(resource === "appointments" ? [1] : [2])) return;
+        const user = authUser(req, resource === "appointments" ? [1] : [2]);
         const i = db[resource].findIndex((r) => r[table] === +id);
         if (i < 0) return send(res, 404, "error", "Registro não encontrado.");
+        const row = db[resource][i];
+        const property = db.properties.find((item) => item.id_property === row.id_property);
+        const belongs = resource === "appointments"
+            ? db.contracts.some((contract) => contract.id_property === row.id_property && contract.id_user === user.id_user && contract.status === "ACTIVE")
+            : property?.id_owner === user.id_user;
+        if (!belongs) return send(res, 404, "error", "Registro não encontrado.");
+        if (resource === "properties" && (
+            db.contracts.some((contract) => contract.id_property === row.id_property) ||
+            db.appointments.some((appointment) => appointment.id_property === row.id_property)
+        )) return send(res, 409, "error", "Não é possível remover um imóvel com contratos ou atendimentos vinculados.");
         db[resource].splice(i, 1);
         if (resource === "properties") cascadeDeleteImages(db, +id); // ON DELETE CASCADE + arquivos
         return send(res, 200, "success", "Excluído com sucesso");

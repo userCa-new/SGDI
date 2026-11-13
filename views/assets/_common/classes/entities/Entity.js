@@ -3,7 +3,6 @@ export default class Entity {
     throw new Error(`${this.name} deve implementar fromApi()`);
   }
 
-  /** Converte a lista `data` da API em entidades; qualquer outra coisa vira lista vazia. */
   static fromApiList(list) {
     return Array.isArray(list) ? list.map((item) => this.fromApi(item)) : [];
   }

@@ -2,13 +2,7 @@ import HttpClientBase from "../HttpClientBase.js";
 import SessionStorage from "../../scripts/storage.js";
 import PropertyImage from "../entities/PropertyImage.js";
 
-/**
- * /api/properties/{id}/images — galeria do imóvel (1:N).
- *   list    GET    /properties/{id}/images
- *   upload  POST   /properties/{id}/images        multipart: images[] + alt_text[]
- *   remove  DELETE /properties/{id}/images/{image_id}
- * Não manipula HTML. O upload envia FormData (nunca Base64 nem JSON).
- */
+
 export default class PropertyImageService extends HttpClientBase {
   constructor({ storage = new SessionStorage(), ...options } = {}) {
     super({ tokenProvider: () => storage.getToken(), ...options });

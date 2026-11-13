@@ -1,0 +1,88 @@
+:root {
+    color-scheme: light;
+    --brand: #176b60;
+    --brand-hover: #11584f;
+    --brand-soft: #e7f2ee;
+    --ink: #1b302c;
+    --muted: #64736e;
+    --canvas: #f4f6f2;
+    --surface: #ffffff;
+    --line: #dce5df;
+    --accent: #d9ef8a;
+    --success: #20754d;
+    --success-soft: #e9f6ee;
+    --warning: #8c5a12;
+    --warning-soft: #fff4df;
+    --danger: #a6423c;
+    --danger-soft: #fbecea;
+    --shadow-sm: 0 8px 24px rgb(26 54 46 / 7%);
+    --shadow-lg: 0 24px 70px rgb(26 54 46 / 12%);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --font-body: Inter, "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+}
+
+body.public-shell,
+body.app-shell,
+body.app-selection {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    background: var(--canvas);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    color: var(--brand);
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 3px solid #e08b58;
+    outline-offset: 3px;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+::selection {
+    color: var(--ink);
+    background: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

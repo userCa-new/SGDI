@@ -263,7 +263,7 @@ Criar um endpoint de exclusão que **não apague o registro**, mas altere seu ca
 
 ### Enunciado
 
-**Passo 1 — Altere a tabela no banco** e atualize o `dump.slq`:
+**Passo 1 — Altere a tabela no banco** e atualize o `data-base/dump.sql`:
 ```sql
 ALTER TABLE `products` ADD COLUMN `active` tinyint(1) NOT NULL DEFAULT 1;
 ```

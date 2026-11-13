@@ -1,19 +1,5 @@
 import { IMAGE_RULES, validateImageFileDeep } from "../scripts/image-rules.js";
 
-/**
- * GalleryController — galeria de imagens de um imóvel (POO prototípica).
- *
- * Coordena: seleção de imóvel → listagem persistida (GET) → seleção de arquivos
- * com prévia e texto alternativo → envio multipart (POST) → remoção de UMA imagem (DELETE).
- * Não conhece fetch: usa o PropertyImageService. Todo texto vai para o DOM com
- * textContent/alt (nunca innerHTML) e as URLs já chegam verificadas pela entidade.
- *
- * COMPARTILHADO no protótipo: todos os métodos abaixo.
- * PRÓPRIO de cada objeto: elementos, serviço, estado (propertyId, images, pending...).
- *
- * O imóvel escolhido fica em location.hash (#galeria-ID), então atualizar a página
- * reabre a mesma galeria, carregada de novo da API.
- */
 const HASH = /^#galeria-(\d+)$/;
 
 export const GalleryControllerPrototype = {
@@ -25,8 +11,12 @@ export const GalleryControllerPrototype = {
     this.fileInput.accept = IMAGE_RULES.accept;
     this.fileInput.multiple = true;
 
-    this.select.addEventListener("change", () => this.selectProperty(this.select.value));
-    this.fileInput.addEventListener("change", () => this.addFiles([...this.fileInput.files]));
+    this.select.addEventListener("change", () =>
+      this.selectProperty(this.select.value),
+    );
+    this.fileInput.addEventListener("change", () =>
+      this.addFiles([...this.fileInput.files]),
+    );
     this.form.form
       .querySelector("[data-action='clear']")
       ?.addEventListener("click", () => this.clearPending());
@@ -43,19 +33,21 @@ export const GalleryControllerPrototype = {
     });
     this.list.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-remove]");
-      const image = this.images.find((i) => i.id === Number(button?.dataset.remove));
+      const image = this.images.find(
+        (i) => i.id === Number(button?.dataset.remove),
+      );
       if (image) this.removeImage(image);
     });
     window.addEventListener("hashchange", () => {
       const match = HASH.exec(window.location.hash);
-      if (match && Number(match[1]) !== this.propertyId) this.selectProperty(match[1], false);
+      if (match && Number(match[1]) !== this.propertyId)
+        this.selectProperty(match[1], false);
     });
 
     this.showState("empty", "Selecione um imóvel para ver a galeria.");
     this.renderPending();
   },
 
-  /** Recebe os imóveis carregados (Property[]) e monta o <select>. */
   setProperties(properties) {
     this.properties = properties;
     const current = this.propertyId;
@@ -81,6 +73,7 @@ export const GalleryControllerPrototype = {
       this.clearPending();
       this.images = [];
       this.form.form.hidden = true;
+      this.showLocation();
       this.showState("empty", "Selecione um imóvel para ver a galeria.");
     }
   },
@@ -89,10 +82,22 @@ export const GalleryControllerPrototype = {
     return this.properties.find((p) => p.id === this.propertyId) ?? null;
   },
 
+  showLocation() {
+    if (!this.locationBox) return;
+    const property = this.currentProperty();
+    this.locationBox.hidden = !property;
+    if (!property) return;
+    if (this.locationText) this.locationText.textContent = property.location;
+    if (this.locationMeta) {
+      this.locationMeta.textContent = `Imóvel #${property.id} · ${property.numberOfRooms} quarto(s) · ${property.isAvailable() ? "Disponível" : "Indisponível"}`;
+    }
+  },
+
   applyPermissions() {
     const property = this.currentProperty();
     this.editable = Boolean(property && this.canEdit(property));
     this.form.form.hidden = !this.editable;
+    this.showLocation();
     this.render();
   },
 
@@ -104,7 +109,13 @@ export const GalleryControllerPrototype = {
       this.images = [];
       this.select.value = "";
       this.form.form.hidden = true;
-      if (updateHash && window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
+      this.showLocation();
+      if (updateHash && window.location.hash)
+        history.replaceState(
+          null,
+          "",
+          window.location.pathname + window.location.search,
+        );
       this.showState("empty", "Selecione um imóvel para ver a galeria.");
       return;
     }
@@ -123,7 +134,6 @@ export const GalleryControllerPrototype = {
     this.list.replaceChildren(p);
   },
 
-  /** Lista as imagens JÁ PERSISTIDAS (GET). */
   async load() {
     const propertyId = this.propertyId;
     this.showState("loading", "Carregando imagens…");
@@ -132,7 +142,10 @@ export const GalleryControllerPrototype = {
       if (propertyId !== this.propertyId) return; // o usuário trocou de imóvel durante a espera
       if (response.type !== "success") {
         this.images = [];
-        this.showState("error", response.message || "Não foi possível carregar a galeria.");
+        this.showState(
+          "error",
+          response.message || "Não foi possível carregar a galeria.",
+        );
         this.toast.fromResponse(response);
         return;
       }
@@ -148,26 +161,36 @@ export const GalleryControllerPrototype = {
   render() {
     if (this.propertyId === null) return;
     if (this.images.length === 0) {
-      this.showState("empty", "Este imóvel ainda não tem imagens.");
+      const place = this.currentProperty()?.location;
+      this.showState(
+        "empty",
+        place
+          ? `O imóvel em ${place} ainda não tem imagens.`
+          : "Este imóvel ainda não tem imagens.",
+      );
       return;
     }
     const doc = this.list.ownerDocument;
-    const grid = doc.createElement("div");
+    const location = this.currentProperty()?.location ?? "";
+    const grid = doc.createElement("ul");
     grid.className = "gallery-grid";
 
     for (const image of this.images) {
+      const item = doc.createElement("li");
+      item.className = "gallery-item";
       const figure = doc.createElement("figure");
-      figure.className = "gallery-item";
       figure.dataset.imageId = String(image.id);
 
       if (image.url) {
         const img = doc.createElement("img");
         img.src = image.url;
-        img.alt = image.describe();
+        img.alt =
+          image.altText ||
+          (location ? `Imagem do imóvel em ${location}` : image.describe());
         img.loading = "lazy";
         figure.appendChild(img);
       } else {
-        const missing = doc.createElement("div");
+        const missing = doc.createElement("p");
         missing.className = "gallery-missing";
         missing.textContent = "Imagem indisponível";
         figure.appendChild(missing);
@@ -175,7 +198,13 @@ export const GalleryControllerPrototype = {
 
       const caption = doc.createElement("figcaption");
       const text = doc.createElement("span");
-      text.textContent = image.altText || "(sem texto alternativo)";
+      if (location) {
+        const place = doc.createElement("strong");
+        place.className = "gallery-item-location";
+        place.textContent = location;
+        text.append(place, doc.createElement("br"));
+      }
+      text.append(image.altText || "(sem texto alternativo)");
       caption.appendChild(text);
       if (this.editable) {
         const button = doc.createElement("button");
@@ -185,12 +214,12 @@ export const GalleryControllerPrototype = {
         caption.appendChild(button);
       }
       figure.appendChild(caption);
-      grid.appendChild(figure);
+      item.appendChild(figure);
+      grid.appendChild(item);
     }
     this.list.replaceChildren(grid);
   },
 
-  /** Valida os arquivos escolhidos, barra os inválidos e cria as prévias. */
   async addFiles(files) {
     if (!this.editable || files.length === 0) return;
     const errors = [];
@@ -198,17 +227,26 @@ export const GalleryControllerPrototype = {
       0,
       Math.min(
         IMAGE_RULES.maxFilesPerRequest - this.pending.length,
-        IMAGE_RULES.maxImagesPerProperty - this.images.length - this.pending.length,
+        IMAGE_RULES.maxImagesPerProperty -
+          this.images.length -
+          this.pending.length,
       ),
     );
 
     for (const file of files) {
       if (this.pending.length >= IMAGE_RULES.maxFilesPerRequest || room === 0) {
-        errors.push(`Limite de imagens atingido (${IMAGE_RULES.maxFilesPerRequest} por envio, ${IMAGE_RULES.maxImagesPerProperty} por imóvel).`);
+        errors.push(
+          `Limite de imagens atingido (${IMAGE_RULES.maxFilesPerRequest} por envio, ${IMAGE_RULES.maxImagesPerProperty} por imóvel).`,
+        );
         break;
       }
-      if (this.images.length + this.pending.length >= IMAGE_RULES.maxImagesPerProperty) {
-        errors.push(`Cada imóvel aceita no máximo ${IMAGE_RULES.maxImagesPerProperty} imagens.`);
+      if (
+        this.images.length + this.pending.length >=
+        IMAGE_RULES.maxImagesPerProperty
+      ) {
+        errors.push(
+          `Cada imóvel aceita no máximo ${IMAGE_RULES.maxImagesPerProperty} imagens.`,
+        );
         break;
       }
       const error = await validateImageFileDeep(file);
@@ -225,13 +263,14 @@ export const GalleryControllerPrototype = {
     }
     this.fileInput.value = ""; // permite escolher o mesmo arquivo de novo
     this.renderPending();
-    if (errors.length > 0) this.toast.show([...new Set(errors)].join(" "), "warning");
+    if (errors.length > 0)
+      this.toast.show([...new Set(errors)].join(" "), "warning");
   },
 
   renderPending() {
     const doc = this.pendingList.ownerDocument;
     const items = this.pending.map((item) => {
-      const card = doc.createElement("div");
+      const card = doc.createElement("article");
       card.className = "pending-item";
 
       const img = doc.createElement("img");
@@ -284,7 +323,10 @@ export const GalleryControllerPrototype = {
 
   async upload() {
     if (this.propertyId === null || !this.editable) {
-      this.toast.show("Selecione um imóvel seu para enviar imagens.", "warning");
+      this.toast.show(
+        "Selecione um imóvel seu para enviar imagens.",
+        "warning",
+      );
       return;
     }
     if (this.pending.length === 0) {
@@ -313,7 +355,12 @@ export const GalleryControllerPrototype = {
 
   async removeImage(image) {
     if (!this.editable) return;
-    if (!this.confirm(`Remover esta imagem do imóvel #${this.propertyId}? As outras imagens serão mantidas.`)) return;
+    if (
+      !this.confirm(
+        `Remover esta imagem do imóvel #${this.propertyId}? As outras imagens serão mantidas.`,
+      )
+    )
+      return;
     try {
       const response = await this.service.remove(this.propertyId, image.id);
       if (!this.toast.fromResponse(response)) return;
@@ -334,6 +381,9 @@ export function createGalleryController({
   rules,
   service,
   toast,
+  locationBox = null, // opcionais: cabeçalho com a localização do imóvel selecionado
+  locationText = null,
+  locationMeta = null,
   canEdit = () => false,
   confirm = (message) => window.confirm(message),
 }) {
@@ -347,6 +397,9 @@ export function createGalleryController({
     rules: { value: rules },
     service: { value: service },
     toast: { value: toast },
+    locationBox: { value: locationBox },
+    locationText: { value: locationText },
+    locationMeta: { value: locationMeta },
     canEdit: { value: canEdit },
     confirm: { value: confirm },
     submitButton: { value: form.form.querySelector('button[type="submit"]') },

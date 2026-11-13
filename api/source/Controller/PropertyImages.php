@@ -8,16 +8,7 @@ use Source\Models\PropertyImage;
 use Source\Support\ImageStorage;
 use Source\Support\Upload;
 
-/**
- * Galeria de imagens de um imóvel (relação 1:N: properties 1 — N property_images).
- *
- *  GET    /properties/{id}/images               lista a galeria (público, como /properties/list)
- *  POST   /properties/{id}/images               multipart: images[] (ou image) + alt_text[] opcional (Proprietário do imóvel)
- *  DELETE /properties/{id}/images/{image_id}    remove UMA imagem do imóvel (Proprietário do imóvel)
- *
- * O Controller valida e coordena; o Model PropertyImage persiste os metadados;
- * Upload valida e grava o arquivo; ImageStorage apaga arquivos gerenciados.
- */
+
 class PropertyImages extends Api
 {
     private const MAX_FILES_PER_REQUEST = 10;
@@ -33,9 +24,26 @@ class PropertyImages extends Api
             return;
         }
 
+        $typeId = null;
+        if ($this->authToken(2)) {
+            $typeId = 2;
+        } elseif ($this->authToken(1)) {
+            $typeId = 1;
+        } else {
+            $this->call(401, "unauthorized", "Token de autenticação inválido ou expirado.", "error")->back();
+            return;
+        }
+
         $property = new Propertie();
         if (!$property->selectById($propertyId)) {
             $this->call(404, "not_found", "Imóvel não encontrado.", "error")->back();
+            return;
+        }
+        $allowed = $typeId === 2
+            ? $property->getIdOwner() === $this->userAuthId
+            : $property->belongsToTenant($propertyId, $this->userAuthId);
+        if (!$allowed) {
+            $this->call(404, "not_found", "Imóvel não encontrado para este usuário.", "error")->back();
             return;
         }
 
@@ -60,7 +68,7 @@ class PropertyImages extends Api
             return;
         }
 
-        // post_max_size excedido: o PHP descarta $_POST e $_FILES sem erro
+       
         if (empty($_FILES) && (int) ($_SERVER["CONTENT_LENGTH"] ?? 0) > 0) {
             $this->call(
                 413,
@@ -107,8 +115,7 @@ class PropertyImages extends Api
             return;
         }
 
-        // Tudo ou nada: se qualquer arquivo for rejeitado ou o banco falhar,
-        // os registros são desfeitos e os arquivos já gravados nesta requisição, removidos.
+       
         $uploader = new Upload(uploads_path(self::FOLDER));
         $savedFiles = [];
         $createdIds = [];
@@ -177,7 +184,7 @@ class PropertyImages extends Api
             return;
         }
 
-        // a busca já filtra por imóvel: imagem de outro imóvel => 404
+      
         $image = new PropertyImage();
         if (!$image->findInProperty($imageId, $propertyId)) {
             $this->call(404, "not_found", "Imagem não encontrada neste imóvel.", "error")->back();
@@ -190,7 +197,7 @@ class PropertyImages extends Api
             return;
         }
 
-        // o arquivo só é apagado depois que o registro foi removido
+       
         $fileRemoved = ImageStorage::remove($path);
 
         $this->call(
@@ -204,7 +211,7 @@ class PropertyImages extends Api
         ]);
     }
 
-    /** Exige token de Proprietário, id válido, imóvel existente e posse do imóvel. Devolve o id ou null (resposta já enviada). */
+
     private function authorizeOwner(array $data): ?int
     {
         if (!$this->authToken(2)) {
@@ -238,7 +245,7 @@ class PropertyImages extends Api
         return $id === false ? null : $id;
     }
 
-    /** Normaliza $_FILES["images"] (images[]) ou $_FILES["image"] em uma lista de arquivos individuais. */
+  
     private function collectFiles(): array
     {
         $field = $_FILES["images"] ?? $_FILES["image"] ?? null;
@@ -263,7 +270,7 @@ class PropertyImages extends Api
         return $files;
     }
 
-    /** alt_text[] alinhado por índice às imagens. null = algum texto excede o limite. */
+  
     private function collectAltTexts(): ?array
     {
         $raw = $_POST["alt_text"] ?? [];

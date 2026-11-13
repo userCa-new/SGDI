@@ -1,250 +1,567 @@
 <!doctype html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>SGDI Proprietário</title>
-        <link rel="stylesheet" href="styles/owner.css" />
-    </head>
-    <body>
-        <header class="app-header">
-            <nav class="breadcrumbs" aria-label="Navegação principal">
-                <a href="index.html">Área do usuário</a>
-                <a href="owner.html">Proprietário</a>
-                <a href="manage.html">Gestão (API)</a>
-                <a
-                    href="#"
-                    id="btn-logout"
-                    class="nav-logout"
-                    style="margin-left: auto; color: #c0392b; font-weight: 600"
-                    >Sair</a
-                >
-            </nav>
-            <button id="owner-properties-button" class="button-secondary">
-                Imóveis
-            </button>
-        </header>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>SGDI Proprietário</title>
+		<link
+			rel="stylesheet"
+			href="styles/owner.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="styles/profile.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="styles/management.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="../_common/styles/design-system.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="styles/redesign.css?v=20261113-9"
+		/>
+	</head>
+	<body class="app-shell app-owner">
+		<header class="app-header">
+			<nav
+				class="breadcrumbs"
+				aria-label="Navegação principal"
+			>
+				<a href="index.html">Área do usuário</a>
+				<a
+					href="owner.html"
+					aria-current="page"
+					>Proprietário</a
+				>
+			</nav>
+			<button
+				id="owner-properties-button"
+				class="button-secondary"
+			>
+				+ Imóveis
+			</button>
+			<details
+				id="profile-menu"
+				class="profile-menu"
+			>
+				<summary aria-label="Abrir meu perfil">
+					<figure class="avatar">
+						<img
+							id="photo-current"
+							alt="Foto atual do perfil"
+							hidden
+						/>
+						<span
+							id="photo-fallback"
+							class="avatar-fallback"
+							aria-hidden="true"
+							>?</span
+						>
+					</figure>
+					<span
+						id="user-display-name"
+						class="profile-name"
+						>—</span
+					>
+				</summary>
+				<section
+					id="profile-section"
+					class="profile-popover"
+					aria-labelledby="profile-title"
+				>
+					<h2 id="profile-title">Meu perfil</h2>
 
-        <main class="owner-main">
-            <section class="hero-panel" aria-labelledby="owner-welcome">
-                <article>
-                    <p class="eyebrow">Painel do Proprietário</p>
-                    <h1 id="owner-welcome">
-                        Controle de imóveis e confirmações
-                    </h1>
-                    <p>
-                        Gerencie inquilinos, confirme pagamentos assistidos e
-                        acompanhe pedidos de manutenção.
-                    </p>
-                </article>
-                <aside class="hero-note">
-                    <p>
-                        A plataforma permite indexar QR Codes e chaves Pix e
-                        confirmar pagamentos manualmente.
-                    </p>
-                </aside>
-            </section>
+					<section class="photo-box">
+						<form
+							id="photo-form"
+							novalidate
+						>
+							<label>
+								Foto do perfil
+								<input
+									id="photo-input"
+									type="file"
+									accept="image/jpeg,image/png,image/webp"
+								/>
+							</label>
+							<p
+								id="photo-rules"
+								class="hint"
+							></p>
+							<figure
+								id="photo-preview-box"
+								class="photo-preview"
+								hidden
+							>
+								<img
+									id="photo-preview"
+									alt="Prévia da nova foto (ainda não enviada)"
+								/>
+								<figcaption>Prévia — ainda não enviada</figcaption>
+							</figure>
+							<section class="actions">
+								<button
+									type="submit"
+									disabled
+								>
+									Enviar foto
+								</button>
+								<button
+									type="button"
+									data-action="cancel"
+									class="secondary"
+								>
+									Cancelar
+								</button>
+							</section>
+						</form>
+					</section>
 
-            <section
-                class="quick-access-panel"
-                aria-labelledby="owner-quick-access-title"
-            >
-                <header>
-                    <p class="eyebrow">Acesso rápido</p>
-                    <h2 id="owner-quick-access-title">Dashboard rápido</h2>
-                </header>
-                <div class="quick-access-grid">
-                    <a href="#owner-payments-title" class="quick-card">
-                        <strong>Pagamentos</strong>
-                        <p>Verifique confirmações e valores pendentes.</p>
-                    </a>
-                    <a href="#owner-pix-title" class="quick-card">
-                        <strong>Pix / QR</strong>
-                        <p>Atualize e compartilhe chaves de cobrança.</p>
-                    </a>
-                    <a href="#owner-issues-title" class="quick-card">
-                        <strong>Manutenção</strong>
-                        <p>Acompanhe pedidos abertos e prioridades.</p>
-                    </a>
-                    <a href="#owner-welcome" class="quick-card">
-                        <strong>Resumo</strong>
-                        <p>Volte ao topo do painel sempre que precisar.</p>
-                    </a>
-                </div>
-            </section>
+					<form
+						id="profile-form"
+						novalidate
+					>
+						<label
+							>Nome
+							<input
+								name="name"
+								type="text"
+								required
+								maxlength="100"
+						/></label>
+						<label
+							>E-mail
+							<input
+								name="email"
+								type="email"
+								required
+								maxlength="150"
+						/></label>
+						<label
+							>Senha (obrigatória pela API)
+							<input
+								name="password"
+								type="password"
+								required
+								minlength="6"
+								autocomplete="new-password"
+						/></label>
+						<button type="submit">Atualizar perfil</button>
+					</form>
+				</section>
+			</details>
+			<a href="#" id="btn-logout" class="button-logout">Sair</a>
+		</header>
 
-            <section class="stats-grid" aria-label="Indicadores principais">
-                <article class="stat-card">
-                    <p class="label">Imóveis cadastrados</p>
-                    <p class="value">9</p>
-                </article>
-                <article class="stat-card">
-                    <p class="label">Pagamentos pendentes</p>
-                    <p class="value status-alert">4</p>
-                </article>
-                <article class="stat-card">
-                    <p class="label">Solicitações abertas</p>
-                    <p class="value">6</p>
-                </article>
-                <article class="stat-card">
-                    <p class="label">Receita projetada</p>
-                    <p class="value">R$ 58.320</p>
-                </article>
-            </section>
+		<main class="owner-main">
+			<section
+				class="hero-panel"
+				aria-labelledby="owner-welcome"
+			>
+				<article>
+					<p class="eyebrow">Painel do Proprietário</p>
+					<h1 id="owner-welcome">
+						Controle de imóveis, contratos e atendimentos
+					</h1>
+					<p>Gerencie seus imóveis e acompanhe as locações e solicitações.</p>
+				</article>
+				<aside class="hero-note">
+					<p>
+						Transferências acontecem fora da plataforma. Métodos, agenda e
+						registros desta tela são armazenados apenas neste navegador.
+					</p>
+				</aside>
+			</section>
 
-            <section
-                class="payments-panel"
-                aria-labelledby="owner-payments-title"
-            >
-                <header>
-                    <p class="eyebrow">Pagamentos</p>
-                    <h2 id="owner-payments-title">Confirmações assistidas</h2>
-                    <p>
-                        Liste pagamentos recebidos e confirme apenas os que já
-                        foram verificados no banco.
-                    </p>
-                </header>
+			<section
+				class="quick-access-panel"
+				aria-labelledby="owner-quick-access-title"
+			>
+				<header>
+					<p class="eyebrow">Acesso rápido</p>
+					<h2 id="owner-quick-access-title">Dashboard rápido</h2>
+				</header>
+				<nav
+					class="quick-access-grid"
+					aria-label="Atalhos do painel"
+				>
+					<a
+						href="#owner-payments-title"
+						class="quick-card"
+					>
+						<strong>Pagamentos</strong>
+						<p>Consulte registros disponíveis neste navegador.</p>
+					</a>
+					<a
+						href="#owner-pix-title"
+						class="quick-card"
+					>
+						<strong>Pix / QR</strong>
+						<p>Registre localmente suas referências de cobrança.</p>
+					</a>
+					<a
+						href="#owner-issues-title"
+						class="quick-card"
+					>
+						<strong>Manutenção</strong>
+						<p>Consulte solicitações salvas neste navegador.</p>
+					</a>
+					<a
+						href="#owner-welcome"
+						class="quick-card"
+					>
+						<strong>Resumo</strong>
+						<p>Volte ao topo do painel sempre que precisar.</p>
+					</a>
+				</nav>
+			</section>
 
-                <article class="payment-list" id="payment-list"></article>
-            </section>
+			<section
+				class="stats-grid"
+				aria-label="Recursos disponíveis no painel"
+			>
+				<article class="stat-card">
+					<p class="label">Pagamentos</p>
+					<p class="value">Assistidos</p>
+					<p class="detail">Confirmação manual após conferir no banco.</p>
+				</article>
+				<article class="stat-card">
+					<p class="label">Cobranças</p>
+					<p class="value">Pix e QR Code</p>
+					<p class="detail">Referências locais, sem sincronização.</p>
+				</article>
+				<article class="stat-card">
+					<p class="label">Atendimento</p>
+					<p class="value">Agenda</p>
+					<p class="detail">Defina um horário para conversar.</p>
+				</article>
+				<article class="stat-card">
+					<p class="label">Manutenção</p>
+					<p class="value">Solicitações</p>
+					<p class="detail">Acompanhe os relatos dos inquilinos.</p>
+				</article>
+			</section>
 
-            <section
-                class="schedule-panel"
-                aria-labelledby="owner-schedule-title"
-            >
-                <header>
-                    <p class="eyebrow">Agendamento</p>
-                    <h2 id="owner-schedule-title">Agenda de atendimento</h2>
-                    <p>
-                        Defina um horário para o inquilino e mantenha o registro
-                        de visitas.
-                    </p>
-                </header>
+			<section
+				class="management-panel"
+				aria-labelledby="owner-contracts-title"
+			>
+				<header class="management-heading">
+					<p class="eyebrow">Locações</p>
+					<h2 id="owner-contracts-title">Contratos</h2>
+					<p>
+						Associe um imóvel a um inquilino. Contratos ativos liberam o imóvel na localização e nos atendimentos do inquilino.
+					</p>
+				</header>
+				<form
+					id="owner-contract-form"
+					class="management-form"
+					novalidate
+				>
+					<label>
+						Imóvel
+						<select
+							name="idProperty"
+							required
+						>
+							<option value="">Selecione um imóvel…</option>
+						</select>
+					</label>
+					<label>
+						Inquilino
+						<select
+							name="idUser"
+							required
+						>
+							<option value="">Selecione um inquilino…</option>
+						</select>
+					</label>
+					<label>
+						Aluguel mensal (R$)
+						<input
+							name="rentValue"
+							type="number"
+							min="0"
+							step="0.01"
+							required
+							inputmode="decimal"
+						/>
+					</label>
+					<label>
+						Início
+						<input
+							name="startDate"
+							type="date"
+							required
+						/>
+					</label>
+					<label>
+						Fim
+						<input
+							name="endDate"
+							type="date"
+							required
+						/>
+					</label>
+					<label>
+						Status
+						<select
+							name="status"
+							required
+						>
+							<option value="ACTIVE" selected>Ativo</option>
+							<option value="PENDING">Pendente</option>
+							<option value="CLOSED">Encerrado</option>
+						</select>
+					</label>
+					<footer class="management-actions">
+						<button type="submit">Salvar contrato</button>
+						<button
+							type="button"
+							class="button-secondary"
+							data-cancel-contract
+							hidden
+						>
+							Cancelar edição
+						</button>
+					</footer>
+				</form>
+				<section
+					id="owner-contract-list"
+					class="management-list"
+					aria-live="polite"
+					aria-label="Contratos dos imóveis"
+				></section>
+			</section>
 
-                <form id="schedule-form" class="schedule-form">
-                    <label for="schedule-date">Data</label>
-                    <input id="schedule-date" type="date" required />
+			<section
+				class="management-panel"
+				aria-labelledby="owner-appointments-title"
+			>
+				<header class="management-heading">
+					<p class="eyebrow">Agenda</p>
+					<h2 id="owner-appointments-title">Atendimentos</h2>
+					<p>Consulte solicitações dos inquilinos e atualize sua conclusão.</p>
+				</header>
+				<section
+					id="owner-appointment-list"
+					class="management-list"
+					aria-live="polite"
+					aria-label="Atendimentos dos imóveis"
+				></section>
+			</section>
 
-                    <label for="schedule-time">Hora</label>
-                    <input id="schedule-time" type="time" required />
+			<section
+				class="payments-panel"
+				aria-labelledby="owner-payments-title"
+			>
+				<header>
+					<p class="eyebrow">Pagamentos</p>
+					<h2 id="owner-payments-title">Confirmações assistidas</h2>
+					<p>
+						A lista não recebe pagamentos da API nesta versão. Registros
+						existentes neste navegador aparecem aqui.
+					</p>
+				</header>
 
-                    <label for="schedule-note">Observação</label>
-                    <textarea
-                        id="schedule-note"
-                        rows="3"
-                        placeholder="Descreva o motivo do atendimento"
-                    ></textarea>
+				<article
+					class="payment-list"
+					id="payment-list"
+					aria-live="polite"
+				></article>
+			</section>
 
-                    <button type="submit">Agendar atendimento</button>
-                </form>
+			<section
+				class="schedule-panel"
+				aria-labelledby="owner-schedule-title"
+			>
+				<header>
+					<p class="eyebrow">Agendamento</p>
+					<h2 id="owner-schedule-title">Agenda de atendimento</h2>
+					<p>
+						Defina um horário de atendimento. O agendamento fica neste navegador
+						e não é sincronizado com o inquilino.
+					</p>
+				</header>
 
-                <article class="schedule-summary">
-                    <p class="label">Último agendamento</p>
-                    <p id="schedule-display">Nenhum agendamento definido.</p>
-                </article>
-            </section>
+				<form
+					id="schedule-form"
+					class="schedule-form"
+				>
+					<label for="schedule-date">Data</label>
+					<input
+						id="schedule-date"
+						type="date"
+						required
+					/>
 
-            <section class="pix-panel" aria-labelledby="owner-pix-title">
-                <header>
-                    <p class="eyebrow">Cobranças</p>
-                    <h2 id="owner-pix-title">Pix e QR Code</h2>
-                    <p>
-                        Atualize os métodos de cobrança que serão apresentados
-                        para seus inquilinos.
-                    </p>
-                </header>
+					<label for="schedule-time">Hora</label>
+					<input
+						id="schedule-time"
+						type="time"
+						required
+					/>
 
-                <div class="method-control">
-                    <p>
-                        Fixe aqui o meio de pagamento principal para o aluguel.
-                    </p>
-                    <button id="manage-payment-method" type="button">
-                        Fixar método de pagamento
-                    </button>
-                </div>
+					<label for="schedule-note">Observação</label>
+					<textarea
+						id="schedule-note"
+						rows="3"
+						placeholder="Descreva o motivo do atendimento"
+					></textarea>
 
-                <ul class="pix-list">
-                    <li><strong>Email:</strong> aluguel@proprietario.com</li>
-                    <li><strong>CPF:</strong> 111.222.333-44</li>
-                    <li>
-                        <strong>Chave aleatória:</strong>
-                        1a2b3c4d-5e6f-7g8h-9i0j
-                    </li>
-                </ul>
-            </section>
+					<button type="submit">Agendar atendimento</button>
+				</form>
 
-            <section class="chat-panel" aria-labelledby="owner-chat-title">
-                <header>
-                    <p class="eyebrow">Comunicação</p>
-                    <h2 id="owner-chat-title">Chat com o inquilino</h2>
-                    <p>Troque mensagens diretamente com seu inquilino.</p>
-                </header>
+				<article class="schedule-summary">
+					<p class="label">Último agendamento</p>
+					<p id="schedule-display">Nenhum agendamento definido.</p>
+				</article>
+			</section>
 
-                <article
-                    class="chat-window"
-                    id="owner-chat-window"
-                    aria-live="polite"
-                ></article>
-                <form id="owner-chat-form" class="chat-form">
-                    <label for="owner-chat-property">Imóvel</label>
-                    <select
-                        id="owner-chat-property"
-                        aria-label="Selecionar imóvel"
-                    ></select>
+			<section
+				class="pix-panel"
+				aria-labelledby="owner-pix-title"
+			>
+				<header>
+					<p class="eyebrow">Cobranças</p>
+					<h2 id="owner-pix-title">Pix e QR Code</h2>
+					<p>
+						Registre dados para referência. Eles ficam neste navegador e não são
+						enviados automaticamente ao inquilino.
+					</p>
+				</header>
 
-                    <label for="owner-chat-message">Nova mensagem</label>
-                    <input
-                        id="owner-chat-message"
-                        type="text"
-                        placeholder="Escreva sua mensagem..."
-                        required
-                    />
-                    <button type="submit">Enviar</button>
-                </form>
-            </section>
+				<section
+					class="method-control"
+					aria-label="Método de cobrança"
+				>
+					<p>Fixe aqui o meio de pagamento principal para o aluguel.</p>
+					<button
+						id="manage-payment-method"
+						type="button"
+					>
+						Fixar método de pagamento
+					</button>
+				</section>
 
-            <section class="issues-panel" aria-labelledby="owner-issues-title">
-                <header>
-                    <p class="eyebrow">Manutenção</p>
-                    <h2 id="owner-issues-title">Pedidos de manutenção</h2>
-                    <p>
-                        Gerencie as solicitações de problemas relatadas pelos
-                        inquilinos.
-                    </p>
-                </header>
+				<ul class="pix-list">
+					<li>
+						<strong>Nenhum método fixado</strong>
+						<p>
+							Adicione uma chave Pix, um QR Code ou dados bancários para
+							exibi-los aqui.
+						</p>
+					</li>
+				</ul>
+			</section>
 
-                <ol class="issue-list">
-                    <li>
-                        <strong>Vazamento no banheiro</strong>
-                        <p>Ap. 201 • Urgente • Agendar vistoria</p>
-                    </li>
-                    <li>
-                        <strong>Troca de lâmpadas</strong>
-                        <p>Ap. 304 • Manutenção leve</p>
-                    </li>
-                    <li>
-                        <strong>Instalação de tranca</strong>
-                        <p>Ap. 110 • Confirmar orçamento</p>
-                    </li>
-                </ol>
-            </section>
-        </main>
+			<section
+				class="chat-panel"
+				aria-labelledby="owner-chat-title"
+			>
+				<header>
+					<p class="eyebrow">Comunicação</p>
+					<h2 id="owner-chat-title">Chat com o inquilino</h2>
+					<p>Mensagens salvas aqui não são sincronizadas entre dispositivos.</p>
+				</header>
 
-        <footer class="app-footer">
-            <p>
-                Contas separadas para inquilino e proprietário com
-                funcionalidades distintas.
-            </p>
-        </footer>
+				<article
+					class="chat-window"
+					id="owner-chat-window"
+					aria-live="polite"
+				></article>
+				<form
+					id="owner-chat-form"
+					class="chat-form"
+				>
+					<label for="owner-chat-property">Imóvel</label>
+					<select
+						id="owner-chat-property"
+						aria-label="Selecionar imóvel"
+					></select>
 
-        <a
-            href="#owner-quick-access-title"
-            class="return-dashboard-fab"
-            aria-label="Voltar ao acesso rápido"
-            >↑</a
-        >
-        <div class="toast" id="toast"></div>
-        <script type="module" src="scripts/auth-guard.js"></script>
-        <script src="scripts/owner.js"></script>
-    </body>
+					<label for="owner-chat-message">Nova mensagem</label>
+					<input
+						id="owner-chat-message"
+						type="text"
+						placeholder="Escreva sua mensagem..."
+						required
+					/>
+					<button type="submit">Enviar</button>
+				</form>
+			</section>
+
+			<section
+				class="issues-panel"
+				aria-labelledby="owner-issues-title"
+			>
+				<header>
+					<p class="eyebrow">Manutenção</p>
+					<h2 id="owner-issues-title">Pedidos de manutenção</h2>
+					<p>
+						Solicitações registradas neste navegador aparecem aqui; esta tela
+						ainda não sincroniza pedidos pela API.
+					</p>
+				</header>
+
+				<ol class="issue-list">
+					<li>
+						<strong>Solicitações não conectadas</strong>
+						<p>
+							Os pedidos de manutenção ainda não são carregados de uma API nesta
+							tela.
+						</p>
+					</li>
+				</ol>
+			</section>
+		</main>
+
+		<footer class="app-footer">
+			<p>
+				Contas separadas para inquilino e proprietário com funcionalidades
+				distintas.
+			</p>
+		</footer>
+
+		<a
+			href="#owner-quick-access-title"
+			class="return-dashboard-fab"
+			aria-label="Voltar ao acesso rápido"
+			>↑</a
+		>
+		<section
+			class="toast"
+			id="toast"
+			aria-label="Notificações"
+			aria-live="polite"
+		></section>
+		<script
+			type="module"
+			src="scripts/auth-guard.js?v=20261113-3"
+		></script>
+		<script src="scripts/owner.js"></script>
+		<script
+			type="module"
+			src="scripts/owner-management.js?v=20261113-3"
+		></script>
+		<script
+			type="module"
+			src="scripts/owner-contracts.js?v=20261113-2"
+		></script>
+		<script
+			type="module"
+			src="scripts/owner-appointments.js?v=20261113-2"
+		></script>
+		<script
+			type="module"
+			src="scripts/profile.js"
+		></script>
+	</body>
 </html>

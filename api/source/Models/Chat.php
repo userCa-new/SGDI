@@ -54,4 +54,5 @@ class Chat extends Model
     {
         $this->creationDate = $creationDate;
     }
+
 }

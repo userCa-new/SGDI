@@ -1,7 +1,6 @@
 import Entity, { toNullableInt } from "./Entity.js";
 import { IMAGE_RULES, safeUploadUrl } from "../../scripts/image-rules.js";
 
-/** Imagem de um imóvel — tabela `property_images` (N imagens para 1 imóvel). */
 export default class PropertyImage extends Entity {
   #id = null;
   #idProperty = null;
@@ -36,11 +35,9 @@ export default class PropertyImage extends Entity {
   get idProperty() { return this.#idProperty; }
   set idProperty(value) { this.#idProperty = toNullableInt(value); }
 
-  /** caminho relativo (nunca absoluto do servidor), ex.: uploads/properties/<hash>.jpg */
   get path() { return this.#path; }
   set path(value) { this.#path = typeof value === "string" ? value : ""; }
 
-  /** URL pública já verificada (mesma origem da API) ou null */
   get url() { return this.#url; }
   set url(value) { this.#url = typeof value === "string" ? value : null; }
 
@@ -62,12 +59,10 @@ export default class PropertyImage extends Entity {
   get createdAt() { return this.#createdAt; }
   set createdAt(value) { this.#createdAt = value ? String(value) : null; }
 
-  /** Texto alternativo acessível: o informado ou um padrão. */
   describe() {
     return this.#altText || `Imagem ${this.#position + 1} do imóvel #${this.#idProperty}`;
   }
 
-  /** payload da API → entidade; a URL só é aceita se pertencer à própria API. */
   static fromApi(p = {}, baseUrl = null) {
     const url = safeUploadUrl(p.url, baseUrl);
     if (p.url && !url) console.warn("[PropertyImage] URL de imagem ignorada (fora da API):", p.url);

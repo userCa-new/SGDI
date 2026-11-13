@@ -196,4 +196,36 @@ class User extends Model
 
         return $stmt->rowCount() > 0;
     }
+
+    public function listTenants(): ?array
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT id_user, name FROM {$this->table}
+                 WHERE id_user_type = 1 ORDER BY name, id_user"
+            );
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\PDOException $exception) {
+            error_log($exception->getMessage());
+            $this->errorMessage = "Não foi possível carregar a lista de inquilinos.";
+            return null;
+        }
+    }
+
+    public function isTenant(int $userId): bool
+    {
+        try {
+            $stmt = Connect::getInstance()->prepare(
+                "SELECT 1 FROM {$this->table}
+                 WHERE id_user = :user_id AND id_user_type = 1 LIMIT 1"
+            );
+            $stmt->bindValue(":user_id", $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (bool) $stmt->fetchColumn();
+        } catch (\PDOException $exception) {
+            error_log($exception->getMessage());
+            return false;
+        }
+    }
 }

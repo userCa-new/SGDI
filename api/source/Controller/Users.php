@@ -305,6 +305,33 @@ class Users extends Api
         ]);
     }
 
+    public function listTenants(array $data): void
+    {
+        if (!$this->authToken(2)) {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
+
+        $user = new User();
+        $tenants = $user->listTenants();
+        if ($tenants === null) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $user->getErrorMessage() ?? "Não foi possível carregar os inquilinos.",
+                "error",
+            )->back();
+            return;
+        }
+
+        $this->call(200, "success", "Lista de inquilinos", "success")->back($tenants);
+    }
+
     /**
      * POST /users/photo — multipart/form-data, campo "photo". Qualquer perfil autenticado (Inquilino ou Proprietário);
      * o usuário alterado é SEMPRE o do token, nunca um id enviado pelo formulário.

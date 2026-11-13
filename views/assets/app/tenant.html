@@ -1,25 +1,59 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>SGDI Inquilino</title>
         <link rel="stylesheet" href="styles/tenant.css" />
+        <link rel="stylesheet" href="styles/profile.css" />
+        <link rel="stylesheet" href="styles/management.css" />
+        <link rel="stylesheet" href="../_common/styles/design-system.css" />
+        <link rel="stylesheet" href="styles/redesign.css?v=20261113-9" />
     </head>
-    <body>
+    <body class="app-shell app-tenant">
         <header class="app-header">
             <nav class="breadcrumbs" aria-label="Navegação principal">
                 <a href="index.html">Área do usuário</a>
-                <a href="tenant.html">Inquilino</a>
-                <a href="manage.html">Gestão (API)</a>
-                <a
-                    href="#"
-                    id="btn-logout"
-                    class="nav-logout"
-                    style="margin-left: auto; color: #c0392b; font-weight: 600"
-                    >Sair</a
-                >
+                <a href="tenant.html" aria-current="page">Inquilino</a>
             </nav>
+            <details id="profile-menu" class="profile-menu">
+                <summary aria-label="Abrir meu perfil">
+                    <figure class="avatar">
+                        <img id="photo-current" alt="Foto atual do perfil" hidden />
+                        <span id="photo-fallback" class="avatar-fallback" aria-hidden="true">?</span>
+                    </figure>
+                    <span id="user-display-name" class="profile-name">—</span>
+                </summary>
+                <section id="profile-section" class="profile-popover" aria-labelledby="profile-title">
+                    <h2 id="profile-title">Meu perfil</h2>
+
+                    <section class="photo-box">
+                        <form id="photo-form" novalidate>
+                            <label>
+                                Foto do perfil
+                                <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" />
+                            </label>
+                            <p id="photo-rules" class="hint"></p>
+                            <figure id="photo-preview-box" class="photo-preview" hidden>
+                                <img id="photo-preview" alt="Prévia da nova foto (ainda não enviada)" />
+                                <figcaption>Prévia — ainda não enviada</figcaption>
+                            </figure>
+                            <section class="actions">
+                                <button type="submit" disabled>Enviar foto</button>
+                                <button type="button" data-action="cancel" class="secondary">Cancelar</button>
+                            </section>
+                        </form>
+                    </section>
+
+                    <form id="profile-form" novalidate>
+                        <label>Nome <input name="name" type="text" required maxlength="100" /></label>
+                        <label>E-mail <input name="email" type="email" required maxlength="150" /></label>
+                        <label>Senha (obrigatória pela API) <input name="password" type="password" required minlength="6" autocomplete="new-password" /></label>
+                        <button type="submit">Atualizar perfil</button>
+                    </form>
+                </section>
+            </details>
+            <a href="#" id="btn-logout" class="button-logout">Sair</a>
         </header>
 
         <main class="tenant-main">
@@ -27,11 +61,11 @@
                 <article>
                     <p class="eyebrow">Painel do Inquilino</p>
                     <h1 id="tenant-welcome">
-                        Bem-vindo ao seu controle de aluguel
+                        As informações da sua locação, em um só lugar
                     </h1>
                     <p>
-                        Gerencie pagamento, acompanhe o status do aluguel,
-                        reporte problemas e veja a localização do seu imóvel.
+                        Consulte os dados do imóvel, registre informações de
+                        atendimento e veja o que já está disponível no seu perfil.
                     </p>
                 </article>
                 <aside class="hero-note">
@@ -52,10 +86,10 @@
                         Vá direto para as principais áreas
                     </h2>
                 </header>
-                <div class="quick-access-grid">
+                <nav class="quick-access-grid" aria-label="Atalhos do painel">
                     <a href="#payments-title" class="quick-card">
                         <strong>Pagamento</strong>
-                        <p>Consulte suas chaves Pix e QR Code.</p>
+                        <p>Confirme os dados de transferência com o proprietário.</p>
                     </a>
                     <a href="#property-title" class="quick-card">
                         <strong>Imóvel</strong>
@@ -63,13 +97,13 @@
                     </a>
                     <a href="#maintenance-title" class="quick-card">
                         <strong>Manutenção</strong>
-                        <p>Registre problemas e acompanhe pedidos.</p>
+                        <p>Registre uma descrição neste navegador.</p>
                     </a>
                     <a href="#chat-title" class="quick-card">
                         <strong>Chat</strong>
-                        <p>Fale rapidamente com o proprietário.</p>
+                        <p>Consulte as mensagens salvas neste navegador.</p>
                     </a>
-                </div>
+                </nav>
             </section>
 
             <section
@@ -78,23 +112,23 @@
             >
                 <article class="status-card">
                     <p class="label">Aluguel atual</p>
-                    <p class="value">R$ 1.680,00</p>
-                    <p class="detail">Vencimento em 07/06</p>
+                    <p class="value">Consulte seu contrato</p>
+                    <p class="detail">Valor e vencimento dependem dos dados do contrato.</p>
                 </article>
                 <article class="status-card">
                     <p class="label">Status</p>
-                    <p class="value status-on-time">Em dia</p>
-                    <p class="detail">Sem pendências ativas</p>
+                    <p class="value">Não informado</p>
+                    <p class="detail">O status depende das informações do contrato.</p>
                 </article>
                 <article class="status-card">
                     <p class="label">Taxa de atraso</p>
-                    <p class="value">R$ 0,00</p>
-                    <p class="detail">Último pagamento confirmado</p>
+                    <p class="value">—</p>
+                    <p class="detail">Cálculo de encargos ainda não está disponível.</p>
                 </article>
                 <article class="status-card">
                     <p class="label">Próximo atendimento</p>
-                    <p class="value">Ter 11/06</p>
-                    <p class="detail">10:00 - Visita de manutenção</p>
+                    <p class="value">Aguardando agenda</p>
+                    <p class="detail">Um horário aparecerá quando for definido.</p>
                 </article>
             </section>
 
@@ -103,29 +137,15 @@
                     <p class="eyebrow">Pagamento assistido</p>
                     <h2 id="payments-title">Métodos de cobrança</h2>
                     <p>
-                        Consulte as chaves Pix e QR Code que o proprietário
-                        disponibilizou.
+                        Os métodos ainda não são sincronizados para esta tela.
+                        Confirme os dados diretamente com o proprietário antes de pagar.
                     </p>
                 </header>
 
                 <article class="payment-methods">
-                    <article class="method-card">
-                        <p class="method-type">Chave Pix</p>
-                        <p class="method-value">aluguel@inquilino.com</p>
-                    </article>
-                    <article class="method-card">
-                        <p class="method-type">QR Code</p>
-                        <p class="method-value">
-                            00020126360014BR.GOV.BCB.PIX0127aluguel@inquilino.com52040000530398654051680.005802BR5922Proprietario
-                            Imoveis6008Sao Paulo61080540900062070503***6304B14F
-                        </p>
-                    </article>
-                    <article class="method-card">
-                        <p class="method-type">Banco</p>
-                        <p class="method-value">
-                            0001 • Agência 1234 • Conta 56789-0
-                        </p>
-                    </article>
+                    <p class="hint">
+                        Esta versão não recebe automaticamente as chaves Pix ou os QR Codes do proprietário.
+                    </p>
                 </article>
             </section>
 
@@ -139,19 +159,47 @@
                     </p>
                 </header>
 
-                <article class="property-info">
-                    <article class="property-card">
-                        <p class="label">Endereço</p>
-                        <p class="value">
-                            Rua das Palmeiras, 342 • Ap. 201 • Bela Vista, São
-                            Paulo
-                        </p>
-                    </article>
-                    <article class="property-card">
-                        <p class="label">Área</p>
-                        <p class="value">72m² • 2 quartos • 1 suíte</p>
-                    </article>
-                </article>
+                <section class="property-gallery" aria-labelledby="property-gallery-title">
+                    <h3 id="property-gallery-title">Imagens dos imóveis</h3>
+                    <section id="property-gallery" aria-live="polite"></section>
+                </section>
+            </section>
+
+            <section class="management-panel" aria-labelledby="tenant-contract-title">
+                <header class="management-heading">
+                    <p class="eyebrow">Sua locação</p>
+                    <h2 id="tenant-contract-title">Dados do contrato</h2>
+                    <p>Consulte valores, imóvel e vigência registrados pelo proprietário.</p>
+                </header>
+                <section id="tenant-contract-list" class="management-list" aria-live="polite" aria-label="Seus contratos"></section>
+            </section>
+
+            <section class="management-panel" aria-labelledby="tenant-appointments-title">
+                <header class="management-heading">
+                    <p class="eyebrow">Solicitações</p>
+                    <h2 id="tenant-appointments-title">Atendimentos</h2>
+                    <p>Agende um atendimento relacionado a um imóvel da sua locação.</p>
+                </header>
+                <form id="tenant-appointment-form" class="management-form" novalidate>
+                    <label>
+                        Imóvel
+                        <select name="idProperty" required>
+                            <option value="">Selecione um imóvel…</option>
+                        </select>
+                    </label>
+                    <label>
+                        Data
+                        <input name="date" type="date" required />
+                    </label>
+                    <label class="management-wide">
+                        Observação
+                        <input name="observation" type="text" required maxlength="200" />
+                    </label>
+                    <footer class="management-actions">
+                        <button type="submit">Solicitar atendimento</button>
+                    </footer>
+                </form>
+                <section id="tenant-appointment-list" class="management-list" aria-live="polite" aria-label="Seus atendimentos"></section>
             </section>
 
             <section class="actions-grid">
@@ -161,27 +209,25 @@
                         <h2 id="schedule-title">Agendamento</h2>
                     </header>
                     <p id="schedule-description">
-                        Acompanhe o agendamento definido pelo proprietário.
+                        Agendamentos não são sincronizados entre dispositivos nesta versão.
                     </p>
                     <ul id="schedule-items">
-                        <li>11/06 • 10:00 - Inspeção de luminárias</li>
-                        <li>23/06 • 14:00 - Verificação de vazamentos</li>
+                        <li>Nenhum agendamento definido.</li>
                     </ul>
                 </article>
 
                 <article class="action-card" aria-labelledby="receipt-title">
                     <header>
                         <p class="eyebrow">Comprovante</p>
-                        <h2 id="receipt-title">Emitir comprovante</h2>
+                        <h2 id="receipt-title">Registrar comprovante</h2>
                     </header>
                     <p>
-                        Emissão de comprovante para referência interna. Utilize
-                        após confirmar o envio pelo banco.
+                        Guarde uma referência do pagamento neste navegador. O arquivo não será enviado ao proprietário.
                     </p>
                     <button id="receipt-button" type="button">
-                        Gerar comprovante
+                        Adicionar comprovante
                     </button>
-                    <p class="hint">Este comprovante é uma simulação visual.</p>
+                    <p class="hint">Registro local, sem envio pela rede.</p>
                 </article>
 
                 <article
@@ -193,8 +239,7 @@
                         <h2 id="payment-status-title">Pagamento confirmado</h2>
                     </header>
                     <p id="payment-status-text">
-                        Seu último pagamento foi confirmado e está registrado na
-                        plataforma.
+                        Nenhum pagamento confirmado recentemente.
                     </p>
                 </article>
             </section>
@@ -207,8 +252,8 @@
                     <p class="eyebrow">Manutenção</p>
                     <h2 id="maintenance-title">Relatar problema</h2>
                     <p>
-                        Envie uma solicitação rápida para o proprietário com
-                        fotos ou descrição do defeito.
+                        Descreva o problema. A solicitação fica neste navegador
+                        e ainda não é enviada ao proprietário.
                     </p>
                 </header>
 
@@ -244,7 +289,7 @@
                     <p class="eyebrow">Comunicação</p>
                     <h2 id="chat-title">Chat com o proprietário</h2>
                     <p>
-                        Envie mensagens e acompanhe o histórico de atendimento.
+                        Mensagens salvas aqui não são sincronizadas entre dispositivos.
                     </p>
                 </header>
 
@@ -281,6 +326,9 @@
         >
 
         <script src="scripts/tenant.js"></script>
-        <script type="module" src="scripts/auth-guard.js"></script>
+        <script type="module" src="scripts/tenant-data.js?v=20261113-4"></script>
+        <script type="module" src="scripts/profile.js"></script>
+        <script type="module" src="scripts/tenant-gallery.js?v=20261113-4"></script>
+        <script type="module" src="scripts/auth-guard.js?v=20261113-3"></script>
     </body>
 </html>

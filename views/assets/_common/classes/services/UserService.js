@@ -24,7 +24,6 @@ export default class UserService extends HttpClientBase {
     return this.#toUser(await this.post("/users/login", user.toLoginPayload()));
   }
 
-  /** GET /users/me — perfil do usuário do token, com a URL da foto atual. */
   async me() {
     const response = await this.get("/users/me");
     if (response.type !== "success" || !response.data) return response;
@@ -33,10 +32,6 @@ export default class UserService extends HttpClientBase {
     return { ...response, data: user };
   }
 
-  /**
-   * POST /users/photo — multipart, campo "photo". O usuário alterado é o do token
-   * (o corpo nunca carrega id de usuário).
-   */
   async uploadPhoto(file) {
     const form = new FormData();
     form.append("photo", file);

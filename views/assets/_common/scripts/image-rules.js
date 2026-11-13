@@ -1,9 +1,3 @@
-/**
- * Regras de imagem do frontend — espelham api/source/Support/Upload.php
- * (JPG/PNG/WebP, 5 MiB) e os limites do PropertyImages. Servem para melhorar a
- * experiência e barrar o que já é reconhecível como inválido; a validação FINAL
- * é sempre do backend (finfo + getimagesize).
- */
 export const IMAGE_RULES = Object.freeze({
   maxBytes: 5 * 1024 * 1024,
   maxFilesPerRequest: 10,
@@ -21,7 +15,6 @@ const extensionOf = (name) =>
     .pop()
     .toLowerCase();
 
-/** Validação síncrona (nome, tamanho, tipo declarado). @returns {string|null} mensagem de erro */
 export function validateImageFile(file, rules = IMAGE_RULES) {
   if (!file || typeof file.size !== "number") return "Arquivo inválido.";
   const label = file.name ? `“${file.name}”` : "O arquivo";
@@ -38,7 +31,6 @@ export function validateImageFile(file, rules = IMAGE_RULES) {
   return null;
 }
 
-/** Reconhece a assinatura (magic bytes) para detectar arquivos renomeados. */
 export function sniffImageType(bytes) {
   const b = Array.from(bytes);
   const startsWith = (sig, offset = 0) =>
@@ -53,7 +45,6 @@ export function sniffImageType(bytes) {
   return null;
 }
 
-/** Validação completa: regras síncronas + assinatura real do conteúdo. */
 export async function validateImageFileDeep(file, rules = IMAGE_RULES) {
   const quick = validateImageFile(file, rules);
   if (quick) return quick;
@@ -68,10 +59,6 @@ export async function validateImageFileDeep(file, rules = IMAGE_RULES) {
   return null;
 }
 
-/**
- * Só aceita URLs de upload da PRÓPRIA API (mesma origem + caminho /uploads/).
- * Qualquer outra coisa vira null, e a interface mostra um espaço reservado.
- */
 export function safeUploadUrl(value, baseUrl) {
   if (typeof value !== "string" || value.trim() === "" || !baseUrl) return null;
   try {

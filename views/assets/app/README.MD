@@ -100,3 +100,23 @@ async function atualizarPerfil(event) {
 > 💡 **Dica:** Separar `app/` de `admin/` permite criar experiências visuais diferentes
 > para cada tipo de usuário.
 
+
+## Perfil e imagens dos imóveis
+
+- **Perfil** (`scripts/profile.js` + `styles/profile.css`): menu no cabeçalho de `owner.html` e `tenant.html` (foto, nome, e-mail e senha).
+- **Proprietário** (`scripts/owner-management.js`): o botão "Imóveis" permite gerenciar os próprios imóveis e a galeria sincronizada com a API. Os dados também alimentam a gestão de contratos e os atalhos do painel.
+- **Contratos e atendimentos** (`scripts/owner-contracts.js`, `scripts/owner-appointments.js`): o proprietário administra contratos dos próprios imóveis e acompanha/conclui solicitações.
+- **Inquilino** (`scripts/tenant-gallery.js`, `scripts/tenant-data.js`): consulta imóveis, galerias e contratos associados à locação ativa; solicita e cancela atendimentos permitidos pela API.
+
+## Sistema visual e dados
+
+As páginas de seleção, proprietário e inquilino carregam os tokens
+compartilhados de `../_common/styles/design-system.css` e os componentes
+isolados de `styles/redesign.css`. Os estilos específicos de formulários e
+listas dos painéis ficam em `styles/management.css`.
+
+Os exemplos estáticos que pareciam valores financeiros, endereços ou
+solicitações reais foram substituídos por estados neutros. Valores do aluguel,
+encargos, formas de pagamento e pedidos reais dependem dos dados disponíveis;
+não devem ser inferidos a partir de conteúdo demonstrativo. O formulário de
+contato também não transmite dados nesta versão.

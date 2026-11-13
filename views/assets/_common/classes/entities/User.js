@@ -1,9 +1,5 @@
 import Entity, { toNullableInt, requiredText } from "./Entity.js";
 
-/**
- * Usuário — tabela `users`. A senha é write-only: existe setter, mas nenhum
- * getter, e ela nunca entra em toJSON() nem na sessão salva no navegador.
- */
 export default class User extends Entity {
   static TYPES = Object.freeze({ TENANT: 1, OWNER: 2, ADMIN: 3 });
   static EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -73,7 +69,6 @@ export default class User extends Entity {
     this.#password = value;
   }
 
-  /** URL pública da foto (validada pelo serviço) ou null */
   get photo() {
     return this.#photo;
   }

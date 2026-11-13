@@ -1,6 +1,5 @@
 import Entity, { toNullableInt, nonNegativeNumber, isoDate } from "./Entity.js";
 
-/** Contrato de aluguel — tabela `contracts`. */
 export default class Contract extends Entity {
   static STATUS = Object.freeze({
     ACTIVE: "ACTIVE",
@@ -116,7 +115,6 @@ export default class Contract extends Entity {
     const errors = [];
     if (this.#idProperty === null) errors.push("Informe o imóvel do contrato.");
     if (!this.#startDate) errors.push("A data inicial é obrigatória.");
-    // a API exige end_date (validate() do controller); o frontend segue o contrato
     if (!this.#endDate) errors.push("A data final é obrigatória.");
     else if (this.#startDate && this.#endDate < this.#startDate)
       errors.push("A data final não pode ser anterior à inicial.");

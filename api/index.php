@@ -38,6 +38,7 @@ $route->post("/register-admin", "Users:registerAdmin"); // Registrar usuário ad
 //$route->put("/update-admin", "Users:updateAdmin"); // update de usuário admin
 $route->post("/photo","Users:uploadPhoto"); // upload de foto do usuário autenticado (multipart, campo "photo")
 $route->get("/me", "Users:me"); // perfil do usuário autenticado (inclui a URL da foto)
+$route->get("/tenants", "Users:listTenants"); // lista mínima para contratos do proprietário
 $route->group(null);
 
 // FAQs
@@ -74,6 +75,7 @@ $route->namespace("Source\Controller");
 $route->group("/properties");
 $route->post("/insert", "Properties:insert"); //funcionando
 $route->get("/listAll", "Properties:listAll"); //funcionando
+$route->get("/mine", "Properties:listMine"); // imóveis próprios ou vinculados ao contrato ativo
 $route->get("/list/{id}", "Properties:listById"); //funcionando
 $route->put("/update/{id}", "Properties:update"); //funcionando
 $route->delete("/delete/{id}", "Properties:delete"); //funcionando
@@ -91,6 +93,7 @@ $route->get("/list/{id}", "Payments:listById"); //funcionando
 $route->put("/update/{id}", "Payments:update"); //funcionando
 $route->delete("/delete/{id}", "Payments:delete"); //funcionando
 $route->group(null);
+
 
 //Contracts
 $route->namespace("Source\Controller");

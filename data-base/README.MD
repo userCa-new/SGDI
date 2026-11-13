@@ -1,113 +1,31 @@
-# 📁 data-base/
+# Banco de dados SGDI
 
-## Banco de Dados — Scripts SQL
+O arquivo [`dump.sql`](./dump.sql) recria o schema `imobiliaria`, suas tabelas e registros demonstrativos.
 
----
+> **Atenção:** cada execução apaga primeiro o banco `imobiliaria` inteiro. Todos os dados armazenados nele serão perdidos. Faça backup antes de executar; não use este dump para atualizar um banco com dados que deseja preservar.
 
-### 🎯 Para que serve esta pasta?
+## Importar pelo MySQL Workbench
 
-A pasta `data-base/` armazena os **scripts SQL** necessários para criar e popular o banco de
-dados do projeto. Isso garante que qualquer pessoa da equipe consiga **recriar o banco**
-facilmente.
+1. Abra `dump.sql` em **File > Open SQL Script**.
+2. Conecte-se ao servidor MySQL com um usuário que possa criar databases e tabelas.
+3. Execute o script pelo botão de raio.
+4. Configure as mesmas credenciais e o schema `imobiliaria` em `api/source/Config/Config.php`.
 
----
+O dump é destinado a criar um banco limpo para desenvolvimento e testes. Para atualizar um banco existente sem perda de dados, não execute este dump; aplique migrations planejadas e validadas.
 
-### 📂 Conteúdo desta pasta
+## Conteúdo do schema
 
-```
-data-base/
-└── acme-tarde-dump.sql    ← Script SQL com a estrutura e dados do banco
-```
+O dump inclui todas as tabelas referenciadas pelos models da API: `user_type`, `users`, `properties`, `property_images`, `contracts`, `payments`, `appointments`, `faq_categories`, `faqs`, `chat` e `messages`. As chaves estrangeiras usam InnoDB; texto usa `utf8mb4`.
 
----
+`users.photo` e `property_images` já estão incluídas. Os arquivos das imagens não ficam no banco: são armazenados em `api/uploads`.
 
-### 📖 O que é um dump SQL?
+## Contas demonstrativas
 
-Um **dump** (despejo) SQL é um arquivo que contém comandos SQL para:
+| Perfil | E-mail | Senha |
+|---|---|---|
+| Inquilinos e proprietários | `joao@email.com`, `maria@email.com`, `carlos@email.com`, `ana@email.com` | `123456` |
+| Administrador | `admin@email.com` | `admin123` |
 
-1. **Criar** o banco de dados (`CREATE DATABASE`)
-2. **Criar** as tabelas (`CREATE TABLE`)
-3. **Inserir** dados iniciais (`INSERT INTO`)
+As senhas estão armazenadas como hashes compatíveis com `password_verify()`. São credenciais apenas para desenvolvimento; altere ou remova os usuários demonstrativos antes de disponibilizar o sistema.
 
----
-
-### 💡 Exemplo de conteúdo do acme-tarde-dump.sql
-
-```sql
--- ============================================
--- Criação do banco de dados
--- ============================================
-CREATE DATABASE IF NOT EXISTS acme_db
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE acme_db;
-
--- ============================================
--- Tabela de usuários
--- ============================================
-CREATE TABLE IF NOT EXISTS users (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(100)  NOT NULL,
-    email      VARCHAR(150)  NOT NULL UNIQUE,
-    password   VARCHAR(255)  NOT NULL,
-    created_at TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================
--- Dados iniciais (seed)
--- ============================================
-INSERT INTO users (name, email, password) VALUES
-    ('Administrador', 'admin@acme.com', MD5('123456')),
-    ('Estudante', 'estudante@acme.com', MD5('123456'));
-```
-
----
-
-### 🚀 Como usar?
-
-1. Abra o **phpMyAdmin** ou outro cliente MySQL
-2. Copie o conteúdo do arquivo `acme-tarde-dump.sql`
-3. Cole na aba **SQL** e clique em **Executar**
-4. Pronto! O banco de dados está criado e populado
-
-Ou pelo terminal:
-```bash
-mysql -u root -p < acme-tarde-dump.sql
-```
-
----
-
-### 🔐 Boas práticas
-
-- ✅ Sempre mantenha o dump atualizado quando alterar o banco
-- ✅ Use `IF NOT EXISTS` para evitar erros ao executar novamente
-- ✅ Inclua dados de exemplo (seeds) para facilitar os testes
-- ❌ **NUNCA** inclua senhas reais de produção no dump
-
----
-
-> 💡 **Dica:** Sempre que adicionar uma nova tabela ao projeto, atualize o `acme-tarde-dump.sql`
-> para que todos da equipe tenham a mesma estrutura.
-
----
-
-### 🖼️ Etapa 07 — Upload de imagens
-
-O `dump.slq` agora cria:
-
-| Estrutura | Descrição |
-|---|---|
-| `users.photo` | `VARCHAR(255) NULL` — caminho **relativo** da foto (`uploads/users/<hash>.jpg`). O binário fica em `api/uploads/users/`. |
-| `property_images` | Tabela **filha** de `properties` (1:N). Colunas: `id_image` (PK), `id_property` (FK), `image_path`, `alt_text`, `position`, `created_at`. |
-
-```
-properties 1 ───< N property_images
-                    FK fk_property_images_property (id_property → properties.id_property)
-                    ON UPDATE CASCADE · ON DELETE CASCADE
-```
-
-- O `UNIQUE (image_path)` garante que um arquivo pertence a um único registro; o índice em `id_property` acelera a listagem.
-- A cascata remove os **registros**; os **arquivos** em disco são apagados pela API (`Properties::delete`, `PropertyImages::delete`).
-- Para bancos que já existem: `migrations/2026-11-etapa07-upload-imagens.sql`.
+Para bancos existentes, consulte [`migrations/2026-11-etapa07-upload-imagens.sql`](./migrations/2026-11-etapa07-upload-imagens.sql) antes de aplicar mudanças de upload.

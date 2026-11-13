@@ -18,6 +18,7 @@ export default class CrudService extends HttpClientBase {
     this.#resource = resource;
     this.#routes = {
       list: "listAll",
+      mine: "listAll",
       find: "list",
       create: "insert",
       update: "update",
@@ -38,6 +39,11 @@ export default class CrudService extends HttpClientBase {
 
   async list() {
     const response = await this.get(`/${this.#resource}/${this.#routes.list}`);
+    return this.#convert(response, (data) => this.#entity.fromApiList(data));
+  }
+
+  async listMine() {
+    const response = await this.get(`/${this.#resource}/${this.#routes.mine}`);
     return this.#convert(response, (data) => this.#entity.fromApiList(data));
   }
 
@@ -73,7 +79,6 @@ export default class CrudService extends HttpClientBase {
     );
   }
 
-  /** Ponto de extensão: cada serviço pode restringir o corpo do PUT ao que o controller aceita. */
   updatePayload(entity) {
     return entity.toApi();
   }

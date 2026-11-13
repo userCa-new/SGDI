@@ -1,6 +1,7 @@
 <?php
 
 namespace Source\Controller;
+
 use Source\Models\Payment;
 use Source\Controller\Api;
 
@@ -34,7 +35,7 @@ class Payments extends Api
             $data["qr_code"],
             $data["receipt"],
             $data["value"],
-            $data["paymentDate"],
+            $data["payment_date"],
             $data["status"],
         );
 
@@ -66,6 +67,7 @@ class Payments extends Api
             "success",
         )->back($response);
     }
+
     public function listById(array $data): void
     {
         if (
@@ -96,22 +98,22 @@ class Payments extends Api
             "id_payment" => $pagamento->getIdPayment(),
             "id_contract" => $pagamento->getIdContract(),
             "pix" => $pagamento->getPix(),
-            "qr_code" => $payment->getQrCode(),
+            "qr_code" => $pagamento->getQrCode(),
             "receipt" => $pagamento->getReceipt(),
             "value" => $pagamento->getValue(),
             "payment_date" => $pagamento->getPaymentDate(),
             "status" => $pagamento->getStatus(),
         ];
 
-        $this->call(200, "success", "Atendimento encontrado", "success")->back(
+        $this->call(200, "success", "Pagamento encontrado", "success")->back(
             $response,
         );
     }
+
     public function listAll(array $data): void
     {
-        echo "Aura";
         $payment = new Payment();
-        $this->call(200, "success", "Lista de propriedades", "success")->back(
+        $this->call(200, "success", "Lista de pagamentos", "success")->back(
             $payment->selectAll(),
         );
     }
@@ -145,6 +147,7 @@ class Payments extends Api
             "success",
         )->back();
     }
+
     public function update(array $data): void
     {
         if (!$this->authToken(2)) {
@@ -155,7 +158,7 @@ class Payments extends Api
                 "error",
             )->back();
             return;
-        }   
+        }
         if (!filter_var($data["id"], FILTER_VALIDATE_INT)) {
             $this->call(
                 400,
@@ -185,7 +188,7 @@ class Payments extends Api
         $payment->setPaymentDate($data["payment_date"]);
         $payment->setStatus($data["status"]);
 
-        if (!$payment->updateById($data["id"])){
+        if (!$payment->updateById($data["id"])) {
             $this->call(
                 500,
                 "internal_server_error",
@@ -199,6 +202,7 @@ class Payments extends Api
             "id_payment" => $payment->getIdPayment(),
             "id_contract" => $payment->getIdContract(),
             "pix" => $payment->getPix(),
+            "qr_code" => $payment->getQrCode(),
             "receipt" => $payment->getReceipt(),
             "value" => $payment->getValue(),
             "payment_date" => $payment->getPaymentDate(),

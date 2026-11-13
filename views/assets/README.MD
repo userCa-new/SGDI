@@ -22,7 +22,7 @@ assets/
 ├── _common/           ← Recursos COMPARTILHADOS entre todas as áreas
 │   ├── images/
 │   ├── scripts/
-│   └── styles/
+│   └── styles/        ← design-system.css (tokens e acessibilidade)
 │
 ├── admin/             ← Recursos exclusivos da área ADMINISTRATIVA
 │   ├── images/
@@ -95,3 +95,14 @@ todas as áreas. Exemplos:
 
 > 📚 Acesse cada subpasta (`_common/`, `admin/`, `app/`, `public/`) para mais detalhes.
 
+## Sistema visual SGDI
+
+As páginas públicas e os painéis de proprietário/inquilino carregam
+`_common/styles/design-system.css` e os estilos de reformulação específicos de
+cada área. O sistema usa superfícies claras, verde profundo para ações
+principais, estados semânticos, foco visível e suporte à preferência por menos
+movimento.
+
+Os painéis de proprietário e inquilino compartilham os tokens visuais e usam
+componentes específicos em `app/styles/management.css`, mantendo a navegação e
+os controles alinhados às permissões de cada perfil.

@@ -1896,8 +1896,9 @@ O arquivo anterior só é apagado **depois** do `UPDATE` bem-sucedido; se o banc
 ## Galeria de imagens do imóvel (1:N)
 
 Tabela `property_images` (`id_property` → `properties.id_property`, `ON DELETE CASCADE`). Cada imagem é um registro.
-Permissões seguem as regras do sistema: **ler é público** (como `/properties/list`); **enviar e remover exigem token de
-Proprietário (2) e que o imóvel seja dele** (`properties.id_owner = id do token`).
+Leitura, envio e remoção exigem autenticação. O proprietário consulta e altera imagens somente dos próprios imóveis;
+o inquilino autenticado pode consultar imagens apenas de imóveis vinculados a um contrato ativo. Envio e remoção
+exigem token de Proprietário (2) e posse do imóvel (`properties.id_owner = id do token`).
 
 ### Listar a galeria
 

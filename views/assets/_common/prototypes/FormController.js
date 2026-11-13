@@ -58,10 +58,6 @@ export const FormControllerPrototype = {
     this.form.setAttribute("aria-busy", String(isLoading));
   },
 
-  /**
-   * Registra o submit sem `onsubmit` no HTML. `handler(values, errors)` recebe
-   * os valores serializados e a lista de erros de validação.
-   */
   onSubmit(handler) {
     this.form.addEventListener("submit", async (event) => {
       event.preventDefault();

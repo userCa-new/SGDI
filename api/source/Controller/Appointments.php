@@ -3,6 +3,7 @@
 namespace Source\Controller;
 
 use Source\Models\Appointment;
+use Source\Models\Contract;
 use Source\Controller\Api;
 
 class Appointments extends Api
@@ -10,6 +11,16 @@ class Appointments extends Api
     public function register(array $data): void
     {
         if (!$this->authToken(1)) {
+            if ($this->authToken(2)) {
+                $this->call(
+                    403,
+                    "forbidden",
+                    "A solicitação de atendimento está disponível apenas para inquilinos.",
+                    "error",
+                )->back();
+                return;
+            }
+
             $this->call(
                 401,
                 "unauthorized",
@@ -28,12 +39,25 @@ class Appointments extends Api
             return;
         }
 
+        if (!(new Contract())->tenantHasActiveProperty(
+            $this->userAuthId,
+            (int) $data["id_property"],
+        )) {
+            $this->call(
+                404,
+                "not_found",
+                "O imóvel não está vinculado a uma locação ativa deste inquilino.",
+                "error",
+            )->back();
+            return;
+        }
+
         $atendimento = new Appointment(
             null,
             $data["id_property"],
             $data["date"],
             $data["observation"],
-            $data["completed"] ? 1 : 0,
+            0,
         );
 
         if (!$atendimento->insert()) {
@@ -64,9 +88,36 @@ class Appointments extends Api
 
     public function listAll(array $data): void
     {
+        $typeId = null;
+        if ($this->authToken(2)) {
+            $typeId = 2;
+        } elseif ($this->authToken(1)) {
+            $typeId = 1;
+        } else {
+            $this->call(
+                401,
+                "unauthorized",
+                "Token de autenticação inválido ou expirado.",
+                "error",
+            )->back();
+            return;
+        }
+
         $appointment = new Appointment();
+        $rows = $typeId === 2
+            ? $appointment->listForOwner($this->userAuthId)
+            : $appointment->listForTenant($this->userAuthId);
+        if ($rows === null) {
+            $this->call(
+                500,
+                "internal_server_error",
+                $appointment->getErrorMessage() ?? "Não foi possível carregar os atendimentos.",
+                "error",
+            )->back();
+            return;
+        }
         $this->call(200, "success", "Lista de atendimentos", "success")->back(
-            $appointment->selectAll(),
+            $rows,
         );
     }
 
@@ -93,9 +144,19 @@ class Appointments extends Api
             )->back();
             return;
         }
+        if (!isset($data["completed"]) || !in_array($data["completed"], [0, 1, "0", "1", false, true], true)) {
+            $this->call(400, "bad_request", "O estado de conclusão do atendimento é inválido.", "error")->back();
+            return;
+        }
 
         $atendimento = new Appointment();
-        if (!$atendimento->selectById($data["id"])) {
+        if (
+            !$atendimento->belongsToOwner(
+                (int) $data["id"],
+                $this->userAuthId,
+            ) ||
+            !$atendimento->selectById($data["id"])
+        ) {
             $this->call(
                 404,
                 "not_found",
@@ -148,8 +209,21 @@ class Appointments extends Api
             return;
         }
 
+        $typeId = null;
+        if ($this->authToken(2)) {
+            $typeId = 2;
+        } elseif ($this->authToken(1)) {
+            $typeId = 1;
+        } else {
+            $this->call(401, "unauthorized", "Token de autenticação inválido ou expirado.", "error")->back();
+            return;
+        }
+
         $atendimento = new Appointment();
-        if (!$atendimento->selectById($data["id"])) {
+        $allowed = $typeId === 2
+            ? $atendimento->belongsToOwner((int) $data["id"], $this->userAuthId)
+            : $atendimento->belongsToTenant((int) $data["id"], $this->userAuthId);
+        if (!$allowed || !$atendimento->selectById($data["id"])) {
             $this->call(
                 404,
                 "not_found",
@@ -193,6 +267,15 @@ class Appointments extends Api
         }
         //var_dump($data["id"]);
         $atendimento = new Appointment();
+        if (!$atendimento->belongsToTenant((int) $data["id"], $this->userAuthId)) {
+            $this->call(
+                404,
+                "not_found",
+                "Atendimento não encontrado para este inquilino.",
+                "error",
+            )->back();
+            return;
+        }
 
         if (!$atendimento->deleteById($data["id"])) {
             $this->call(
@@ -214,18 +297,25 @@ class Appointments extends Api
 
     public function validate(array $data): bool
     {
+        $propertyId = filter_var(
+            $data["id_property"] ?? null,
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1]],
+        );
         if (
-            !isset($data["id_property"]) ||
+            $propertyId === false ||
             !isset($data["date"]) ||
             !isset($data["observation"]) ||
+            !is_string($data["date"]) ||
+            trim($data["date"]) === "" ||
+            !is_string($data["observation"]) ||
+            trim($data["observation"]) === "" ||
             !isset($data["completed"]) ||
-            empty($data["id_property"]) ||
-            empty($data["date"]) ||
-            empty($data["observation"]) ||
-            !filter_var($data["id_property"], FILTER_VALIDATE_INT)
+            !in_array($data["completed"], [0, 1, "0", "1", false, true], true)
         ) {
             return false;
         }
         return true;
     }
+
 }

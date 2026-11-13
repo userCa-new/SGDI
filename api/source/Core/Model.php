@@ -21,7 +21,7 @@ abstract class Model
 
     public function selectById(int $id): bool
     {
-        $query = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
+        $query = "SELECT * FROM {$this->quoteIdentifier($this->table)} WHERE {$this->quoteIdentifier($this->primaryKey)} = :id LIMIT 1";
 
         try {
             $stmt = Connect::getInstance()->prepare($query);
@@ -136,8 +136,8 @@ abstract class Model
 
             $sql = sprintf(
                 "INSERT INTO %s (%s) VALUES (%s)",
-                $this->table,
-                implode(', ', $columns),
+                $this->quoteIdentifier($this->table),
+                implode(', ', array_map($this->quoteIdentifier(...), $columns)),
                 implode(', ', $placeholders)
             );
 
@@ -181,14 +181,14 @@ abstract class Model
 
             $setParts = [];
             foreach (array_keys($payload) as $column) {
-                $setParts[] = "{$column} = :{$column}";
+                $setParts[] = $this->quoteIdentifier($column) . " = :{$column}";
             }
 
             $sql = sprintf(
                 "UPDATE %s SET %s WHERE %s = :_id",
-                $this->table,
+                $this->quoteIdentifier($this->table),
                 implode(', ', $setParts),
-                $this->primaryKey
+                $this->quoteIdentifier($this->primaryKey)
             );
 
             $stmt = Connect::getInstance()->prepare($sql);
@@ -215,7 +215,7 @@ abstract class Model
     public function deleteById(int $id): bool
     {
         try {
-            $query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
+            $query = "DELETE FROM {$this->quoteIdentifier($this->table)} WHERE {$this->quoteIdentifier($this->primaryKey)} = :id";
             $stmt = Connect::getInstance()->prepare($query);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
@@ -287,5 +287,10 @@ abstract class Model
         $field = str_replace(' ', '', $field);
 
         return lcfirst($field);
+    }
+
+    private function quoteIdentifier(string $identifier): string
+    {
+        return '`' . str_replace('`', '``', $identifier) . '`';
     }
 }

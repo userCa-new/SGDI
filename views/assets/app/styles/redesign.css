@@ -1,0 +1,1113 @@
+body.app-shell {
+    display: flex;
+    flex-direction: column;
+}
+
+body.app-shell .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    min-height: 4.5rem;
+    padding: 0.7rem clamp(1rem, 4vw, 2.5rem);
+    color: var(--ink);
+    background: rgb(255 255 255 / 95%);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 4px 18px rgb(26 54 46 / 4%);
+    backdrop-filter: blur(16px);
+}
+
+.app-shell .breadcrumbs {
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.app-shell .breadcrumbs a,
+.app-shell .button-logout {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.65rem;
+    padding: 0.5rem 0.8rem;
+    color: var(--muted);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: color 150ms ease, background-color 150ms ease;
+}
+
+.app-shell .breadcrumbs a:hover {
+    color: var(--brand);
+    background: var(--brand-soft);
+}
+
+.app-shell .button-logout:hover {
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+
+.app-shell .button-logout:focus-visible {
+    outline: 3px solid var(--danger);
+    outline-offset: 3px;
+}
+
+.app-shell .breadcrumbs a[aria-current="page"] {
+    color: var(--brand);
+    background: var(--brand-soft);
+}
+
+.app-shell .breadcrumbs a::after {
+    content: none;
+}
+
+.app-shell .button-logout {
+    margin-left: 0;
+    color: var(--danger);
+    background: var(--danger-soft);
+    border-radius: 999px;
+    text-decoration: none;
+}
+
+.app-shell .app-header > button,
+.app-shell .owner-main button,
+.app-shell .tenant-main button {
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    color: #fff;
+    background: var(--brand);
+    border: 1px solid var(--brand);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.app-shell .owner-main button:hover,
+.app-shell .tenant-main button:hover,
+.app-shell .app-header > button:hover {
+    background: var(--brand-hover);
+    box-shadow: 0 7px 16px rgb(23 107 96 / 18%);
+    transform: translateY(-1px);
+}
+
+.app-shell .owner-main .button-secondary,
+.app-shell .tenant-main .button-secondary,
+.app-shell .profile-popover button.secondary {
+    color: var(--brand);
+    background: #fff;
+    border-color: #b7cfc3;
+}
+
+.app-shell .owner-main .button-secondary:hover,
+.app-shell .tenant-main .button-secondary:hover,
+.app-shell .profile-popover button.secondary:hover {
+    color: var(--brand-hover);
+    background: var(--brand-soft);
+}
+
+.app-shell .owner-main,
+.app-shell .tenant-main {
+    flex: 1;
+    width: min(100% - 3rem, 1280px);
+    max-width: none;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 3vw, 2.25rem) 0 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 1.1rem;
+}
+
+.app-shell .owner-main > *,
+.app-shell .tenant-main > * {
+    min-width: 0;
+}
+
+.app-shell .owner-main .hero-panel,
+.app-shell .owner-main .quick-access-panel,
+.app-shell .owner-main .stats-grid,
+.app-shell .owner-main .issues-panel,
+.app-shell .tenant-main .hero-panel,
+.app-shell .tenant-main .quick-access-panel,
+.app-shell .tenant-main .status-grid,
+.app-shell .tenant-main .actions-grid {
+    grid-column: 1 / -1;
+}
+
+.app-shell .owner-main .hero-panel,
+.app-shell .owner-main .quick-access-panel,
+.app-shell .owner-main .payments-panel,
+.app-shell .owner-main .schedule-panel,
+.app-shell .owner-main .pix-panel,
+.app-shell .owner-main .chat-panel,
+.app-shell .owner-main .issues-panel,
+.app-shell .tenant-main .hero-panel,
+.app-shell .tenant-main .quick-access-panel,
+.app-shell .tenant-main .payments-panel,
+.app-shell .tenant-main .property-panel,
+.app-shell .tenant-main .actions-grid,
+.app-shell .tenant-main .maintenance-panel,
+.app-shell .tenant-main .chat-panel {
+    padding: clamp(1.2rem, 2.7vw, 2rem);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.app-shell .owner-main .hero-panel,
+.app-shell .tenant-main .hero-panel {
+    position: relative;
+    overflow: hidden;
+    grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+    align-items: center;
+    gap: 1.4rem;
+    min-height: 220px;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    color: #fff;
+    background:
+        radial-gradient(circle at 85% 12%, rgb(217 239 138 / 22%), transparent 25%),
+        linear-gradient(120deg, #174f46 0%, #236e5f 100%);
+    border: 0;
+    box-shadow: var(--shadow-lg);
+}
+
+.app-shell .hero-panel h1 {
+    max-width: 24ch;
+    margin: 0 0 0.7rem;
+    color: #fff;
+    font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+    font-weight: 730;
+    letter-spacing: -0.045em;
+    line-height: 1.13;
+}
+
+.app-shell .hero-panel p {
+    margin: 0;
+    color: #d9e8df;
+    line-height: 1.65;
+}
+
+.app-shell .hero-panel .eyebrow {
+    margin-bottom: 0.7rem;
+    color: var(--accent);
+}
+
+.app-shell .hero-note {
+    padding: 1.15rem 1.25rem;
+    color: #eaf3eb;
+    background: rgb(255 255 255 / 10%);
+    border: 1px solid rgb(255 255 255 / 18%);
+    border-radius: var(--radius-md);
+}
+
+.app-shell .hero-note p {
+    color: inherit;
+    font-size: 0.92rem;
+}
+
+.app-shell .eyebrow {
+    margin: 0 0 0.45rem;
+    color: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.app-shell .owner-main h2,
+.app-shell .tenant-main h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    letter-spacing: -0.025em;
+}
+
+.app-shell .owner-main section > header,
+.app-shell .tenant-main section > header {
+    margin-bottom: 1.15rem;
+}
+
+.app-shell .owner-main section > header > p:not(.eyebrow),
+.app-shell .tenant-main section > header > p:not(.eyebrow) {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.app-shell .quick-access-panel {
+    padding: 1.3rem;
+    background: #edf3ee;
+    border-color: #e0e9e1;
+    box-shadow: none;
+}
+
+.app-shell .quick-access-panel > header {
+    margin: 0 0 1rem;
+}
+
+.app-shell .quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin: 0;
+}
+
+.app-shell .quick-card {
+    display: block;
+    min-height: 7rem;
+    padding: 1rem;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.app-shell .quick-card:hover {
+    background: #fff;
+    border-color: #a8c8b7;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+
+.app-shell .quick-card strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: var(--brand);
+    font-size: 0.94rem;
+}
+
+.app-shell .quick-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.app-shell .stats-grid,
+.app-shell .status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.app-shell .stat-card,
+.app-shell .status-card {
+    min-width: 0;
+    padding: 1.15rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.app-shell .stat-card .label,
+.app-shell .status-card .label {
+    margin: 0 0 0.55rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.app-shell .stat-card .value,
+.app-shell .status-card .value {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
+    font-weight: 740;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.app-shell .stat-card .detail,
+.app-shell .status-card .detail {
+    margin: 0.45rem 0 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+.app-shell .status-on-time {
+    color: var(--success);
+}
+
+.app-shell .status-alert {
+    color: var(--warning);
+}
+
+.app-shell .payment-list,
+.app-shell .pix-list,
+.app-shell .issue-list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-shell .payment-item,
+.app-shell .pix-list li,
+.app-shell .issue-list li,
+.app-shell .method-card,
+.app-shell .property-card,
+.app-shell .payment-card,
+.app-shell .issue-log,
+.app-shell .chat-window,
+.app-shell .schedule-summary {
+    min-width: 0;
+    padding: 1rem;
+    color: var(--ink);
+    background: #fbfcfa;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+}
+
+.app-shell .payment-item header {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.app-shell .payment-item header section {
+    min-width: 0;
+}
+
+.app-shell .payment-tenant {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.app-shell .payment-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.app-shell .payment-item strong,
+.app-shell .pix-list li strong,
+.app-shell .issue-list li strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--ink);
+}
+
+.app-shell .payment-item p,
+.app-shell .pix-list li p,
+.app-shell .issue-list li p,
+.app-shell .owner-main > section > p,
+.app-shell .tenant-main > section > p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.app-shell .owner-main button.confirm-button,
+.app-shell .owner-main button.show-proof,
+.app-shell .owner-main button.secondary,
+.app-shell .tenant-main button.button-secondary,
+.app-shell .profile-popover button.secondary {
+    color: var(--brand);
+    background: #fff;
+    border-color: #b7cfc3;
+}
+
+.app-shell .schedule-form,
+.app-shell .maintenance-form,
+.app-shell .chat-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem 0.8rem;
+    margin-top: 1rem;
+}
+
+.app-shell .schedule-form label,
+.app-shell .maintenance-form label,
+.app-shell .chat-form label,
+.app-shell .profile-popover label {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 650;
+}
+
+.app-shell .schedule-form input,
+.app-shell .schedule-form textarea,
+.app-shell .maintenance-form input,
+.app-shell .maintenance-form select,
+.app-shell .maintenance-form textarea,
+.app-shell .chat-form input,
+.app-shell .chat-form select,
+.app-shell .owner-main select,
+.app-shell .profile-popover input,
+.app-shell .profile-popover select {
+    width: 100%;
+    min-height: 2.8rem;
+    padding: 0.65rem 0.75rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid #cbd8d0;
+    border-radius: var(--radius-sm);
+}
+
+.app-shell .schedule-form textarea,
+.app-shell .maintenance-form textarea {
+    min-height: 5.5rem;
+    resize: vertical;
+}
+
+.app-shell .schedule-form textarea {
+    grid-column: 1 / -1;
+}
+
+.app-shell .schedule-form label:nth-last-of-type(1),
+.app-shell .schedule-form button,
+.app-shell .maintenance-form textarea,
+.app-shell .maintenance-form button {
+    grid-column: 1 / -1;
+}
+
+.app-shell .schedule-form button,
+.app-shell .maintenance-form button,
+.app-shell .chat-form button {
+    justify-self: start;
+    margin-top: 0.4rem;
+}
+
+.app-shell .schedule-summary {
+    margin-top: 1rem;
+}
+
+.app-shell .schedule-summary .label,
+.app-shell .issue-log .label {
+    margin: 0 0 0.4rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.app-shell .method-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.app-shell .method-control p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.app-shell .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.app-shell .method-card .method-type,
+.app-shell .payment-card .method-type {
+    margin: 0 0 0.45rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.app-shell .method-card .method-value,
+.app-shell .payment-card .method-value {
+    margin: 0;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.app-shell .payment-card img {
+    display: block;
+    max-width: 100%;
+    max-height: 170px;
+    margin-top: 0.8rem;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+}
+
+.app-shell .property-info,
+.app-shell .property-gallery,
+.app-shell .property-gallery-card,
+.app-shell .property-gallery-grid,
+.app-shell .property-gallery-images {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.app-shell .property-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-shell .property-card .label {
+    margin: 0 0 0.35rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 650;
+}
+
+.app-shell .property-card .value,
+.app-shell .method-value {
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.app-shell .property-gallery {
+    margin-top: 1.3rem;
+}
+
+.app-shell .property-gallery > h3 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1rem;
+}
+
+.app-shell .property-gallery-card {
+    padding: 1rem;
+    background: #f7faf7;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+}
+
+.app-shell .property-gallery-image,
+.app-shell .property-gallery-images img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+.app-shell .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.app-shell .action-card {
+    min-width: 0;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.app-shell .action-card header {
+    margin-bottom: 0;
+}
+
+.app-shell .action-card > p,
+.app-shell .action-card li {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.app-shell .action-card ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+.app-shell .hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.app-shell .issue-log {
+    margin-top: 1rem;
+}
+
+.app-shell .issue-log ul {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-shell .issue-log li {
+    padding: 0.85rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+}
+
+.app-shell .issue-log li strong {
+    display: block;
+    color: var(--ink);
+}
+
+.app-shell .issue-log li p,
+.app-shell .issue-log li time {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.app-shell .issue-actions {
+    margin-top: 0.5rem;
+}
+
+.app-shell .chat-window {
+    min-height: 180px;
+    display: grid;
+    align-content: start;
+    gap: 0.65rem;
+    margin-bottom: 0.8rem;
+}
+
+.app-shell .chat-message {
+    max-width: min(85%, 38rem);
+    padding: 0.8rem 1rem;
+    color: var(--ink);
+    background: #eef4ef;
+    border: 1px solid #dbe7de;
+    border-radius: 14px 14px 14px 4px;
+}
+
+.app-shell .chat-message.customer {
+    justify-self: end;
+    background: var(--brand-soft);
+    border-color: #c4dfd1;
+    border-radius: 14px 14px 4px 14px;
+}
+
+.app-shell .chat-message p {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.app-shell .chat-message time {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+.app-shell .chat-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+}
+
+.app-shell .chat-form label {
+    grid-column: 1 / -1;
+}
+
+.app-shell .app-footer {
+    padding: 1.25rem 1rem;
+    color: var(--muted);
+    background: #fff;
+    border-top: 1px solid var(--line);
+    font-size: 0.84rem;
+    text-align: center;
+}
+
+.app-shell .app-footer p {
+    margin: 0;
+}
+
+.app-shell .return-dashboard-fab {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 15;
+    display: grid;
+    width: 2.9rem;
+    height: 2.9rem;
+    place-items: center;
+    color: #fff;
+    background: var(--brand);
+    border: 1px solid rgb(255 255 255 / 45%);
+    border-radius: 50%;
+    box-shadow: var(--shadow-lg);
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+
+.app-shell .profile-menu {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.app-shell .profile-menu > summary {
+    min-height: 2.9rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    cursor: pointer;
+}
+
+.app-shell .avatar {
+    background: var(--brand-soft);
+    border-color: #bdd8ca;
+}
+
+.app-shell .avatar-fallback {
+    color: var(--brand);
+}
+
+.app-shell .profile-popover {
+    color: var(--ink);
+    background: #fff;
+    border-color: var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+.app-shell .profile-popover h2 {
+    color: var(--ink);
+}
+
+.app-shell .profile-popover input {
+    min-height: 2.65rem;
+    background: #fbfcfa;
+}
+
+.app-shell .profile-popover button {
+    min-height: 2.5rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 999px;
+}
+
+.app-shell .profile-popover .hint,
+.app-shell .profile-popover figcaption {
+    color: var(--muted);
+}
+
+.app-shell .profile-popover .photo-preview img {
+    border-color: var(--brand);
+}
+
+.app-shell .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgb(15 35 30 / 54%);
+    backdrop-filter: blur(4px);
+}
+
+.app-shell .modal-backdrop[hidden] {
+    display: none !important;
+}
+
+.app-shell .modal {
+    width: min(100%, 560px);
+    max-height: min(90vh, 760px);
+    overflow: auto;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.app-shell .modal h2 {
+    color: var(--ink);
+}
+
+.app-shell .modal .modal-header {
+    margin-bottom: 0.6rem;
+}
+
+.app-shell .modal .modal-heading {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.app-shell .modal .modal-close {
+    width: 2.5rem;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    color: var(--muted);
+    background: #f2f5f1;
+    border: 0;
+    border-radius: 50%;
+    font-size: 1.35rem;
+}
+
+.app-shell .modal .payment-method-form {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.app-shell .modal .payment-method-form label {
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 650;
+}
+
+.app-shell .modal .payment-method-form input,
+.app-shell .modal .payment-method-form select {
+    width: 100%;
+    min-height: 2.8rem;
+    padding: 0.65rem 0.75rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid #cbd8d0;
+    border-radius: var(--radius-sm);
+}
+
+.app-shell .modal .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+
+.app-shell .modal .qr-preview {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.9rem;
+    background: #f6f9f6;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+}
+
+.app-shell .modal .qr-preview img {
+    max-width: min(100%, 220px);
+    max-height: 220px;
+    object-fit: contain;
+}
+
+.app-shell .toast {
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+body.app-selection {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-selection .app-header,
+.app-selection .app-footer {
+    padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
+    color: var(--muted);
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+}
+
+.app-selection .header-note,
+.app-selection .app-footer p {
+    width: min(100%, 1120px);
+    margin: 0 auto;
+}
+
+.app-selection .selection-main {
+    width: min(100% - 3rem, 1100px);
+    flex: 1;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 8vw, 6rem) 0;
+}
+
+.app-selection .selection-panel > h1 {
+    margin: 0 0 0.6rem;
+    color: var(--ink);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -0.05em;
+}
+
+.app-selection .selection-panel > p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.app-selection .selection-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-selection .selection-card {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(1.3rem, 3vw, 2rem);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.app-selection .selection-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+}
+
+.app-selection .selection-card .eyebrow {
+    margin: 0 0 0.8rem;
+    color: var(--brand);
+}
+
+.app-selection .selection-card h2 {
+    margin: 0 0 0.65rem;
+    color: var(--ink);
+    font-size: 1.4rem;
+    letter-spacing: -0.03em;
+}
+
+.app-selection .selection-card p:not(.eyebrow) {
+    margin: 0;
+    color: var(--muted);
+}
+
+.app-selection .selection-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.85rem;
+    margin-top: auto;
+    padding: 0.65rem 1rem;
+    color: #fff;
+    background: var(--brand);
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.app-selection .selection-button:hover {
+    background: var(--brand-hover);
+}
+
+@media (max-width: 960px) {
+    .app-shell .owner-main,
+    .app-shell .tenant-main {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app-shell .owner-main > *,
+    .app-shell .tenant-main > * {
+        grid-column: 1;
+    }
+
+    .app-shell .quick-access-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .app-shell .app-header {
+        position: relative;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+
+    .app-shell .breadcrumbs {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+
+    .app-shell .breadcrumbs a {
+        flex: 0 0 auto;
+        font-size: 0.82rem;
+    }
+
+    .app-shell .app-header > .button-logout {
+        flex: 0 0 auto;
+        margin-left: 0;
+        width: auto;
+    }
+
+    .app-shell .app-header > #owner-properties-button {
+        flex-basis: 100%;
+    }
+
+    .app-shell .profile-menu {
+        margin-left: 0;
+        width: auto;
+    }
+
+    .app-shell .owner-main,
+    .app-shell .tenant-main {
+        width: min(100% - 1.5rem, 1280px);
+        gap: 0.8rem;
+    }
+
+    .app-shell .owner-main .hero-panel,
+    .app-shell .tenant-main .hero-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .app-shell .quick-access-grid,
+    .app-shell .stats-grid,
+    .app-shell .status-grid,
+    .app-shell .actions-grid,
+    .app-shell .property-info {
+        grid-template-columns: 1fr;
+    }
+
+    .app-shell .schedule-form,
+    .app-shell .maintenance-form {
+        grid-template-columns: 1fr;
+    }
+
+    .app-shell .schedule-form label,
+    .app-shell .schedule-form button,
+    .app-shell .maintenance-form textarea,
+    .app-shell .maintenance-form button {
+        grid-column: auto;
+    }
+
+    .app-shell .payment-item header {
+        align-items: flex-start;
+    }
+
+    .app-shell .payment-item header > .payment-actions {
+        width: 100%;
+    }
+
+    .app-shell .return-dashboard-fab {
+        right: 0.85rem;
+        bottom: 0.85rem;
+    }
+
+    .app-selection .selection-main {
+        width: min(100% - 1.5rem, 1100px);
+    }
+
+    .app-selection .selection-list {
+        grid-template-columns: 1fr;
+    }
+}

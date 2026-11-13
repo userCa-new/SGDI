@@ -54,7 +54,7 @@ page.on("pageerror", (e) => consoleErrors.push(`pageerror: ${e.message}`));
 page.on("dialog", (d) => d.accept());
 if (process.env.E2E_DEBUG) page.on("response", (r) => r.url().includes("/api/") && console.log("  [http]", r.request().method(), r.url().replace("http://localhost/SGDI/api", ""), r.status()));
 
-const PAGE_TOAST = "body > .sgdi-toast-region";
+const PAGE_TOAST = ".owner-properties-dialog .sgdi-toast-region";
 const goto = (p) => page.goto(`${BASE}/${p}`, { waitUntil: "networkidle0" });
 const shot = (name) => page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
 const clearToasts = () => page.evaluate(() => document.querySelectorAll(".sgdi-toast").forEach((t) => t.remove()));
@@ -67,17 +67,21 @@ const loginAs = async (userId) => {
     const user = db.users.find((u) => u.id_user === userId);
     await goto("public/login.html");
     await page.evaluate((id, u) => { localStorage.clear(); localStorage.setItem("token", `T-${id}`); localStorage.setItem("sgdi_user", JSON.stringify({ id_user: u.id_user, name: u.name, email: u.email, type_user: u.id_user_type })); }, userId, user);
-    await goto("app/manage.html");
-    await page.waitForSelector('#gallery-property option[value="1"]');
+    await goto(user.id_user_type === 2 ? "app/owner.html" : "app/tenant.html");
+    if (user.id_user_type === 2) {
+        await page.click("#owner-properties-button");
+        await page.waitForSelector('#owner-gallery-property option[value="1"]');
+    }
 };
-const galleryCount = () => page.$$eval("#gallery-list .gallery-item", (f) => f.length);
-const waitGallery = (n) => page.waitForFunction((count) => document.querySelectorAll("#gallery-list .gallery-item").length === count, { timeout: 5000 }, n);
-const imagesLoaded = () => page.$$eval("#gallery-list .gallery-item img", (imgs) => imgs.every((i) => i.complete && i.naturalWidth > 0));
+const galleryCount = () => page.$$eval("#owner-gallery-list .gallery-item", (f) => f.length);
+const waitGallery = (n) => page.waitForFunction((count) => document.querySelectorAll("#owner-gallery-list .gallery-item").length === count, { timeout: 5000 }, n);
+const imagesLoaded = () => page.$$eval("#owner-gallery-list .gallery-item img", (imgs) => imgs.every((i) => i.complete && i.naturalWidth > 0));
 const visible = (sel) => page.$eval(sel, (el) => !el.hidden && getComputedStyle(el).display !== "none");
 
 try {
     /* =================== PARTE A — foto do usuário autenticado =================== */
     await loginAs(2);
+    await goto("app/owner.html"); await page.$eval("#profile-menu", (d) => { d.open = true; });
     check("Perfil: sem foto, mostra o ícone de reserva (inicial do nome)", (await visible("#photo-fallback")) && !(await visible("#photo-current")) && (await page.$eval("#photo-fallback", (e) => e.textContent)) === "D");
     check("Perfil: regras de formato/limite visíveis", (await page.$eval("#photo-rules", (e) => e.textContent)).includes("JPG, PNG ou WebP"));
     check("Perfil: botão Enviar foto começa desabilitado", await page.$eval("#photo-form button[type=submit]", (b) => b.disabled));
@@ -125,81 +129,82 @@ try {
     await page.$eval("#photo-form [data-action=cancel]", (b) => b.click());
 
     /* =================== PARTE B — galeria 1:N =================== */
-    await goto("app/manage.html"); await page.waitForSelector('#gallery-property option[value="1"]');
-    check("Galeria: regras e limites exibidos", (await page.$eval("#gallery-rules", (e) => e.textContent)).includes("até 5 MB") && (await page.$eval("#gallery-rules", (e) => e.textContent)).includes("máximo de 20"));
-    check("Galeria: antes de escolher o imóvel, só a orientação", (await page.$eval("#gallery-list", (e) => e.textContent)).includes("Selecione um imóvel") && !(await visible("#gallery-form")));
-    await page.select("#gallery-property", "1");
-    await page.waitForFunction(() => document.querySelector("#gallery-list").textContent.includes("ainda não tem imagens"));
-    check("Galeria: imóvel sem imagens mostra a lista vazia", (await page.evaluate(() => location.hash)) === "#galeria-1" && (await visible("#gallery-form")));
+    await goto("app/owner.html"); await page.click("#owner-properties-button");
+    await page.waitForSelector('#owner-gallery-property option[value="1"]');
+    check("Galeria: regras e limites exibidos", (await page.$eval("#owner-gallery-rules", (e) => e.textContent)).includes("até 5 MB") && (await page.$eval("#owner-gallery-rules", (e) => e.textContent)).includes("máximo de 20"));
+    check("Galeria: antes de escolher o imóvel, só a orientação", (await page.$eval("#owner-gallery-list", (e) => e.textContent)).includes("Selecione um imóvel") && !(await visible("#owner-gallery-form")));
+    await page.select("#owner-gallery-property", "1");
+    await page.waitForFunction(() => document.querySelector("#owner-gallery-list").textContent.includes("ainda não tem imagens"));
+    check("Galeria: imóvel sem imagens mostra a lista vazia", (await page.evaluate(() => location.hash)) === "#galeria-1" && (await visible("#owner-gallery-form")));
 
-    await pickFiles("#gallery-files", F.sala, F.cozinha);
-    await page.waitForFunction(() => document.querySelectorAll("#gallery-pending .pending-item").length === 2);
-    check("Galeria: 2 prévias antes do envio; contador e botão habilitado", (await page.$eval("#gallery-counter", (e) => e.textContent)).includes("2 imagem") && !(await page.$eval("#gallery-form button[type=submit]", (b) => b.disabled)) && db.property_images.length === 0);
+    await pickFiles("#owner-gallery-files", F.sala, F.cozinha);
+    await page.waitForFunction(() => document.querySelectorAll("#owner-gallery-pending .pending-item").length === 2);
+    check("Galeria: 2 prévias antes do envio; contador e botão habilitado", (await page.$eval("#owner-gallery-counter", (e) => e.textContent)).includes("2 imagem") && !(await page.$eval("#owner-gallery-form button[type=submit]", (b) => b.disabled)) && db.property_images.length === 0);
     const xss = '<img src=x onerror="window.__xss=1"> Sala';
-    const alts = await page.$$("#gallery-pending input[data-alt]");
+    const alts = await page.$$("#owner-gallery-pending input[data-alt]");
     await alts[0].type(xss.slice(0, 80)); await alts[1].type("Cozinha integrada");
-    await clearToasts(); await page.click("#gallery-form button[type=submit]");
+    await clearToasts(); await page.click("#owner-gallery-form button[type=submit]");
     const tUp = await waitToast(PAGE_TOAST, "2 imagens enviadas");
     await waitGallery(2); await sleep(300);
     check("Galeria: envio de 2 imagens (1 requisição multipart) → toast verde", tUp.cls === "sgdi-toast--success", tUp.text);
     check("Galeria: 2 registros em property_images com id_property=1 e arquivos gravados", db.property_images.length === 2 && db.property_images.every((i) => i.id_property === 1 && /^uploads\/properties\/[a-f0-9]{32}\.png$/.test(i.image_path)) && filesIn("properties").length === 2);
     check("Galeria: a requisição usou images[] em multipart com Bearer", db.lastImagesRequest.fieldNames.join() === "images,images" && /^multipart\/form-data; boundary=/.test(db.lastImagesRequest.contentType) && db.lastImagesRequest.authorization === "Bearer T-2");
-    check("Galeria: imagens renderizadas e carregadas; prévias descartadas", (await imagesLoaded()) && (await page.$$("#gallery-pending .pending-item")).length === 0);
-    check("Galeria: texto alternativo é exibido como TEXTO (sem executar HTML)", (await page.$$("#gallery-list figcaption img")).length === 0 && (await page.evaluate(() => window.__xss)) === undefined && (await page.$eval("#gallery-list .gallery-item figcaption span", (s) => s.textContent)).includes("<img src=x"));
+    check("Galeria: imagens renderizadas e carregadas; prévias descartadas", (await imagesLoaded()) && (await page.$$("#owner-gallery-pending .pending-item")).length === 0);
+    check("Galeria: texto alternativo é exibido como TEXTO (sem executar HTML)", (await page.$$("#owner-gallery-list figcaption img")).length === 0 && (await page.evaluate(() => window.__xss)) === undefined && (await page.$eval("#owner-gallery-list .gallery-item figcaption span", (s) => s.textContent)).includes("<img src=x"));
     await shot("08a-galeria-2-imagens");
 
-    await page.reload({ waitUntil: "networkidle0" });
+    await page.reload({ waitUntil: "networkidle0" }); await page.click("#owner-properties-button");
     await waitGallery(2); await sleep(300);
-    check("Galeria: depois de ATUALIZAR a página o imóvel e as 2 imagens voltam do banco (#galeria-1)", (await galleryCount()) === 2 && (await page.$eval("#gallery-property", (s) => s.value)) === "1" && (await imagesLoaded()));
+    check("Galeria: depois de ATUALIZAR a página o imóvel e as 2 imagens voltam do banco (#galeria-1)", (await galleryCount()) === 2 && (await page.$eval("#owner-gallery-property", (s) => s.value)) === "1" && (await imagesLoaded()));
     await shot("08b-galeria-apos-reload");
 
-    await pickFiles("#gallery-files", F.jpg, F.webp); await page.waitForFunction(() => document.querySelectorAll("#gallery-pending .pending-item").length === 2);
-    await clearToasts(); await page.click("#gallery-form button[type=submit]"); await waitToast(PAGE_TOAST, "2 imagens enviadas"); await waitGallery(4);
+    await pickFiles("#owner-gallery-files", F.jpg, F.webp); await page.waitForFunction(() => document.querySelectorAll("#owner-gallery-pending .pending-item").length === 2);
+    await clearToasts(); await page.click("#owner-gallery-form button[type=submit]"); await waitToast(PAGE_TOAST, "2 imagens enviadas"); await waitGallery(4);
     check("Galeria: JPG e WebP também são aceitos; posições sequenciais 0..3", db.property_images.length === 4 && db.property_images.map((i) => i.position).join() === "0,1,2,3");
 
-    const removedId = Number(await page.$eval("#gallery-list .gallery-item:nth-child(2)", (f) => f.dataset.imageId));
+    const removedId = Number(await page.$eval("#owner-gallery-list .gallery-item:nth-child(2)", (f) => f.dataset.imageId));
     const keptIds = db.property_images.map((i) => i.id_image).filter((id) => id !== removedId);
     const filesBefore = filesIn("properties").length;
-    await clearToasts(); await page.$eval("#gallery-list .gallery-item:nth-child(2) button[data-remove]", (b) => b.click());
+    await clearToasts(); await page.$eval("#owner-gallery-list .gallery-item:nth-child(2) button[data-remove]", (b) => b.click());
     const tDel = await waitToast(PAGE_TOAST, "Imagem removida"); await waitGallery(3);
     check("Galeria: remover UMA imagem preserva as demais (registros e arquivos)", tDel.cls === "sgdi-toast--success" && db.property_images.map((i) => i.id_image).join() === keptIds.join() && filesIn("properties").length === filesBefore - 1);
 
     // lote misto: backend rejeita tudo (tudo-ou-nada)
     const stateBefore = { rows: db.property_images.length, files: filesIn("properties").length };
-    await pickFiles("#gallery-files", F.quarto, F.corrompida); await page.waitForFunction(() => document.querySelectorAll("#gallery-pending .pending-item").length === 2);
-    await clearToasts(); await page.click("#gallery-form button[type=submit]");
+    await pickFiles("#owner-gallery-files", F.quarto, F.corrompida); await page.waitForFunction(() => document.querySelectorAll("#owner-gallery-pending .pending-item").length === 2);
+    await clearToasts(); await page.click("#owner-gallery-form button[type=submit]");
     const tMix = await waitToast(PAGE_TOAST, "Imagem 2");
     check("Galeria: arquivo rejeitado pelo backend → erro, NADA associado ao imóvel e nenhum arquivo órfão", tMix.cls === "sgdi-toast--error" && db.property_images.length === stateBefore.rows && filesIn("properties").length === stateBefore.files, tMix.text);
-    check("Galeria: após o erro a seleção continua para corrigir (2 cards)", (await page.$$("#gallery-pending .pending-item")).length === 2);
+    check("Galeria: após o erro a seleção continua para corrigir (2 cards)", (await page.$$("#owner-gallery-pending .pending-item")).length === 2);
     await shot("08c-erro-backend");
-    await page.$eval("#gallery-pending .pending-item:nth-child(2) button[data-pending]", (b) => b.click());
-    await clearToasts(); await page.click("#gallery-form button[type=submit]"); await waitToast(PAGE_TOAST, "Imagem enviada"); await waitGallery(4);
+    await page.$eval("#owner-gallery-pending .pending-item:nth-child(2) button[data-pending]", (b) => b.click());
+    await clearToasts(); await page.click("#owner-gallery-form button[type=submit]"); await waitToast(PAGE_TOAST, "Imagem enviada"); await waitGallery(4);
     check("Galeria: descartar o inválido e reenviar funciona", db.property_images.length === 4);
 
     // falha de banco: nenhum arquivo novo sem referência
     flags.failImageInsert = true;
     const s2 = { rows: db.property_images.length, files: filesIn("properties").length };
-    await pickFiles("#gallery-files", F.sala, F.cozinha); await page.waitForFunction(() => document.querySelectorAll("#gallery-pending .pending-item").length === 2);
-    await clearToasts(); await page.click("#gallery-form button[type=submit]");
+    await pickFiles("#owner-gallery-files", F.sala, F.cozinha); await page.waitForFunction(() => document.querySelectorAll("#owner-gallery-pending .pending-item").length === 2);
+    await clearToasts(); await page.click("#owner-gallery-form button[type=submit]");
     const tDb = await waitToast(PAGE_TOAST, "Nenhuma imagem foi salva"); flags.failImageInsert = false;
     check("Galeria: falha no banco → erro e os arquivos já gravados são removidos", tDb.cls === "sgdi-toast--error" && db.property_images.length === s2.rows && filesIn("properties").length === s2.files);
-    await page.$eval("#gallery-form [data-action=clear]", (b) => b.click());
+    await page.$eval("#owner-gallery-form [data-action=clear]", (b) => b.click());
 
     // validações do frontend
-    await clearToasts(); await pickFiles("#gallery-files", F.falsa, F.pdf, F.grande);
+    await clearToasts(); await pickFiles("#owner-gallery-files", F.falsa, F.pdf, F.grande);
     const tFe = await waitToast(PAGE_TOAST, "excede 5 MB");
-    check("Galeria: arquivos inválidos são barrados na seleção (texto renomeado, PDF, > 5 MB)", tFe.cls === "sgdi-toast--warning" && tFe.text.includes("não tem conteúdo de imagem") && tFe.text.includes("não é JPG, PNG ou WebP") && (await page.$$("#gallery-pending .pending-item")).length === 0);
-    await clearToasts(); await pickFiles("#gallery-files", ...Array(11).fill(F.perfil));
+    check("Galeria: arquivos inválidos são barrados na seleção (texto renomeado, PDF, > 5 MB)", tFe.cls === "sgdi-toast--warning" && tFe.text.includes("não tem conteúdo de imagem") && tFe.text.includes("não é JPG, PNG ou WebP") && (await page.$$("#owner-gallery-pending .pending-item")).length === 0);
+    await clearToasts(); await pickFiles("#owner-gallery-files", ...Array(11).fill(F.perfil));
     await waitToast(PAGE_TOAST, "Limite");
-    check("Galeria: no máximo 10 imagens por envio", (await page.$$("#gallery-pending .pending-item")).length === 10);
-    await page.$eval("#gallery-form [data-action=clear]", (b) => b.click());
+    check("Galeria: no máximo 10 imagens por envio", (await page.$$("#owner-gallery-pending .pending-item")).length === 10);
+    await page.$eval("#owner-gallery-form [data-action=clear]", (b) => b.click());
 
     /* ---- autorização: imóvel de outro proprietário ---- */
     db.properties.push({ id_property: 2, id_owner: 3, location: "Av. do Outro Dono, 7", number_of_rooms: 1, availability: "1", late_payment: "0" });
     db.property_images.push({ id_image: db.nextId.images++, id_property: 2, image_path: (() => { const rel = "uploads/properties/" + "c".repeat(32) + ".png"; db.files.set(rel, { data: fs.readFileSync(F.quarto), type: "image/png" }); return rel; })(), alt_text: "Quarto do outro dono", position: 0, created_at: "2026-01-01 00:00:00" });
-    await page.reload({ waitUntil: "networkidle0" }); await page.waitForSelector('#gallery-property option[value="2"]');
-    await page.select("#gallery-property", "2"); await waitGallery(1);
-    check("Autorização (UI): imóvel de outro dono → lista visível, sem formulário de envio e sem botão remover", !(await visible("#gallery-form")) && (await page.$$("#gallery-list button[data-remove]")).length === 0);
+    await page.reload({ waitUntil: "networkidle0" }); await page.click("#owner-properties-button");
+    await page.waitForSelector('#owner-gallery-property option[value="1"]');
+    check("Autorização (UI): a lista do proprietário não expõe imóveis de outra conta", (await page.$$('#owner-gallery-property option[value="2"]')).length === 0);
     const foreign = db.property_images.find((i) => i.id_property === 2).id_image;
     const mine = db.property_images.find((i) => i.id_property === 1).id_image;
     const direct = await page.evaluate(async (foreignId, mineId) => {
@@ -213,24 +218,28 @@ try {
         const noProp = await fetch(`${api}/properties/999/images`);
         return [post.status, del.status, cross.status, noAuth.status, noProp.status];
     }, foreign, mine);
-    check("Autorização (API): POST/DELETE em imóvel alheio = 403; imagem de outro imóvel pelo id errado = 404; sem token = 401; imóvel inexistente = 404", direct.join() === "403,403,404,401,404", direct.join());
+    check("Autorização (API): POST/DELETE em imóvel alheio = 403; imagem cruzada = 404; consultas sem token = 401", direct.join() === "403,403,404,401,401", direct.join());
     check("Autorização (API): nada foi alterado no imóvel alheio nem no imóvel 1", db.property_images.filter((i) => i.id_property === 2).length === 1 && db.property_images.filter((i) => i.id_property === 1).length === 4);
 
     /* ---- Inquilino: foto sim, galeria só leitura ---- */
+    db.contracts.push({ id_contract: db.nextId.contracts++, id_property: 1, id_user: 1, rent_value: "1500.00", start_date: "2026-01-01", end_date: "2027-01-01", status: "ACTIVE" });
     await loginAs(1);
-    await page.select("#gallery-property", "1"); await waitGallery(4);
-    check("Inquilino: vê a galeria, sem formulário de envio nem remover", !(await visible("#gallery-form")) && (await page.$$("#gallery-list button[data-remove]")).length === 0);
+    await goto("app/tenant.html"); await page.waitForSelector("#property-gallery .property-gallery-grid img");
+    check("Inquilino: página mostra localização + imagens de cada imóvel", (await page.$$eval("#property-gallery .property-gallery-card", (c) => c.length)) >= 1 && (await page.$$eval("#property-gallery img", (i) => i.every((x) => x.complete && x.naturalWidth > 0))));
+    check("Inquilino: área de imagens é somente leitura", (await page.$$("#property-gallery button[data-remove]")).length === 0 && (await page.$$("#property-gallery input[type=file]")).length === 0);
     const tenantPost = await page.evaluate(async () => { const fd = new FormData(); fd.append("images[]", new File([new Uint8Array([1])], "a.png")); return (await fetch("http://localhost/SGDI/api/properties/1/images", { method: "POST", headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, body: fd })).status; });
     check("Inquilino: POST de imagens de imóvel = 401 no backend", tenantPost === 401);
+    await goto("app/tenant.html"); await page.$eval("#profile-menu", (d) => { d.open = true; });
     await pickFiles("#photo-input", F.perfil2); await page.waitForFunction(() => !document.querySelector("#photo-preview-box").hidden);
     await clearToasts(); await page.click("#photo-form button[type=submit]"); await waitToast("#profile-section", "Foto atualizada");
     check("Inquilino: qualquer perfil autenticado atualiza a própria foto", /^uploads\/users\//.test(db.users[0].photo) && db.users[1].photo !== db.users[0].photo);
 
     /* ---- exclusão do imóvel não deixa arquivos órfãos ---- */
+    db.contracts = db.contracts.filter((contract) => contract.id_property !== 1);
+    db.appointments = db.appointments.filter((appointment) => appointment.id_property !== 1);
     await loginAs(2);
-    await page.$eval('#property-list tbody tr:nth-child(1) button[data-action="delete"]', (b) => b.click()); await sleep(800);
+    await page.$eval('#owner-property-list li button[data-action="delete"]', (b) => b.click()); await sleep(800);
     check("Excluir o imóvel remove registros E arquivos da galeria (sem órfãos)", !db.property_images.some((i) => i.id_property === 1) && filesIn("properties").length === 1 /* só a do imóvel 2 */);
-    await page.select("#gallery-property", "2"); await waitGallery(1);
     check("Console do navegador sem erros inesperados", consoleErrors.filter((e) => !/status of (4|5)\d\d|Failed to load resource/.test(e) && !/\[Toast\]|\[PropertyImage\]/.test(e)).length === 0, consoleErrors.slice(0, 3).join(" | "));
 } catch (error) {
     check("Exceção no roteiro E2E", false, error.message.split("\n")[0]);

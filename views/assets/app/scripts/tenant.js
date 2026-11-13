@@ -132,18 +132,18 @@ function savePaymentProofs(list) {
 }
 
 function createTenantProofModal() {
-  const modal = document.createElement("div");
+  const modal = document.createElement("section");
   modal.className = "modal-backdrop";
   modal.hidden = true;
   modal.setAttribute("aria-hidden", "true");
 
   modal.innerHTML = `
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="proof-modal-title">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="proof-modal-title">
       <header class="modal-header">
-        <div>
+        <section class="modal-heading">
           <p class="eyebrow">Comprovante</p>
-          <h2 id="proof-modal-title">Enviar comprovante de pagamento</h2>
-        </div>
+          <h2 id="proof-modal-title">Registrar comprovante neste navegador</h2>
+        </section>
         <button type="button" class="modal-close" id="proof-modal-close" aria-label="Fechar">×</button>
       </header>
 
@@ -157,17 +157,17 @@ function createTenantProofModal() {
         <label for="proof-file">Anexar comprovante (imagem ou PDF)</label>
         <input id="proof-file" type="file" accept="image/*,application/pdf" />
 
-        <div class="qr-preview" id="proof-preview" hidden>
+        <section class="qr-preview" id="proof-preview" hidden>
           <p class="label">Prévia</p>
           <img id="proof-image-preview" alt="Prévia do comprovante" />
-        </div>
+        </section>
 
-        <div class="modal-actions">
+        <footer class="modal-actions">
           <button type="button" class="button-secondary" id="proof-cancel">Cancelar</button>
-          <button type="submit" class="confirm-button">Enviar comprovante</button>
-        </div>
+          <button type="submit" class="confirm-button">Salvar comprovante</button>
+        </footer>
       </form>
-    </div>
+    </section>
   `;
 
   const form = modal.querySelector("#proof-form");
@@ -238,7 +238,7 @@ function createTenantProofModal() {
         proofs.unshift(proof);
         savePaymentProofs(proofs);
         close();
-        alert("Comprovante enviado. O proprietário poderá visualizá-lo.");
+        alert("Comprovante salvo neste navegador; não foi enviado ao proprietário.");
       };
       reader.readAsDataURL(file);
     } else if (file && file.type === "application/pdf") {
@@ -248,14 +248,14 @@ function createTenantProofModal() {
         proofs.unshift(proof);
         savePaymentProofs(proofs);
         close();
-        alert("Comprovante (PDF) enviado. O proprietário poderá baixá-lo.");
+        alert("Comprovante salvo neste navegador; não foi enviado ao proprietário.");
       };
       reader.readAsDataURL(file);
     } else {
       proofs.unshift(proof);
       savePaymentProofs(proofs);
       close();
-      alert("Comprovante salvo sem arquivo.");
+      alert("Referência salva neste navegador, sem arquivo e sem envio ao proprietário.");
     }
   });
 

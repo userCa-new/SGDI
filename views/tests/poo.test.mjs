@@ -7,6 +7,7 @@ import User from "../assets/_common/classes/entities/User.js";
 import Faq from "../assets/_common/classes/entities/Faq.js";
 import HttpClientBase, { ApiError } from "../assets/_common/classes/HttpClientBase.js";
 import PropertyService from "../assets/_common/classes/services/PropertyService.js";
+import ContractService from "../assets/_common/classes/services/ContractService.js";
 import AppointmentService from "../assets/_common/classes/services/AppointmentService.js";
 import UserService from "../assets/_common/classes/services/UserService.js";
 import { createToast, ToastPrototype } from "../assets/_common/prototypes/Toast.js";
@@ -92,6 +93,18 @@ await test("AppointmentService.update envia só completed", async () => {
     fakeFetch(() => reply(200, { code: 200, type: "success", message: "ok" }));
     await new AppointmentService().update(new Appointment({ id: 3, idProperty: 1, date: "2026-01-01", observation: "o", completed: true }));
     assert.deepEqual([...calls.at(-1).options.body.entries()], [["completed", "1"]]);
+});
+await test("ContractService.listTenants consulta endpoint protegido de inquilinos", async () => {
+    fakeFetch(() => reply(200, {
+        code: 200,
+        type: "success",
+        message: "Lista de inquilinos",
+        data: [{ id_user: 1, name: "Inquilino" }],
+    }));
+    const response = await new ContractService().listTenants();
+    assert.equal(calls.at(-1).url.endsWith("/users/tenants"), true);
+    assert.equal(calls.at(-1).options.method, "GET");
+    assert.deepEqual(response.data, [{ id_user: 1, name: "Inquilino" }]);
 });
 await test("UserService.login usa POST /users/login e não coloca credenciais na URL", async () => {
     fakeFetch(() => reply(200, { code: 200, type: "success", message: "ok", data: { id_user: 1, name: "A", token: "t", type_user: 2 } }));

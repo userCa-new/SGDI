@@ -1,5 +1,5 @@
 -- Etapa 07 — Upload de imagens (MySQL 8)
--- Para bancos JÁ existentes. Bancos novos já recebem tudo de data-base/dump.slq.
+-- Para bancos JÁ existentes. Bancos novos já recebem tudo de data-base/dump.sql.
 -- Execute uma vez (use o banco do projeto: USE imobiliaria;).
 
 -- 1) Foto do usuário: caminho relativo gerado por Upload (ex.: uploads/users/<hash>.jpg). Opcional.

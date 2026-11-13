@@ -1,4 +1,4 @@
-import CrudService from "./CrudService.js";
+import CrudService from "./CrudService.js?v=20261113-2";
 import Faq from "../entities/Faq.js";
 
 export default class FaqService extends CrudService {

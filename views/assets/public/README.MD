@@ -31,7 +31,7 @@ fazer login**.
 public/
 ├── images/     ← Imagens da área pública (banners, fotos, ícones)
 ├── scripts/    ← JavaScript da área pública (formulários, animações)
-└── styles/     ← CSS da área pública (layout das páginas, responsividade)
+└── styles/     ← CSS da área pública (layout das páginas, responsividade e redesign.css)
 ```
 
 ---
@@ -102,6 +102,10 @@ document.getElementById("form-login").addEventListener("submit", async (event) =
 
 ---
 
-> 💡 **Dica:** A área pública é geralmente a primeira que os estudantes desenvolvem,
-> pois é a mais simples e visível. Comece pelo HTML e CSS, depois adicione o JavaScript!
+### Sistema visual e funcionamento
 
+As páginas públicas usam os tokens de `../_common/styles/design-system.css` e
+`styles/redesign.css`, mantendo os estilos por página como base. O FAQ carrega
+as perguntas pela API e apresenta estados de carregamento, vazio e erro. O
+formulário de contato está visivelmente desabilitado enquanto não houver um
+serviço de envio integrado; não informe endereço, telefone ou e-mail fictícios.

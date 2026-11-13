@@ -1,110 +1,114 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGDI - Sistema de Gerenciamento de Aluguel de Imóveis</title>
-    <link rel="stylesheet" href="styles/home.css">
-</head>
-<body>
-    <header class="navbar">
-        <nav class="navbar-content">
-            <h1 class="logo">SGDI</h1>
-            <div class="nav-links">
-                <a href="sobre.html" class="nav-link">Sobre</a>
-                <a href="contato.html" class="nav-link">Contato</a>
-                <a href="faq.html" class="nav-link">FAQs</a>
-                <a href="login.html" class="nav-link">Login</a>
-                <a href="cadastro.html" class="nav-link nav-link-primary">Cadastro</a>
-            </div>
-        </nav>
-    </header>
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Organize a rotina de aluguel com informações claras para proprietários e inquilinos."
+        />
+        <title>SGDI — Gestão de aluguel com mais clareza</title>
+        <link rel="stylesheet" href="styles/home.css" />
+        <link rel="stylesheet" href="../_common/styles/design-system.css" />
+        <link rel="stylesheet" href="styles/redesign.css" />
+    </head>
+    <body class="public-shell">
+        <header class="navbar">
+            <nav class="navbar-content" aria-label="Navegação principal">
+                <a class="logo" href="index.html" aria-label="SGDI — início">SGDI</a>
+                <ul class="nav-links">
+                    <li><a href="sobre.html" class="nav-link">Sobre</a></li>
+                    <li><a href="contato.html" class="nav-link">Contato</a></li>
+                    <li><a href="faq.html" class="nav-link">Perguntas frequentes</a></li>
+                    <li><a href="login.html" class="nav-link">Entrar</a></li>
+                    <li><a href="cadastro.html" class="nav-link nav-link-primary">Criar conta</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    <main>
-        <section class="hero">
-            <article class="hero-content">
-                <h2>Gerenciamento de Aluguel de Imóveis</h2>
-                <p>Controle total entre proprietário e inquilino em uma plataforma intuitiva e segura.</p>
-                <div class="hero-buttons">
-                    <a href="cadastro.html" class="button button-primary">Começar Agora</a>
-                    <a href="#sobre" class="button button-secondary">Saiba Mais</a>
-                </div>
-            </article>
-        </section>
-
-        <section id="sobre" class="about">
-            <header class="about-header">
-                <h2>O que é SGDI?</h2>
-                <p>Uma solução completa para gerenciamento de aluguel de imóveis</p>
-            </header>
-
-            <div class="features">
-                <article class="feature-card">
-                    <h3>Para Proprietários</h3>
-                    <ul>
-                        <li>Monitore múltiplos imóveis alugados</li>
-                        <li>Acompanhe pagamentos e atrasos</li>
-                        <li>Defina horários de atendimento</li>
-                        <li>Confirme pagamentos com QR Code ou Pix</li>
-                        <li>Gerencie dados de inquilinos</li>
-                    </ul>
+        <main class="public-home">
+            <section class="hero" aria-labelledby="home-title">
+                <article class="hero-content">
+                    <h1 id="home-title">Uma gestão de aluguel que aproxima.</h1>
+                    <p>
+                        Informações do imóvel, pagamentos e conversas em um só
+                        lugar — com mais clareza para quem aluga e para quem
+                        cuida do imóvel.
+                    </p>
+                    <nav class="hero-buttons" aria-label="Ações">
+                        <a href="cadastro.html" class="button button-primary">Conheça o SGDI</a>
+                        <a href="login.html" class="button button-secondary">Já tenho uma conta</a>
+                    </nav>
                 </article>
-
-                <article class="feature-card">
-                    <h3>Para Inquilinos</h3>
-                    <ul>
-                        <li>Controle de pagamentos mensais</li>
-                        <li>Visualize se está adiantado ou atrasado</li>
-                        <li>Veja taxas de atraso em tempo real</li>
-                        <li>Localização do imóvel alugado</li>
-                        <li>Abra chamados de manutenção</li>
-                    </ul>
-                </article>
-            </div>
-
-            <section class="highlights">
-                <h3>Recursos Principais</h3>
-                <div class="highlights-grid">
-                    <div class="highlight">
-                        <strong>📱 Interface Intuitiva</strong>
-                        <p>Design moderno e fácil de usar para todos os tipos de usuários</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>💳 Pagamentos Digitais</strong>
-                        <p>Suporte para QR Code e Pix para transações seguras</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>📍 Localização em Tempo Real</strong>
-                        <p>Saiba exatamente onde estão seus imóveis</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>⏰ Notificações Automáticas</strong>
-                        <p>Receba alertas sobre pagamentos e manutenção</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>📊 Relatórios Detalhados</strong>
-                        <p>Acompanhe histórico de pagamentos e inadimplência</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>🔒 Segurança em Primeiro Lugar</strong>
-                        <p>Seus dados são protegidos com criptografia</p>
-                    </div>
-                </div>
+                <figure class="hero-visual" aria-label="Ilustração de uma casa acolhedora">
+                    <figcaption>Uma rotina mais leve para todos os lados.</figcaption>
+                </figure>
             </section>
-        </section>
 
-        <section class="cta">
-            <h2>Pronto para Começar?</h2>
-            <p>Crie sua conta e comece a gerenciar seus aluguel com facilidade</p>
-            <div class="cta-buttons">
-                <a href="cadastro.html" class="button button-primary">Criar Conta</a>
-                <a href="login.html" class="button button-secondary">Já Tenho Conta</a>
-            </div>
-        </section>
-    </main>
+            <section id="sobre" class="about" aria-labelledby="about-title">
+                <header class="about-header">
+                    <p class="eyebrow">Uma plataforma, duas perspectivas</p>
+                    <h2 id="about-title">A rotina da locação, sem ruído.</h2>
+                    <p>
+                        Cada pessoa encontra as informações e tarefas do seu
+                        papel, sem perder de vista o que importa.
+                    </p>
+                </header>
 
-    <footer class="footer">
-        <p>&copy; 2026 SGDI - Sistema de Gerenciamento de Aluguel de Imóveis. Todos os direitos reservados.</p>
-    </footer>
-</body>
+                <section class="features" aria-label="Recursos por perfil">
+                    <article class="feature-card">
+                        <h3>Para proprietários</h3>
+                        <p>Tenha uma visão organizada dos imóveis e da relação com cada inquilino.</p>
+                        <ul>
+                            <li>Acompanhe solicitações de pagamento e confirme após conferir no banco.</li>
+                            <li>Compartilhe chaves Pix ou QR Codes para referência de cobrança.</li>
+                            <li>Organize horários de atendimento e pedidos de manutenção.</li>
+                            <li>Consulte as informações e imagens dos imóveis.</li>
+                        </ul>
+                    </article>
+                    <article class="feature-card">
+                        <h3>Para inquilinos</h3>
+                        <p>Consulte os dados do imóvel e mantenha os combinados por perto.</p>
+                        <ul>
+                            <li>Veja as informações de aluguel e os meios de pagamento disponibilizados.</li>
+                            <li>Envie comprovantes para conferência pelo proprietário.</li>
+                            <li>Registre problemas e acompanhe conversas de atendimento.</li>
+                            <li>Consulte localização e imagens do imóvel.</li>
+                        </ul>
+                    </article>
+                </section>
+
+                <section class="highlights" aria-labelledby="highlights-title">
+                    <h3 id="highlights-title">Tudo em contexto</h3>
+                    <ul class="highlights-grid">
+                        <li class="highlight">
+                            <strong>Pagamentos assistidos</strong>
+                            <p>As transferências acontecem no banco; a confirmação fica visível no painel.</p>
+                        </li>
+                        <li class="highlight">
+                            <strong>Comunicação organizada</strong>
+                            <p>Mensagens e solicitações ficam reunidas por perfil.</p>
+                        </li>
+                        <li class="highlight">
+                            <strong>Informações do imóvel</strong>
+                            <p>Endereço, detalhes e imagens podem ser consultados na área logada.</p>
+                        </li>
+                    </ul>
+                </section>
+            </section>
+
+            <section class="cta" aria-labelledby="cta-title">
+                <h2 id="cta-title">Mais clareza começa com uma conversa.</h2>
+                <p>Conheça a plataforma e escolha o perfil que faz parte da sua rotina.</p>
+                <nav class="cta-buttons" aria-label="Ações de cadastro e acesso">
+                    <a href="cadastro.html" class="button button-primary">Criar conta</a>
+                    <a href="login.html" class="button button-secondary">Entrar</a>
+                </nav>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 SGDI — Sistema de Gerenciamento de Aluguel de Imóveis.</p>
+        </footer>
+    </body>
 </html>
