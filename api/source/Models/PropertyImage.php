@@ -7,11 +7,6 @@ use PDOException;
 use Source\Core\Connect;
 use Source\Core\Model;
 
-/**
- * Metadados das imagens de um imóvel (tabela property_images, relação 1:N com properties).
- * O binário fica no sistema de arquivos; aqui só o caminho relativo gerado por Upload.
- * Todas as consultas usam prepared statements.
- */
 class PropertyImage extends Model
 {
     protected ?int $idImage;
@@ -105,7 +100,6 @@ class PropertyImage extends Model
         $this->createdAt = $createdAt;
     }
 
-    /** @return array|null lista de imagens do imóvel (vazia se não houver); null em caso de falha */
     public function listByProperty(int $idProperty): ?array
     {
         try {
@@ -125,7 +119,6 @@ class PropertyImage extends Model
         }
     }
 
-    /** @return string[]|null caminhos relativos das imagens do imóvel; null em caso de falha */
     public function pathsByProperty(int $idProperty): ?array
     {
         $rows = $this->listByProperty($idProperty);
@@ -151,7 +144,6 @@ class PropertyImage extends Model
         }
     }
 
-    /** Próxima posição livre na galeria (0 quando ainda não há imagens). */
     public function nextPosition(int $idProperty): ?int
     {
         try {
@@ -168,7 +160,6 @@ class PropertyImage extends Model
         }
     }
 
-    /** Carrega a imagem SOMENTE se ela pertencer ao imóvel informado. */
     public function findInProperty(int $idImage, int $idProperty): bool
     {
         try {
@@ -202,7 +193,6 @@ class PropertyImage extends Model
         }
     }
 
-    /** Remove o registro SOMENTE se ele pertencer ao imóvel informado. */
     public function deleteInProperty(int $idImage, int $idProperty): bool
     {
         try {
