@@ -130,7 +130,8 @@ class Upload
             );
         }
 
-        $mimeType = new finfo(FILEINFO_MIME_TYPE)->file($upload["tmp_name"]);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($upload["tmp_name"]);
         if (!is_string($mimeType)) {
             throw new RuntimeException(
                 "Não foi possível identificar o tipo do arquivo enviado.",
